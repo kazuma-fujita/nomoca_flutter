@@ -4,36 +4,48 @@ import 'package:nomoca_flutter/constants/environment_variables.dart';
 import 'package:nomoca_flutter/data/api/api_client.dart';
 import 'package:nomoca_flutter/data/api/authentication_api.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
+import 'package:nomoca_flutter/presentation/signup/signup_view.dart';
+import 'package:nomoca_flutter/presentation/signup/signup_view_model.dart';
 
-final apiClientProvider = Provider.autoDispose(
+final apiClientProvider = Provider(
   (_) => ApiClientImpl(baseUrl: EnvironmentVariables.nomocaApiBaseUrl),
 );
 
-final authenticationApiProvider = Provider.autoDispose(
+final authenticationApiProvider = Provider(
   (ref) => AuthenticationApiImpl(
     apiClient: ref.read(apiClientProvider),
   ),
 );
 
-final authenticationRepositoryProvider = Provider.autoDispose(
+final authenticationRepositoryProvider = Provider(
   (ref) => AuthenticationRepositoryImpl(
     authenticationApi: ref.read(authenticationApiProvider),
   ),
 );
 
+final signupViewModelProvider = StateNotifierProvider.autoDispose(
+  (ref) => SignupViewModel(
+    authenticationRepository: ref.read(authenticationRepositoryProvider),
+  ),
+);
+
 void main() {
-  runApp(MyApp());
+  runApp(
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Nomoca application',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      home: SignupView(),
     );
   }
 }

@@ -60,8 +60,8 @@ class AuthenticationApiImpl implements AuthenticationApi {
     }
     await apiClient.post(
       '$_endPoint/',
-      body: json.encode(body),
       headers: NomocaApiProperties.baseHeaders,
+      body: json.encode(body),
     );
   }
 

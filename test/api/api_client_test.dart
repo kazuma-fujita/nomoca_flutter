@@ -5,9 +5,10 @@ import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 
 void main() {
   final _server = MockWebServer(port: 8081);
-  final _apiClient = ApiClientImpl(baseUrl: 'http://127.0.0.1:8081');
+  late ApiClient _apiClient;
 
   setUp(() async {
+    _apiClient = ApiClientImpl(baseUrl: 'http://127.0.0.1:8081');
     await _server.start();
   });
 
