@@ -1,6 +1,7 @@
 import 'file:///Users/kazuma/Documents/github/flutter/nomoca_flutter/lib/data/api/api_client.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mock_web_server/mock_web_server.dart';
+import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 
 void main() {
   final _server = MockWebServer(port: 8081);
@@ -34,8 +35,11 @@ void main() {
     test('Http status code "204 No Content" with post method testing',
         () async {
       _server.enqueue(httpCode: 204);
-      final responseBody = await _apiClient.post('/endpoint',
-          body: '{ "title" : "Testing for post" }');
+      final responseBody = await _apiClient.post(
+        '/endpoint',
+        headers: NomocaApiProperties.baseHeaders,
+        body: '{ "title" : "Testing for post" }',
+      );
       expect(responseBody, isEmpty);
       final request = _server.takeRequest();
       expect(request.uri.path, '/endpoint');

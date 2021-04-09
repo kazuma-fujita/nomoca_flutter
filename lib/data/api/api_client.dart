@@ -3,7 +3,11 @@ import 'package:http/http.dart' as http;
 
 abstract class ApiClient {
   Future<String> get(String endpoint);
-  Future<String> post(String endpoint, {required String body});
+  Future<String> post(
+    String endpoint, {
+    required Map<String, String> headers,
+    required String body,
+  });
   Future<String> put(String endpoint, {required String body});
   Future<String> delete(String endpoint);
 }
@@ -37,7 +41,11 @@ class ApiClientImpl implements ApiClient {
   }
 
   @override
-  Future<String> post(String endpoint, {required String body}) async {
+  Future<String> post(
+    String endpoint, {
+    required Map<String, String> headers,
+    required String body,
+  }) async {
     return _safeApiCall(() async => http.post(Uri.parse('$baseUrl$endpoint'),
         headers: headers, body: body));
   }
