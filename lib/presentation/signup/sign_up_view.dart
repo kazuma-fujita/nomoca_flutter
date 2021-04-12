@@ -3,19 +3,19 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/main.dart';
 
-class SignupView extends StatelessWidget {
+class SignUpView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('アカウント登録'),
       ),
-      body: _SignupView(),
+      body: _SignUpView(),
     );
   }
 }
 
-class _SignupView extends HookWidget {
+class _SignUpView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final state = useProvider(signupViewModelProvider);
@@ -37,7 +37,7 @@ class _SignupView extends HookWidget {
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          context.read(signupViewModelProvider.notifier).signup();
+          context.read(signupViewModelProvider.notifier).signUp();
         },
         child: const Text('登録する'),
       ),

@@ -10,8 +10,7 @@ void main() {
   late AuthenticationApi _authenticationApi;
 
   setUp(() async {
-    // _apiClient = MockApiClient();
-    _apiClient = ApiClientImpl(baseUrl: 'http://192.168.0.10:8000');
+    _apiClient = MockApiClient();
     _authenticationApi = AuthenticationApiImpl(apiClient: _apiClient);
   });
 
