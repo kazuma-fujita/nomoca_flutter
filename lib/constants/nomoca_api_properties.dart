@@ -5,4 +5,5 @@ class NomocaApiProperties {
     'Content-Type': 'application/json; charset=UTF-8',
     'X-API-Key': EnvironmentVariables.nomocaXApiKey,
   };
+  static const apiVersion = 'v7';
 }
