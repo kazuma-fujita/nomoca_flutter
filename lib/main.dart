@@ -5,8 +5,8 @@ import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 import 'package:nomoca_flutter/data/api/api_client.dart';
 import 'package:nomoca_flutter/data/api/authentication_api.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
-import 'package:nomoca_flutter/presentation/signup/sign_up_view.dart';
-import 'package:nomoca_flutter/presentation/signup/sign_up_view_model.dart';
+import 'package:nomoca_flutter/presentation/sign_up/sign_up_view.dart';
+import 'package:nomoca_flutter/presentation/sign_up/sign_up_view_model.dart';
 
 final apiClientProvider = Provider(
   (_) => ApiClientImpl(
