@@ -26,7 +26,7 @@ class ApiClientImpl implements ApiClient {
 
   static const headers = <String, String>{'content-type': 'application/json'};
 
-  Future<String> _safeApiCall(Function callback) async {
+  Future<String> _safeApiCall(Function() callback) async {
     try {
       final response = await callback() as http.Response;
       return _parseResponse(response.statusCode, response.body);

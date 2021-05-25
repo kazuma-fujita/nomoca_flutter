@@ -37,7 +37,10 @@ class _SignUpView extends HookWidget {
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          context.read(signupViewModelProvider.notifier).signUp();
+          context.read(signupViewModelProvider.notifier).signUp(
+                mobilePhoneNumber: '',
+                nickname: '',
+              );
         },
         child: const Text('登録する'),
       ),

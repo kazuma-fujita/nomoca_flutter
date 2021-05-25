@@ -36,7 +36,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  pedantic_mono: ^1.11.0+2
+  pedantic_mono: ^1.12.1
   build_runner:
   freezed: ^0.14.1+2
   json_serializable: ^4.1.0

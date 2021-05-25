@@ -8,11 +8,16 @@ class SignUpViewModel extends StateNotifier<AsyncValue<bool>> {
 
   final AuthenticationRepository authenticationRepository;
 
-  Future<void> signUp() async {
+  Future<void> signUp({
+    required String mobilePhoneNumber,
+    required String nickname,
+  }) async {
     state = const AsyncLoading();
     try {
       await authenticationRepository.signUp(
-          mobilePhoneNumber: '05011112224', nickname: 'flutter-test1');
+        mobilePhoneNumber: mobilePhoneNumber,
+        nickname: nickname,
+      );
       state = const AsyncData(true);
     } on Exception catch (error) {
       state = AsyncError(error);
