@@ -1,4 +1,4 @@
-import 'file:///Users/kazuma/Documents/github/flutter/nomoca_flutter/lib/data/api/api_client.dart';
+import 'package:nomoca_flutter/data/api/api_client.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mock_web_server/mock_web_server.dart';
 import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
@@ -84,8 +84,9 @@ void main() {
 
   group('API communication error testing', () {
     test('Network error testing', () {
-      _server.shutdown();
-      _server.enqueue(httpCode: 200);
+      _server
+        ..shutdown()
+        ..enqueue(httpCode: 200);
       expect(() => _apiClient.get('/endpoint'), throwsException);
       expect(_server.takeRequest().uri.path, '/endpoint');
     });
