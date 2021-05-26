@@ -51,13 +51,10 @@ class AuthenticationApiImpl implements AuthenticationApi {
     final body = {
       'mobile_tel': mobilePhoneNumber,
       'name': nickname,
+      if (osVersion != null) 'os_version': osVersion,
+      if (deviceName != null) 'device_name': deviceName,
     };
-    if (osVersion != null) {
-      body.addAll({'os_version': osVersion});
-    }
-    if (deviceName != null) {
-      body.addAll({'device_name': deviceName});
-    }
+
     await apiClient.post(
       '$_endPoint/',
       headers: NomocaApiProperties.baseHeaders,
