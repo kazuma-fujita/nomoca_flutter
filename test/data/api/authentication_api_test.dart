@@ -4,10 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 import 'package:nomoca_flutter/data/api/api_client.dart';
 import 'package:nomoca_flutter/data/api/authentication_api.dart';
-
 import 'authentication_api_test.mocks.dart';
-
-// class MockApiClient extends Mock implements ApiClient {}
 
 @GenerateMocks([ApiClient])
 void main() {
@@ -51,6 +48,7 @@ void main() {
           '/users/',
           headers: NomocaApiProperties.baseHeaders,
           body:
+              // ignore: lines_longer_than_80_chars
               '{"mobile_tel":"09012345678","name":"test-user","os_version":"14.4.2"}',
         ),
       ).thenAnswer((_) async => '{ "dummy_response": "dummy text"}');
@@ -66,6 +64,7 @@ void main() {
           '/users/',
           headers: NomocaApiProperties.baseHeaders,
           body:
+              // ignore: lines_longer_than_80_chars
               '{"mobile_tel":"09012345678","name":"test-user","os_version":"14.4.2"}',
         ),
       );
@@ -77,6 +76,7 @@ void main() {
           '/users/',
           headers: NomocaApiProperties.baseHeaders,
           body:
+              // ignore: lines_longer_than_80_chars
               '{"mobile_tel":"09012345678","name":"test-user","device_name":"iPhone13,2"}',
         ),
       ).thenAnswer((_) async => '{ "dummy_response": "dummy text"}');
@@ -92,6 +92,7 @@ void main() {
           '/users/',
           headers: NomocaApiProperties.baseHeaders,
           body:
+              // ignore: lines_longer_than_80_chars
               '{"mobile_tel":"09012345678","name":"test-user","device_name":"iPhone13,2"}',
         ),
       );
