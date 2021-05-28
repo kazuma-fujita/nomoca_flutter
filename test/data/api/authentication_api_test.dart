@@ -1,14 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 import 'package:nomoca_flutter/data/api/api_client.dart';
 import 'package:nomoca_flutter/data/api/authentication_api.dart';
 import 'authentication_api_test.mocks.dart';
 
 @GenerateMocks([ApiClient])
 void main() {
-  late ApiClient _apiClient;
+  late MockApiClient _apiClient;
   late AuthenticationApi _authenticationApi;
 
   setUp(() async {
@@ -21,11 +20,11 @@ void main() {
       // stub生成
       when(
         _apiClient.post(
-          '/users/',
-          headers: NomocaApiProperties.baseHeaders,
-          body: '{"mobile_tel":"09012345678","name":"test-user"}',
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
         ),
-      ).thenAnswer((_) async => '{ "dummy_response": "dummy text"}');
+      ).thenAnswer((_) async => '');
       // test対象実行
       await _authenticationApi.signUp(
         mobilePhoneNumber: '09012345678',
@@ -34,24 +33,22 @@ void main() {
       // method呼び出し検証
       verify(
         _apiClient.post(
-          '/users/',
-          headers: NomocaApiProperties.baseHeaders,
-          body: '{"mobile_tel":"09012345678","name":"test-user"}',
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
         ),
       );
     });
-    // OS Versionが
+
     test('Sign up API test using OS version.', () async {
       // stub生成
       when(
         _apiClient.post(
-          '/users/',
-          headers: NomocaApiProperties.baseHeaders,
-          body:
-              // ignore: lines_longer_than_80_chars
-              '{"mobile_tel":"09012345678","name":"test-user","os_version":"14.4.2"}',
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
         ),
-      ).thenAnswer((_) async => '{ "dummy_response": "dummy text"}');
+      ).thenAnswer((_) async => '');
       // test対象実行
       await _authenticationApi.signUp(
         mobilePhoneNumber: '09012345678',
@@ -61,25 +58,22 @@ void main() {
       // method呼び出し検証
       verify(
         _apiClient.post(
-          '/users/',
-          headers: NomocaApiProperties.baseHeaders,
-          body:
-              // ignore: lines_longer_than_80_chars
-              '{"mobile_tel":"09012345678","name":"test-user","os_version":"14.4.2"}',
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
         ),
       );
     });
+
     test('Sign up API test using device name.', () async {
       // stub生成
       when(
         _apiClient.post(
-          '/users/',
-          headers: NomocaApiProperties.baseHeaders,
-          body:
-              // ignore: lines_longer_than_80_chars
-              '{"mobile_tel":"09012345678","name":"test-user","device_name":"iPhone13,2"}',
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
         ),
-      ).thenAnswer((_) async => '{ "dummy_response": "dummy text"}');
+      ).thenAnswer((_) async => '');
       // test対象実行
       await _authenticationApi.signUp(
         mobilePhoneNumber: '09012345678',
@@ -89,11 +83,9 @@ void main() {
       // method呼び出し検証
       verify(
         _apiClient.post(
-          '/users/',
-          headers: NomocaApiProperties.baseHeaders,
-          body:
-              // ignore: lines_longer_than_80_chars
-              '{"mobile_tel":"09012345678","name":"test-user","device_name":"iPhone13,2"}',
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
         ),
       );
     });
@@ -101,21 +93,29 @@ void main() {
 
   group('Testing the pattern of authentication API errors.', () {
     test('Testing the pattern of sign up API error.', () async {
-      // stub生成
+      // Create the stub.
       when(
         _apiClient.post(
-          '/users/',
-          headers: NomocaApiProperties.baseHeaders,
-          body: '{"mobile_tel":"09012345678","name":"test-user"}',
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
         ),
-      ).thenThrow(Exception('error message'));
-      // test対象実行
+      ).thenThrow(Exception('Exception message.'));
+      // Run the test method.
       expect(
         () => _authenticationApi.signUp(
           mobilePhoneNumber: '09012345678',
           nickname: 'test-user',
         ),
         throwsException,
+      );
+      // Validate the method call.
+      verify(
+        _apiClient.post(
+          any,
+          headers: anyNamed('headers'),
+          body: anyNamed('body'),
+        ),
       );
     });
   });
