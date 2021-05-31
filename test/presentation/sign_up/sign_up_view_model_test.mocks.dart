@@ -18,7 +18,7 @@ import 'package:nomoca_flutter/data/repository/authentication_repository.dart'
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockAuthenticationRepository extends _i1.Mock
-    implements _i2.AuthenticationRepository {
+    implements _i2.PatientCardRepository {
   MockAuthenticationRepository() {
     _i1.throwOnMissingStub(this);
   }

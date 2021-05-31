@@ -7,9 +7,9 @@ import 'package:nomoca_flutter/presentation/sign_up/sign_up_view_model.dart';
 
 import 'sign_up_view_model_test.mocks.dart';
 
-@GenerateMocks([AuthenticationRepository])
+@GenerateMocks([PatientCardRepository])
 void main() {
-  late AuthenticationRepository _repository;
+  late PatientCardRepository _repository;
   late SignUpViewModel _viewModel;
 
   setUp(() async {

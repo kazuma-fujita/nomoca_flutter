@@ -6,7 +6,7 @@ class SignUpViewModel extends StateNotifier<AsyncValue<bool>> {
   SignUpViewModel({required this.authenticationRepository})
       : super(const AsyncData(false));
 
-  final AuthenticationRepository authenticationRepository;
+  final PatientCardRepository authenticationRepository;
 
   Future<void> signUp({
     required String mobilePhoneNumber,

@@ -1,6 +1,6 @@
 import 'package:nomoca_flutter/data/api/authentication_api.dart';
 
-abstract class AuthenticationRepository {
+abstract class PatientCardRepository {
   Future<void> signIn({
     required String mobilePhoneNumber,
     required String authCode,
@@ -22,7 +22,7 @@ abstract class AuthenticationRepository {
   Future<void> signOut();
 }
 
-class AuthenticationRepositoryImpl implements AuthenticationRepository {
+class AuthenticationRepositoryImpl implements PatientCardRepository {
   AuthenticationRepositoryImpl({required this.authenticationApi});
 
   final AuthenticationApi authenticationApi;

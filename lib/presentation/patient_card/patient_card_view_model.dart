@@ -1,24 +1,20 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
+import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
+import 'package:nomoca_flutter/data/repository/patient_card_repository.dart';
 import 'package:state_notifier/state_notifier.dart';
 
-class PatientCardViewModel extends StateNotifier<AsyncValue<bool>> {
-  PatientCardViewModel({required this.authenticationRepository})
-      : super(const AsyncData(false));
+class PatientCardViewModel
+    extends StateNotifier<AsyncValue<List<PatientCardEntity>>> {
+  PatientCardViewModel({required this.patientCardRepository})
+      : super(const AsyncData([]));
 
-  final AuthenticationRepository authenticationRepository;
+  final PatientCardRepository patientCardRepository;
 
-  Future<void> signUp({
-    required String mobilePhoneNumber,
-    required String nickname,
-  }) async {
+  Future<void> fetchList() async {
     state = const AsyncLoading();
     try {
-      await authenticationRepository.signUp(
-        mobilePhoneNumber: mobilePhoneNumber,
-        nickname: nickname,
-      );
-      state = const AsyncData(true);
+      final patientCardList = await patientCardRepository.fetchList();
+      state = AsyncData(patientCardList);
     } on Exception catch (error) {
       state = AsyncError(error);
     }
