@@ -1,0 +1,55 @@
+[
+  {
+    "id": 1344,
+    "name": "太郎",
+    "mobile_tel": "09012345678",
+    "user_token": "MlvVlzukQh4sSZ49PDyhHknnf4ny3RPq5mVFzl2aTJHUSPLfIYwy9dgfSd21Tny1",
+    "qr_code_image": "qr/1344/ueR8q99hD7Ux4VrK.png",
+    "relationship": null,
+    "patients": [
+      {
+        "name_kana": "ヤマダ　タロウ",
+        "local_id": "12345678",
+        "institution": {
+          "id": 252708,
+          "name": "テスト施設1"
+        }
+      },
+      {
+        "name_kana": "ヤマダ　タロウ",
+        "local_id": "12349876",
+        "institution": {
+          "id": 252657,
+          "name": "テスト施設2"
+        }
+      }
+    ]
+  },
+  {
+    "id": 1372,
+    "name": "花子",
+    "mobile_tel": null,
+    "user_token": "BHMtwoegC22loJMKjpkztdMBJroQK3WWOARyTd9HsEv7iCWFqBr2f8rkpHnOqVh4",
+    "qr_code_image": "qr/1372/MbQRuYNDyPFxLPhY.png",
+    "relationship": "子",
+    "patients": [
+      {
+        "name_kana": "ヤマダ　ハナコ",
+        "local_id": "123498765",
+        "institution": {
+          "id": 252657,
+          "name": "テスト施設2"
+        }
+      }
+    ]
+  },
+  {
+    "id": 1373,
+    "name": "次郎",
+    "mobile_tel": null,
+    "user_token": "dObMRAixxMihsP58tm8NXFN4glJ1nMZSxBGCJdIzzEZbIe4GQoMJX6vPRyqphFPC",
+    "qr_code_image": "qr/1373/Sqfl9SawLEVwwzcE.png",
+    "relationship": "子",
+    "patients": []
+  }
+]
