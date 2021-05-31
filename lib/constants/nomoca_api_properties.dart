@@ -6,6 +6,7 @@ class NomocaApiProperties {
     'X-API-Key': EnvironmentVariables.nomocaXApiKey,
   };
   static const apiVersion = 'v7';
+  static const jwtPrefix = 'JWT';
   static Map<String, String> authenticationTokenHeader(
       {required String authenticationToken}) {
     return {...baseHeaders, 'Authorization': authenticationToken};
