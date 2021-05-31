@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
+import 'package:nomoca_flutter/constants/nomoca_urls.dart';
 import 'package:nomoca_flutter/data/api/patient_card_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 
@@ -22,9 +23,19 @@ class PatientCardRepositoryImpl implements PatientCardRepository {
         await patientCardApi.get(authenticationToken: authenticationToken);
     try {
       final decodedJson = json.decode(responseBody) as List<dynamic>;
-      return decodedJson
+      // Conversion json to entity.
+      final patientCardList = decodedJson
           .map((dynamic itemJson) =>
               PatientCardEntity.fromJson(itemJson as Map<String, dynamic>))
+          .toList();
+      // Add contentsBaseUrl to qrCodeImageUrl.
+      return patientCardList
+          .map(
+            (entity) => entity.copyWith(
+              qrCodeImageUrl:
+                  '${NomocaUrls.contentsBaseUrl}/${entity.qrCodeImageUrl}',
+            ),
+          )
           .toList();
     } on Exception catch (error) {
       throw Exception('Json decoding failed: $error');

@@ -26,6 +26,7 @@ void main() {
       // Run the test method.
       final patientCardList = await _repository.fetchList();
       // Validate the result objects.
+      const contentsBaseUrl = 'https://contents-debug.nomoca.com';
       expect(
         patientCardList,
         isA<List<PatientCardEntity>>()
@@ -33,13 +34,13 @@ void main() {
             .having((list) => list.length, 'length', 3)
             .having((list) => list[0].nickname, 'nickname', '太郎')
             .having((list) => list[0].qrCodeImageUrl, 'qrCodeImageUrl',
-                'qr/1344/ueR8q99hD7Ux4VrK.png')
+                '$contentsBaseUrl/qr/1344/ueR8q99hD7Ux4VrK.png')
             .having((list) => list[1].nickname, 'nickname', '花子')
             .having((list) => list[1].qrCodeImageUrl, 'qrCodeImageUrl',
-                'qr/1372/MbQRuYNDyPFxLPhY.png')
+                '$contentsBaseUrl/qr/1372/MbQRuYNDyPFxLPhY.png')
             .having((list) => list[2].nickname, 'nickname', '次郎')
             .having((list) => list[2].qrCodeImageUrl, 'qrCodeImageUrl',
-                'qr/1373/Sqfl9SawLEVwwzcE.png'),
+                '$contentsBaseUrl/qr/1373/Sqfl9SawLEVwwzcE.png'),
       );
       // Validate the method call.
       verify(_api.get(authenticationToken: anyNamed('authenticationToken')));
