@@ -16,9 +16,13 @@ class MockPatientCardViewModelImpl
       // await Future.delayed(const Duration(seconds: 1));
       const contentsBaseUrl = 'https://contents-debug.nomoca.com';
       final patientCardList = [
+        // const PatientCardEntity(
+        //   nickname: '太郎',
+        //   qrCodeImageUrl: '$contentsBaseUrl/qr/1344/ueR8q99hD7Ux4VrK.png',
+        // ),
         const PatientCardEntity(
-          nickname: '太郎',
-          qrCodeImageUrl: '$contentsBaseUrl/qr/1344/ueR8q99hD7Ux4VrK.png',
+          nickname: '花子',
+          qrCodeImageUrl: '$contentsBaseUrl/qr/1372/MbQRuYNDyPFxLPhY.png',
         )
       ];
       state = AsyncData(patientCardList);
