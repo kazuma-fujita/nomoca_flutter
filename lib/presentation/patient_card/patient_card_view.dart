@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nomoca_flutter/constants/asset_image_paths.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view_model.dart';
@@ -21,21 +22,30 @@ class PatientCardView extends HookWidget {
             alignment: AlignmentDirectional.bottomStart,
             children: [
               SvgPicture.asset(
-                'assets/images/background/bg_patient_card_app_icon.svg',
-                height: 120,
+                '${AssetImagePaths.backgroundPath}/bg_patient_card_app_icon.svg',
+                height: 96,
                 color: const Color(0xffAAE7FF),
               ),
               Align(
                 alignment: Alignment.bottomCenter,
-                child: SvgPicture.asset(
-                  'assets/images/background/bg_patient_card_app_logo.svg',
-                  height: 60,
-                  color: const Color(0xff3a9ed2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      '${AssetImagePaths.backgroundPath}/bg_patient_card_app_logo.svg',
+                      height: 40,
+                      color: const Color(0xff3a9ed2),
+                    ),
+                    const Text(
+                      '診察券',
+                      style: TextStyle(fontSize: 40, color: Colors.black54),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          toolbarHeight: 168,
+          toolbarHeight: 160,
           bottom: TabBar(
             isScrollable: true,
             indicatorColor: Colors.black,
@@ -77,7 +87,7 @@ class _PatientCardView extends HookWidget {
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(
-                      'assets/images/background/bg_patient_card.webp'),
+                      '${AssetImagePaths.backgroundPath}/bg_patient_card.webp'),
                   fit: BoxFit.cover,
                 ),
               ),
