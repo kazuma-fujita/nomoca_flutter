@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nomoca_flutter/constants/asset_image_paths.dart';
+import 'package:nomoca_flutter/constants/asset_paths.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view_model.dart';
@@ -22,7 +22,7 @@ class PatientCardView extends HookWidget {
             alignment: AlignmentDirectional.bottomStart,
             children: [
               SvgPicture.asset(
-                '${AssetImagePaths.backgroundPath}/bg_patient_card_app_icon.svg',
+                '${AssetPaths.backgroundImagePath}/bg_patient_card_app_icon.svg',
                 height: 96,
                 color: const Color(0xffAAE7FF),
               ),
@@ -32,7 +32,7 @@ class PatientCardView extends HookWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SvgPicture.asset(
-                      '${AssetImagePaths.backgroundPath}/bg_patient_card_app_logo.svg',
+                      '${AssetPaths.backgroundImagePath}/bg_patient_card_app_logo.svg',
                       height: 40,
                       color: const Color(0xff3a9ed2),
                     ),
@@ -87,7 +87,7 @@ class _PatientCardView extends HookWidget {
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(
-                      '${AssetImagePaths.backgroundPath}/bg_patient_card.webp'),
+                      '${AssetPaths.backgroundImagePath}/bg_patient_card.webp'),
                   fit: BoxFit.cover,
                 ),
               ),
