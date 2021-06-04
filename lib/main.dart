@@ -51,8 +51,8 @@ final patientCardRepositoryProvider = Provider(
   ),
 );
 
-final patientCardViewModelProvider = StateNotifierProvider<
-    MockPatientCardViewModelImpl, AsyncValue<List<PatientCardEntity>>>(
+final patientCardViewModelProvider = StateNotifierProvider<PatientCardViewModel,
+    AsyncValue<List<PatientCardEntity>>>(
   // (ref) => PatientCardViewModelImpl(
   //   patientCardRepository: ref.read(patientCardRepositoryProvider),
   // ),

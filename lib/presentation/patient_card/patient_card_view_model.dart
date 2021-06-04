@@ -4,7 +4,11 @@ import 'package:nomoca_flutter/data/repository/patient_card_repository.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 // ignore: one_member_abstracts
-abstract class PatientCardViewModel {
+abstract class PatientCardViewModel
+    extends StateNotifier<AsyncValue<List<PatientCardEntity>>> {
+  PatientCardViewModel(AsyncValue<List<PatientCardEntity>> state)
+      : super(state);
+
   Future<void> fetchList();
 }
 
