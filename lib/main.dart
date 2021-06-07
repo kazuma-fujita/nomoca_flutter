@@ -51,17 +51,36 @@ final patientCardRepositoryProvider = Provider(
   ),
 );
 
+// ViewModel pattern
 final patientCardViewModelProvider = StateNotifierProvider<PatientCardViewModel,
     AsyncValue<List<PatientCardEntity>>>(
-  // (ref) => PatientCardViewModelImpl(
-  //   patientCardRepository: ref.read(patientCardRepositoryProvider),
-  // ),
-  (ref) => MockPatientCardViewModelImpl(),
+  (ref) => PatientCardViewModelImpl(
+    patientCardRepository: ref.read(patientCardRepositoryProvider),
+  ),
+  // Fake View Model
+  // (ref) => MockPatientCardViewModelImpl(),
 );
 
+final patientCardProvider =
+    FutureProvider<List<PatientCardEntity>>((ref) async {
+  final repository = ref.read(patientCardRepositoryProvider);
+  return repository.fetchList();
+});
+
 void main() {
+  const contentsBaseUrl = 'https://contents-debug.nomoca.com';
   runApp(
     ProviderScope(
+      overrides: [
+        patientCardProvider.overrideWithValue(
+          const AsyncData([
+            PatientCardEntity(
+              nickname: '花子',
+              qrCodeImageUrl: '$contentsBaseUrl/qr/1372/MbQRuYNDyPFxLPhY.png',
+            ),
+          ]),
+        ),
+      ],
       child: MyApp(),
     ),
   );

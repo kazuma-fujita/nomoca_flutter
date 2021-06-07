@@ -9,12 +9,12 @@ import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view_model.dart';
 
-class PatientCardView extends HookWidget {
+class PatientCardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final state = useProvider(patientCardViewModelProvider);
+    final asyncValue = context.read(patientCardProvider);
     return DefaultTabController(
-      length: state is AsyncData ? state.data!.value.length : 0,
+      length: asyncValue is AsyncData ? asyncValue.data!.value.length : 0,
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -49,8 +49,8 @@ class PatientCardView extends HookWidget {
           bottom: TabBar(
             isScrollable: true,
             indicatorColor: Colors.black,
-            tabs: state is AsyncData
-                ? state.data!.value
+            tabs: asyncValue is AsyncData
+                ? asyncValue.data!.value
                     .map((PatientCardEntity entity) => Tab(
                           text: entity.nickname,
                         ))
@@ -58,25 +58,30 @@ class PatientCardView extends HookWidget {
                 : [],
           ),
         ),
-        body: _PatientCardView(),
+        body: _PatientCardView(asyncValue: asyncValue),
       ),
     );
   }
 }
 
-class _PatientCardView extends HookWidget {
+// class _PatientCardView extends HookWidget {
+class _PatientCardView extends StatelessWidget {
+  const _PatientCardView({required this.asyncValue});
+  final AsyncValue<List<PatientCardEntity>> asyncValue;
+
   @override
   Widget build(BuildContext context) {
-    useEffect(() {
-      print('useEffect');
-      // 全てのWidgetのbuildが終わってからcallbackが呼ばれる
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        context.read(patientCardViewModelProvider.notifier).fetchList();
-      });
-      return () => print('dispose');
-    }, const []);
+    // useEffect(() {
+    //   print('useEffect');
+    //   // 全てのWidgetのbuildが終わってからcallbackが呼ばれる
+    //   WidgetsBinding.instance!.addPostFrameCallback((_) {
+    //     context.read(patientCardViewModelProvider.notifier).fetchList();
+    //   });
+    //   return () => print('dispose');
+    // }, const []);
 
-    return context.read(patientCardViewModelProvider).when(
+    // return context.read(patientCardViewModelProvider).when(
+    return asyncValue.when(
       data: (patientCardList) {
         print('fetch data. $patientCardList');
         // Stack Widgetで背景画像の上にQRコードを配置する
