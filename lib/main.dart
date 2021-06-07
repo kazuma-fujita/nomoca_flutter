@@ -75,6 +75,10 @@ void main() {
         patientCardProvider.overrideWithValue(
           const AsyncData([
             PatientCardEntity(
+              nickname: '太郎',
+              qrCodeImageUrl: '$contentsBaseUrl/qr/1344/ueR8q99hD7Ux4VrK.png',
+            ),
+            PatientCardEntity(
               nickname: '花子',
               qrCodeImageUrl: '$contentsBaseUrl/qr/1372/MbQRuYNDyPFxLPhY.png',
             ),

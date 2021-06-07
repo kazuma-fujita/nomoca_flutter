@@ -64,7 +64,6 @@ class PatientCardView extends StatelessWidget {
   }
 }
 
-// class _PatientCardView extends HookWidget {
 class _PatientCardView extends StatelessWidget {
   const _PatientCardView({required this.asyncValue});
   final AsyncValue<List<PatientCardEntity>> asyncValue;
@@ -79,8 +78,6 @@ class _PatientCardView extends StatelessWidget {
     //   });
     //   return () => print('dispose');
     // }, const []);
-
-    // return context.read(patientCardViewModelProvider).when(
     return asyncValue.when(
       data: (patientCardList) {
         print('fetch data. $patientCardList');
