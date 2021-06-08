@@ -5,14 +5,33 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/asset_paths.dart';
+import 'package:nomoca_flutter/data/api/patient_card_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
+import 'package:nomoca_flutter/data/repository/patient_card_repository.dart';
 import 'package:nomoca_flutter/main.dart';
-import 'package:nomoca_flutter/presentation/patient_card/patient_card_view_model.dart';
+import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 
-class PatientCardView extends StatelessWidget {
+final patientCardApiProvider = Provider(
+  (ref) => PatientCardApiImpl(
+    apiClient: ref.read(apiClientProvider),
+  ),
+);
+
+final patientCardRepositoryProvider = Provider(
+  (ref) => PatientCardRepositoryImpl(
+    patientCardApi: ref.read(patientCardApiProvider),
+  ),
+);
+
+final patientCardProvider =
+    FutureProvider.autoDispose<List<PatientCardEntity>>((ref) async {
+  return ref.read(patientCardRepositoryProvider).fetchList();
+});
+
+class PatientCardView extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final asyncValue = context.read(patientCardProvider);
+    final asyncValue = useProvider(patientCardProvider);
     return DefaultTabController(
       length: asyncValue is AsyncData ? asyncValue.data!.value.length : 0,
       child: Scaffold(
@@ -58,27 +77,16 @@ class PatientCardView extends StatelessWidget {
                 : [],
           ),
         ),
-        body: _PatientCardView(asyncValue: asyncValue),
+        body: _PatientCardView(),
       ),
     );
   }
 }
 
-class _PatientCardView extends StatelessWidget {
-  const _PatientCardView({required this.asyncValue});
-  final AsyncValue<List<PatientCardEntity>> asyncValue;
-
+class _PatientCardView extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    // useEffect(() {
-    //   print('useEffect');
-    //   // 全てのWidgetのbuildが終わってからcallbackが呼ばれる
-    //   WidgetsBinding.instance!.addPostFrameCallback((_) {
-    //     context.read(patientCardViewModelProvider.notifier).fetchList();
-    //   });
-    //   return () => print('dispose');
-    // }, const []);
-    return asyncValue.when(
+    return useProvider(patientCardProvider).when(
       data: (patientCardList) {
         print('fetch data. $patientCardList');
         // Stack Widgetで背景画像の上にQRコードを配置する
@@ -113,8 +121,8 @@ class _PatientCardView extends StatelessWidget {
       error: (error, _) {
         print('error here $error');
         return ErrorSnackBar(
-          buildContext: context,
           errorMessage: error.toString(),
+          callback: () => context.refresh(patientCardProvider),
         );
       },
     );
@@ -147,56 +155,4 @@ class _TabPage extends StatelessWidget {
       ),
     );
   }
-}
-
-class ErrorSnackBar extends StatelessWidget {
-  const ErrorSnackBar({required this.buildContext, required this.errorMessage});
-  final BuildContext buildContext;
-  final String errorMessage;
-
-  @override
-  Widget build(BuildContext context) {
-    final snackBar = SnackBar(
-      content: Text(errorMessage),
-      duration: const Duration(days: 365),
-      action: SnackBarAction(
-        label: '再試行',
-        onPressed: () {
-          // 一覧取得
-          buildContext.read(patientCardProvider.future);
-          // snackBar非表示
-          ScaffoldMessenger.of(buildContext).removeCurrentSnackBar();
-        },
-      ),
-    );
-    // 全Widgetのbuild後にsnackBarを表示させる
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      ScaffoldMessenger.of(buildContext).showSnackBar(snackBar);
-    });
-    return Container();
-  }
-}
-
-Widget _errorView(String errorMessage) {
-  final context = useContext();
-  final snackBar = SnackBar(
-    content: Text(errorMessage),
-    duration: const Duration(days: 365),
-    action: SnackBarAction(
-      label: '再試行',
-      onPressed: () {
-        // 一覧取得
-        context.read(patientCardProvider);
-        // snackBar非表示
-        // _scaffoldKey.currentState.removeCurrentSnackBar();
-        ScaffoldMessenger.of(context).removeCurrentSnackBar();
-      },
-    ),
-  );
-  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  // 全Widgetのbuild後にsnackBarを表示させる
-  // WidgetsBinding.instance.addPostFrameCallback((_) {
-  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  // });
-  return Container();
 }

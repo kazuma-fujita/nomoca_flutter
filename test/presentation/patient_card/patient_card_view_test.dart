@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
-import 'package:nomoca_flutter/main.dart';
+import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 
 void main() {
@@ -15,7 +15,7 @@ void main() {
   setUpAll(() => HttpOverrides.global = null);
 
   group('Testing the patient card view.', () {
-    testWidgets('Testing Array with one element.', (WidgetTester tester) async {
+    testWidgets('Testing array with one element.', (WidgetTester tester) async {
       await tester.pumpWidget(ProviderScope(
         overrides: [
           patientCardProvider.overrideWithValue(
@@ -32,10 +32,9 @@ void main() {
 
       expect(find.text('花子'), findsOneWidget);
       expect(find.byType(SvgPicture), findsNWidgets(2));
-      // expect(find.byType(CircularProgressIndicator), findsNothing);
     });
 
-    testWidgets('Testing Array with two element.', (WidgetTester tester) async {
+    testWidgets('Testing array with two element.', (WidgetTester tester) async {
       await tester.pumpWidget(ProviderScope(
         overrides: [
           patientCardProvider.overrideWithValue(
@@ -57,6 +56,17 @@ void main() {
       expect(find.text('太郎'), findsOneWidget);
       expect(find.text('花子'), findsOneWidget);
       expect(find.byType(SvgPicture), findsNWidgets(2));
+    });
+
+    testWidgets('Testing widget of error.', (WidgetTester tester) async {
+      await tester.pumpWidget(ProviderScope(
+        overrides: [
+          patientCardProvider
+              .overrideWithValue(AsyncValue.error(Exception('Error message.'))),
+        ],
+        child: MaterialApp(home: PatientCardView()),
+      ));
+      expect(find.byType(ErrorSnackBar), findsOneWidget);
     });
   });
 }

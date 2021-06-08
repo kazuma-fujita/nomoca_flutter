@@ -19,9 +19,10 @@ class PatientCardRepositoryImpl implements PatientCardRepository {
   Future<List<PatientCardEntity>> fetchList() async {
     // TODO: DBからtoken取得
     const authenticationToken = '${NomocaApiProperties.jwtPrefix} dummy';
-    final responseBody =
-        await patientCardApi.get(authenticationToken: authenticationToken);
     try {
+      final responseBody =
+          await patientCardApi.get(authenticationToken: authenticationToken);
+
       final decodedJson = json.decode(responseBody) as List<dynamic>;
       // Conversion json to entity.
       final patientCardList = decodedJson
@@ -38,7 +39,7 @@ class PatientCardRepositoryImpl implements PatientCardRepository {
           )
           .toList();
     } on Exception catch (error) {
-      throw Exception('Json decoding failed: $error');
+      throw Exception(error);
     }
   }
 }
