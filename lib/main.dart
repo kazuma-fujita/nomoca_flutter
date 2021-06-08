@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
-import 'package:nomoca_flutter/presentation/patient_card/mock_patient_card_view_model.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
-import 'package:nomoca_flutter/presentation/sign_up/sign_up_view.dart';
 import 'package:nomoca_flutter/constants/environment_variables.dart';
 import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 import 'package:nomoca_flutter/data/api/api_client.dart';
@@ -73,16 +71,17 @@ void main() {
     ProviderScope(
       overrides: [
         patientCardProvider.overrideWithValue(
-          const AsyncData([
-            PatientCardEntity(
-              nickname: '太郎',
-              qrCodeImageUrl: '$contentsBaseUrl/qr/1344/ueR8q99hD7Ux4VrK.png',
-            ),
-            PatientCardEntity(
-              nickname: '花子',
-              qrCodeImageUrl: '$contentsBaseUrl/qr/1372/MbQRuYNDyPFxLPhY.png',
-            ),
-          ]),
+          AsyncValue.error(Exception('network error')),
+          // const AsyncData([
+          //   PatientCardEntity(
+          //     nickname: '太郎',
+          //     qrCodeImageUrl: '$contentsBaseUrl/qr/1344/ueR8q99hD7Ux4VrK.png',
+          //   ),
+          //   PatientCardEntity(
+          //     nickname: '花子',
+          //     qrCodeImageUrl: '$contentsBaseUrl/qr/1372/MbQRuYNDyPFxLPhY.png',
+          //   ),
+          // ]),
         ),
       ],
       child: MyApp(),

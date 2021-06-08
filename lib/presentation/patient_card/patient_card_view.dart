@@ -112,7 +112,10 @@ class _PatientCardView extends StatelessWidget {
       },
       error: (error, _) {
         print('error here $error');
-        return Container();
+        return ErrorSnackBar(
+          buildContext: context,
+          errorMessage: error.toString(),
+        );
       },
     );
   }
@@ -144,4 +147,56 @@ class _TabPage extends StatelessWidget {
       ),
     );
   }
+}
+
+class ErrorSnackBar extends StatelessWidget {
+  const ErrorSnackBar({required this.buildContext, required this.errorMessage});
+  final BuildContext buildContext;
+  final String errorMessage;
+
+  @override
+  Widget build(BuildContext context) {
+    final snackBar = SnackBar(
+      content: Text(errorMessage),
+      duration: const Duration(days: 365),
+      action: SnackBarAction(
+        label: '再試行',
+        onPressed: () {
+          // 一覧取得
+          buildContext.read(patientCardProvider.future);
+          // snackBar非表示
+          ScaffoldMessenger.of(buildContext).removeCurrentSnackBar();
+        },
+      ),
+    );
+    // 全Widgetのbuild後にsnackBarを表示させる
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(buildContext).showSnackBar(snackBar);
+    });
+    return Container();
+  }
+}
+
+Widget _errorView(String errorMessage) {
+  final context = useContext();
+  final snackBar = SnackBar(
+    content: Text(errorMessage),
+    duration: const Duration(days: 365),
+    action: SnackBarAction(
+      label: '再試行',
+      onPressed: () {
+        // 一覧取得
+        context.read(patientCardProvider);
+        // snackBar非表示
+        // _scaffoldKey.currentState.removeCurrentSnackBar();
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+      },
+    ),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  // 全Widgetのbuild後にsnackBarを表示させる
+  // WidgetsBinding.instance.addPostFrameCallback((_) {
+  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  // });
+  return Container();
 }
