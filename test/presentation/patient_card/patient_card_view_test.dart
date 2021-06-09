@@ -14,58 +14,56 @@ void main() {
   // Image.network() で画像の取得が失敗する為、400 errorになる仕組みを無効化
   setUpAll(() => HttpOverrides.global = null);
 
+  ProviderScope setUpProviderScope(
+      AsyncValue<List<PatientCardEntity>> asyncValue) {
+    return ProviderScope(
+      overrides: [
+        patientCardProvider.overrideWithValue(asyncValue),
+      ],
+      child: MaterialApp(home: PatientCardView()),
+    );
+  }
+
   group('Testing the patient card view.', () {
     testWidgets('Testing array with one element.', (WidgetTester tester) async {
-      await tester.pumpWidget(ProviderScope(
-        overrides: [
-          patientCardProvider.overrideWithValue(
-            const AsyncData([
-              PatientCardEntity(
-                nickname: '花子',
-                qrCodeImageUrl: '$contentsBaseUrl/qr/1372/MbQRuYNDyPFxLPhY.png',
-              ),
-            ]),
+      await tester.pumpWidget(setUpProviderScope(
+        const AsyncData([
+          PatientCardEntity(
+            nickname: '花子',
+            qrCodeImageUrl: '$contentsBaseUrl/qr/1372/MbQRuYNDyPFxLPhY.png',
           ),
-        ],
-        child: MaterialApp(home: PatientCardView()),
+        ]),
       ));
 
+      expect(find.byType(ErrorSnackBar), findsNothing);
       expect(find.text('花子'), findsOneWidget);
       expect(find.byType(SvgPicture), findsNWidgets(2));
     });
 
     testWidgets('Testing array with two element.', (WidgetTester tester) async {
-      await tester.pumpWidget(ProviderScope(
-        overrides: [
-          patientCardProvider.overrideWithValue(
-            const AsyncData([
-              PatientCardEntity(
-                nickname: '太郎',
-                qrCodeImageUrl: '$contentsBaseUrl/qr/1344/ueR8q99hD7Ux4VrK.png',
-              ),
-              PatientCardEntity(
-                nickname: '花子',
-                qrCodeImageUrl: '$contentsBaseUrl/qr/1372/MbQRuYNDyPFxLPhY.png',
-              ),
-            ]),
+      await tester.pumpWidget(setUpProviderScope(
+        const AsyncData([
+          PatientCardEntity(
+            nickname: '太郎',
+            qrCodeImageUrl: '$contentsBaseUrl/qr/1344/ueR8q99hD7Ux4VrK.png',
           ),
-        ],
-        child: MaterialApp(home: PatientCardView()),
+          PatientCardEntity(
+            nickname: '花子',
+            qrCodeImageUrl: '$contentsBaseUrl/qr/1372/MbQRuYNDyPFxLPhY.png',
+          ),
+        ]),
       ));
 
+      expect(find.byType(ErrorSnackBar), findsNothing);
       expect(find.text('太郎'), findsOneWidget);
       expect(find.text('花子'), findsOneWidget);
       expect(find.byType(SvgPicture), findsNWidgets(2));
     });
 
     testWidgets('Testing widget of error.', (WidgetTester tester) async {
-      await tester.pumpWidget(ProviderScope(
-        overrides: [
-          patientCardProvider
-              .overrideWithValue(AsyncValue.error(Exception('Error message.'))),
-        ],
-        child: MaterialApp(home: PatientCardView()),
-      ));
+      await tester.pumpWidget(
+          setUpProviderScope(AsyncValue.error(Exception('Error message.'))));
+      expect(find.text('太郎'), findsNothing);
       expect(find.byType(ErrorSnackBar), findsOneWidget);
     });
   });
