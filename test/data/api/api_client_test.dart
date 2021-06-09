@@ -30,6 +30,7 @@ void main() {
       _server.enqueue(httpCode: 201, body: '{ "title" : "Testing for put" }');
       final responseBody = await _apiClient.put(
         '/endpoint',
+        headers: NomocaApiProperties.baseHeaders,
         body: '{ "title" : "Testing for put" }',
       );
       expect(responseBody, '{ "title" : "Testing for put" }');
@@ -50,6 +51,17 @@ void main() {
       final request = _server.takeRequest();
       expect(request.uri.path, '/endpoint');
       expect(request.body, '{ "title" : "Testing for post" }');
+    });
+
+    test('Http status code "204 OK" with delete method testing', () async {
+      _server.enqueue(httpCode: 204);
+      final responseBody = await _apiClient.delete(
+        '/endpoint',
+        headers: NomocaApiProperties.baseHeaders,
+      );
+      expect(responseBody, isEmpty);
+      final request = _server.takeRequest();
+      expect(request.uri.path, '/endpoint');
     });
 
     test('Http status code 4XX testing', () async {

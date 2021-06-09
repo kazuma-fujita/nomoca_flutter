@@ -34,11 +34,14 @@ class MockApiClient extends _i1.Mock implements _i2.ApiClient {
               #post, [endpoint], {#headers: headers, #body: body}),
           returnValue: Future<String>.value('')) as _i3.Future<String>);
   @override
-  _i3.Future<String> put(String? endpoint, {String? body}) =>
-      (super.noSuchMethod(Invocation.method(#put, [endpoint], {#body: body}),
+  _i3.Future<String> put(String? endpoint,
+          {Map<String, String>? headers, String? body}) =>
+      (super.noSuchMethod(
+          Invocation.method(#put, [endpoint], {#headers: headers, #body: body}),
           returnValue: Future<String>.value('')) as _i3.Future<String>);
   @override
-  _i3.Future<String> delete(String? endpoint) =>
-      (super.noSuchMethod(Invocation.method(#delete, [endpoint]),
+  _i3.Future<String> delete(String? endpoint, {Map<String, String>? headers}) =>
+      (super.noSuchMethod(
+          Invocation.method(#delete, [endpoint], {#headers: headers}),
           returnValue: Future<String>.value('')) as _i3.Future<String>);
 }

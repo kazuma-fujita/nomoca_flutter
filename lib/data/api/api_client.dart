@@ -13,9 +13,16 @@ abstract class ApiClient {
     required String body,
   });
 
-  Future<String> put(String endpoint, {required String body});
+  Future<String> put(
+    String endpoint, {
+    required Map<String, String> headers,
+    required String body,
+  });
 
-  Future<String> delete(String endpoint);
+  Future<String> delete(
+    String endpoint, {
+    required Map<String, String> headers,
+  });
 }
 
 class ApiClientImpl implements ApiClient {
@@ -66,15 +73,27 @@ class ApiClientImpl implements ApiClient {
   }
 
   @override
-  Future<String> put(String endpoint, {required String body}) async {
-    return _safeApiCall(() async =>
-        http.put(Uri.parse('$baseUrl$endpoint'), headers: headers, body: body));
+  Future<String> put(
+    String endpoint, {
+    required Map<String, String> headers,
+    required String body,
+  }) async {
+    return _safeApiCall(() async => http.put(
+          Uri.parse('$baseUrl$endpoint'),
+          headers: headers,
+          body: body,
+        ));
   }
 
   @override
-  Future<String> delete(String endpoint) async {
-    return _safeApiCall(
-        () async => http.delete(Uri.parse('$baseUrl$endpoint')));
+  Future<String> delete(
+    String endpoint, {
+    required Map<String, String> headers,
+  }) async {
+    return _safeApiCall(() async => http.delete(
+          Uri.parse('$baseUrl$endpoint'),
+          headers: headers,
+        ));
   }
 
   String _parseResponse(int httpStatus, String responseBody) {
