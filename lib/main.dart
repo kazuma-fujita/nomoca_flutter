@@ -62,11 +62,11 @@ void main() {
         //   UserNicknameEntity(id: 1234, nickname: '花子'),
         //   UserNicknameEntity(id: 1235, nickname: '次郎'),
         // ])),
-        // Error
+        // Error (overrideWithProvider pattern)
         // createFamilyUserProvider.overrideWithProvider(
         //   (ref, param) => throw Exception('Error message.'),
         // ),
-        // Loading
+        // Loading (overrideWithProvider pattern)
         createFamilyUserProvider.overrideWithProvider(
           (ref, param) => Future.delayed(const Duration(seconds: 5)),
         ),

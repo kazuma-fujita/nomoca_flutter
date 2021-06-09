@@ -68,7 +68,7 @@ class _TodoForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user =
-        ModalRoute.of(context)!.settings.arguments as UserNicknameEntity;
+        ModalRoute.of(context)!.settings.arguments as UserNicknameEntity?;
     return Form(
       key: _formKey,
       child: Container(
@@ -77,7 +77,7 @@ class _TodoForm extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             TextFormField(
-              // initialValue: todo != null ? todo.title : '',
+              initialValue: user != null ? user.nickname : '',
               maxLength: 20,
               // maxLength以上入力不可
               // maxLengthEnforced: true,
@@ -97,7 +97,6 @@ class _TodoForm extends StatelessWidget {
             ElevatedButton(
               onPressed: () => _submission(context),
               child: const Text('保存する'),
-              // child: Text('Todoを${todo == null ? '作成' : '更新'}する'),
             ),
           ],
         ),
@@ -106,22 +105,25 @@ class _TodoForm extends StatelessWidget {
   }
 
   void _submission(BuildContext context) {
-    // final todo = ModalRoute.of(context).settings.arguments as TodoEntity;
+    final user =
+        ModalRoute.of(context)!.settings.arguments as UserNicknameEntity?;
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // viewModelのtodoListを作成
-      context.read(createFamilyUserProvider(_nickname)).when(
+      final asyncValue = user == null
+          ? context.read(createFamilyUserProvider(_nickname))
+          : context.read(updateFamilyUserProvider(user));
+      // ignore: cascade_invocations
+      asyncValue.when(
         data: (_) async {
-          print('data here');
-          // if (todo != null) {
+          print('Data here');
           await EasyLoading.dismiss();
-          // WidgetsBinding.instance.addPostFrameCallback((_) {
-          // Navigator.pop(context, '${todo.title}を${isNew ? '作成' : '更新'}しました');
-          //});
-          // }
+          Navigator.pop(
+            context,
+            '$_nicknameを${user == null ? '作成' : '更新'}しました',
+          );
         },
         loading: () async {
-          print('loading here');
+          print('Loading here');
           await EasyLoading.show();
         },
         error: (error, _) {
@@ -130,15 +132,6 @@ class _TodoForm extends StatelessWidget {
           _errorView(context, error.toString());
         },
       );
-      // if (todo != null) {
-      //   // viewModelのtodoListを更新
-      //   context.read(upsertTodoViewModelProvider).updateTodo(todo.id, _title);
-      // } else {
-      //   // viewModelのtodoListを作成
-      //   context.read(upsertTodoViewModelProvider).createTodo(_title);
-      // }
-      // 前の画面に戻る
-      // Navigator.pop(context, '$_titleを${todo == null ? '作成' : '更新'}しました');
     }
   }
 
