@@ -56,13 +56,25 @@ class FamilyUserListView extends HookWidget {
   }
 
   Widget _emptyListView() {
-    return const Center(
-      child: Text(
-        '家族アカウントを登録しましょう',
-        style: TextStyle(
-          color: Colors.black54,
-          fontSize: 16,
-        ),
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Text(
+            '家族アカウントを登録しましょう',
+            style: TextStyle(
+              color: Colors.black54,
+              fontSize: 16,
+            ),
+          ),
+          Text(
+            '+ボタンから家族アカウントを追加できます',
+            style: TextStyle(
+              color: Colors.black54,
+              fontSize: 12,
+            ),
+          ),
+        ],
       ),
     );
   }

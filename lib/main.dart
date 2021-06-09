@@ -53,10 +53,11 @@ void main() {
           //   ),
           // ]),
         ),
-        familyUserListProvider.overrideWithValue(const AsyncValue.data([
-          FamilyUserEntity(id: 1234, nickname: '花子'),
-          FamilyUserEntity(id: 1235, nickname: '次郎'),
-        ])),
+        familyUserListProvider.overrideWithValue(const AsyncValue.data([])),
+        // familyUserListProvider.overrideWithValue(const AsyncValue.data([
+        //   FamilyUserEntity(id: 1234, nickname: '花子'),
+        //   FamilyUserEntity(id: 1235, nickname: '次郎'),
+        // ])),
       ],
       child: MyApp(),
     ),
