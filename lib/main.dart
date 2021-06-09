@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nomoca_flutter/data/entity/remote/family_user_entity.dart';
+import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/constants/environment_variables.dart';
 import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
@@ -51,6 +53,10 @@ void main() {
           //   ),
           // ]),
         ),
+        familyUserListProvider.overrideWithValue(const AsyncValue.data([
+          FamilyUserEntity(id: 1234, nickname: '花子'),
+          FamilyUserEntity(id: 1235, nickname: '次郎'),
+        ])),
       ],
       child: MyApp(),
     ),
@@ -63,7 +69,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Nomoca application',
       theme: ThemeData(primaryColor: Colors.white),
-      home: PatientCardView(),
+      home: FamilyUserListView(),
     );
   }
 }

@@ -25,7 +25,7 @@ void main() {
         _api(authenticationToken: anyNamed('authenticationToken')),
       ).thenAnswer((_) async => fixture('family_user_list.json'));
       // Run the test method.
-      final patientCardList = await _repository();
+      final patientCardList = await _repository.fetchList();
       // Validate the result objects.
       expect(
         patientCardList,
@@ -53,7 +53,7 @@ void main() {
       ).thenAnswer((_) async => fixture('incorrect_format.json'));
       // Run the test method.
       expect(
-        () => _repository(),
+        () => _repository.fetchList(),
         throwsException,
       );
       // Validate the method call.

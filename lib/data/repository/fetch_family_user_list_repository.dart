@@ -8,7 +8,7 @@ import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 
 // ignore: one_member_abstracts
 abstract class FetchFamilyUserListRepository {
-  Future<List<FamilyUserEntity>> call();
+  Future<List<FamilyUserEntity>> fetchList();
 }
 
 class FetchFamilyUserListRepositoryImpl
@@ -18,7 +18,7 @@ class FetchFamilyUserListRepositoryImpl
   final FetchFamilyUserListApi fetchFamilyUserListApi;
 
   @override
-  Future<List<FamilyUserEntity>> call() async {
+  Future<List<FamilyUserEntity>> fetchList() async {
     // TODO: DBからtoken取得
     const authenticationToken = '${NomocaApiProperties.jwtPrefix} dummy';
     try {
