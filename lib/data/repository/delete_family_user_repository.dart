@@ -1,5 +1,4 @@
 import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
-import 'package:nomoca_flutter/data/api/create_family_user_api.dart';
 import 'package:nomoca_flutter/data/api/delete_family_user_api.dart';
 
 // ignore: one_member_abstracts

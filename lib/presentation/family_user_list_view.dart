@@ -21,7 +21,7 @@ final fetchFamilyUserListRepositoryProvider = Provider(
 
 final familyUserListProvider =
     FutureProvider.autoDispose<List<FamilyUserEntity>>(
-  (ref) => ref.read(fetchFamilyUserListRepositoryProvider).fetchList(),
+  (ref) async => ref.read(fetchFamilyUserListRepositoryProvider).fetchList(),
 );
 
 class FamilyUserListView extends HookWidget {

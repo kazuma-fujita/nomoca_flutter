@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/entity/remote/family_user_entity.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
@@ -9,6 +10,8 @@ import 'package:nomoca_flutter/data/api/api_client.dart';
 import 'package:nomoca_flutter/data/api/authentication_api.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
 import 'package:nomoca_flutter/presentation/sign_up/sign_up_view_model.dart';
+import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
+import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
 
 final apiClientProvider = Provider(
   (_) => ApiClientImpl(
@@ -37,6 +40,7 @@ final signupViewModelProvider = StateNotifierProvider.autoDispose(
 
 void main() {
   const contentsBaseUrl = 'https://contents-debug.nomoca.com';
+  initEasyLoading();
   runApp(
     ProviderScope(
       overrides: [
@@ -58,6 +62,14 @@ void main() {
         //   FamilyUserEntity(id: 1234, nickname: '花子'),
         //   FamilyUserEntity(id: 1235, nickname: '次郎'),
         // ])),
+        // Error
+        // createFamilyUserProvider.overrideWithProvider(
+        //   (ref, param) => throw Exception('Error message.'),
+        // ),
+        // Loading
+        createFamilyUserProvider.overrideWithProvider(
+          (ref, param) => Future.delayed(const Duration(seconds: 5)),
+        ),
       ],
       child: MyApp(),
     ),
@@ -70,7 +82,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Nomoca application',
       theme: ThemeData(primaryColor: Colors.white),
-      home: FamilyUserListView(),
+      home: UpsertUserView(),
+      builder: EasyLoading.init(),
     );
   }
 }

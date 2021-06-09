@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^1.0.3
   flutter:
     sdk: flutter
+  flutter_easyloading: ^3.0.0
   flutter_svg: ^0.22.0
   freezed_annotation: ^0.14.2
   hooks_riverpod: ^0.14.0+4
