@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nomoca_flutter/data/entity/remote/family_user_entity.dart';
+import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
@@ -11,7 +11,7 @@ import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart'
 
 void main() {
   ProviderScope setUpProviderScope(
-      AsyncValue<List<FamilyUserEntity>> asyncValue) {
+      AsyncValue<List<UserNicknameEntity>> asyncValue) {
     return ProviderScope(
       overrides: [
         familyUserListProvider.overrideWithValue(asyncValue),
@@ -38,11 +38,11 @@ void main() {
     testWidgets('Testing array with two element.', (WidgetTester tester) async {
       await tester.pumpWidget(setUpProviderScope(
         const AsyncData([
-          FamilyUserEntity(
+          UserNicknameEntity(
             id: 1372,
             nickname: '花子',
           ),
-          FamilyUserEntity(
+          UserNicknameEntity(
             id: 1373,
             nickname: '次郎',
           ),

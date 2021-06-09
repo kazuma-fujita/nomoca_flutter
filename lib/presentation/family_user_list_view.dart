@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nomoca_flutter/data/api/fetch_family_user_list_api.dart';
-import 'package:nomoca_flutter/data/entity/remote/family_user_entity.dart';
+import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart';
 import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
@@ -20,7 +20,7 @@ final fetchFamilyUserListRepositoryProvider = Provider(
 );
 
 final familyUserListProvider =
-    FutureProvider.autoDispose<List<FamilyUserEntity>>(
+    FutureProvider.autoDispose<List<UserNicknameEntity>>(
   (ref) async => ref.read(fetchFamilyUserListRepositoryProvider).fetchList(),
 );
 
@@ -79,7 +79,7 @@ class FamilyUserListView extends HookWidget {
     );
   }
 
-  Widget _dismissible(FamilyUserEntity entity, BuildContext context) {
+  Widget _dismissible(UserNicknameEntity entity, BuildContext context) {
     // ListViewのswipeができるwidget
     return Dismissible(
       // ユニークな値を設定
@@ -114,7 +114,7 @@ class FamilyUserListView extends HookWidget {
     );
   }
 
-  Widget _listItem(FamilyUserEntity entity, BuildContext context) {
+  Widget _listItem(UserNicknameEntity entity, BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(width: 1, color: Colors.grey)),

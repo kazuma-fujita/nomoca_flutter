@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nomoca_flutter/data/entity/remote/family_user_entity.dart';
+import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/constants/environment_variables.dart';
@@ -59,8 +59,8 @@ void main() {
         ),
         familyUserListProvider.overrideWithValue(const AsyncValue.data([])),
         // familyUserListProvider.overrideWithValue(const AsyncValue.data([
-        //   FamilyUserEntity(id: 1234, nickname: '花子'),
-        //   FamilyUserEntity(id: 1235, nickname: '次郎'),
+        //   UserNicknameEntity(id: 1234, nickname: '花子'),
+        //   UserNicknameEntity(id: 1235, nickname: '次郎'),
         // ])),
         // Error
         // createFamilyUserProvider.overrideWithProvider(

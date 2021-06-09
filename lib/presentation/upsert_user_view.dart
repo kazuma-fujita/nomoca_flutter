@@ -4,7 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nomoca_flutter/data/api/create_family_user_api.dart';
 import 'package:nomoca_flutter/data/api/update_family_user_api.dart';
-import 'package:nomoca_flutter/data/entity/remote/family_user_entity.dart';
+import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
+import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/create_family_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart';
 import 'package:nomoca_flutter/main.dart';
@@ -41,7 +42,7 @@ final createFamilyUserProvider =
 );
 
 final updateFamilyUserProvider =
-    FutureProvider.autoDispose.family<void, FamilyUserEntity>(
+    FutureProvider.autoDispose.family<void, UserNicknameEntity>(
   (ref, entity) async => ref
       .read(updateFamilyUserRepositoryProvider)
       .updateUser(familyUserId: entity.id, nickname: entity.nickname),
@@ -66,7 +67,8 @@ class _TodoForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final todo = ModalRoute.of(context).settings.arguments as TodoEntity;
+    final user =
+        ModalRoute.of(context)!.settings.arguments as UserNicknameEntity;
     return Form(
       key: _formKey,
       child: Container(

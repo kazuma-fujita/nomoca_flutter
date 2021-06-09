@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:nomoca_flutter/data/api/fetch_family_user_list_api.dart';
-import 'package:nomoca_flutter/data/entity/remote/family_user_entity.dart';
+import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart';
 import '../../fixture.dart';
 import 'fetch_family_user_list_repository_test.mocks.dart';
@@ -30,10 +30,10 @@ void main() {
       expect(
         patientCardList,
         [
-          isA<FamilyUserEntity>()
+          isA<UserNicknameEntity>()
               .having((entity) => entity.id, 'id', 1372)
               .having((entity) => entity.nickname, 'nickname', '花子'),
-          isA<FamilyUserEntity>()
+          isA<UserNicknameEntity>()
               .having((entity) => entity.id, 'id', 1373)
               .having((entity) => entity.nickname, 'nickname', '次郎')
         ],
