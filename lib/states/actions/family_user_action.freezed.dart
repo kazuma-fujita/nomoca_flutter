@@ -25,6 +25,18 @@ class _$FamilyUserActionTearOff {
       user,
     );
   }
+
+  Update update(UserNicknameEntity user) {
+    return Update(
+      user,
+    );
+  }
+
+  Delete delete(UserNicknameEntity user) {
+    return Delete(
+      user,
+    );
+  }
 }
 
 /// @nodoc
@@ -36,12 +48,16 @@ mixin _$FamilyUserAction {
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
     required TResult Function(UserNicknameEntity user) create,
+    required TResult Function(UserNicknameEntity user) update,
+    required TResult Function(UserNicknameEntity user) delete,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
     TResult Function(UserNicknameEntity user)? create,
+    TResult Function(UserNicknameEntity user)? update,
+    TResult Function(UserNicknameEntity user)? delete,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -49,12 +65,16 @@ mixin _$FamilyUserAction {
   TResult map<TResult extends Object?>({
     required TResult Function(Fetch value) fetch,
     required TResult Function(Create value) create,
+    required TResult Function(Update value) update,
+    required TResult Function(Delete value) delete,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Fetch value)? fetch,
     TResult Function(Create value)? create,
+    TResult Function(Update value)? update,
+    TResult Function(Delete value)? delete,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -122,6 +142,8 @@ class _$Fetch with DiagnosticableTreeMixin implements Fetch {
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
     required TResult Function(UserNicknameEntity user) create,
+    required TResult Function(UserNicknameEntity user) update,
+    required TResult Function(UserNicknameEntity user) delete,
   }) {
     return fetch();
   }
@@ -131,6 +153,8 @@ class _$Fetch with DiagnosticableTreeMixin implements Fetch {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
     TResult Function(UserNicknameEntity user)? create,
+    TResult Function(UserNicknameEntity user)? update,
+    TResult Function(UserNicknameEntity user)? delete,
     required TResult orElse(),
   }) {
     if (fetch != null) {
@@ -144,6 +168,8 @@ class _$Fetch with DiagnosticableTreeMixin implements Fetch {
   TResult map<TResult extends Object?>({
     required TResult Function(Fetch value) fetch,
     required TResult Function(Create value) create,
+    required TResult Function(Update value) update,
+    required TResult Function(Delete value) delete,
   }) {
     return fetch(this);
   }
@@ -153,6 +179,8 @@ class _$Fetch with DiagnosticableTreeMixin implements Fetch {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Fetch value)? fetch,
     TResult Function(Create value)? create,
+    TResult Function(Update value)? update,
+    TResult Function(Delete value)? delete,
     required TResult orElse(),
   }) {
     if (fetch != null) {
@@ -247,6 +275,8 @@ class _$Create with DiagnosticableTreeMixin implements Create {
   TResult when<TResult extends Object?>({
     required TResult Function() fetch,
     required TResult Function(UserNicknameEntity user) create,
+    required TResult Function(UserNicknameEntity user) update,
+    required TResult Function(UserNicknameEntity user) delete,
   }) {
     return create(user);
   }
@@ -256,6 +286,8 @@ class _$Create with DiagnosticableTreeMixin implements Create {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetch,
     TResult Function(UserNicknameEntity user)? create,
+    TResult Function(UserNicknameEntity user)? update,
+    TResult Function(UserNicknameEntity user)? delete,
     required TResult orElse(),
   }) {
     if (create != null) {
@@ -269,6 +301,8 @@ class _$Create with DiagnosticableTreeMixin implements Create {
   TResult map<TResult extends Object?>({
     required TResult Function(Fetch value) fetch,
     required TResult Function(Create value) create,
+    required TResult Function(Update value) update,
+    required TResult Function(Delete value) delete,
   }) {
     return create(this);
   }
@@ -278,6 +312,8 @@ class _$Create with DiagnosticableTreeMixin implements Create {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(Fetch value)? fetch,
     TResult Function(Create value)? create,
+    TResult Function(Update value)? update,
+    TResult Function(Delete value)? delete,
     required TResult orElse(),
   }) {
     if (create != null) {
@@ -293,4 +329,278 @@ abstract class Create implements FamilyUserAction {
   UserNicknameEntity get user => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $CreateCopyWith<Create> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $UpdateCopyWith<$Res> {
+  factory $UpdateCopyWith(Update value, $Res Function(Update) then) =
+      _$UpdateCopyWithImpl<$Res>;
+  $Res call({UserNicknameEntity user});
+
+  $UserNicknameEntityCopyWith<$Res> get user;
+}
+
+/// @nodoc
+class _$UpdateCopyWithImpl<$Res> extends _$FamilyUserActionCopyWithImpl<$Res>
+    implements $UpdateCopyWith<$Res> {
+  _$UpdateCopyWithImpl(Update _value, $Res Function(Update) _then)
+      : super(_value, (v) => _then(v as Update));
+
+  @override
+  Update get _value => super._value as Update;
+
+  @override
+  $Res call({
+    Object? user = freezed,
+  }) {
+    return _then(Update(
+      user == freezed
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserNicknameEntity,
+    ));
+  }
+
+  @override
+  $UserNicknameEntityCopyWith<$Res> get user {
+    return $UserNicknameEntityCopyWith<$Res>(_value.user, (value) {
+      return _then(_value.copyWith(user: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$Update with DiagnosticableTreeMixin implements Update {
+  const _$Update(this.user);
+
+  @override
+  final UserNicknameEntity user;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'FamilyUserAction.update(user: $user)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'FamilyUserAction.update'))
+      ..add(DiagnosticsProperty('user', user));
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is Update &&
+            (identical(other.user, user) ||
+                const DeepCollectionEquality().equals(other.user, user)));
+  }
+
+  @override
+  int get hashCode =>
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(user);
+
+  @JsonKey(ignore: true)
+  @override
+  $UpdateCopyWith<Update> get copyWith =>
+      _$UpdateCopyWithImpl<Update>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetch,
+    required TResult Function(UserNicknameEntity user) create,
+    required TResult Function(UserNicknameEntity user) update,
+    required TResult Function(UserNicknameEntity user) delete,
+  }) {
+    return update(user);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetch,
+    TResult Function(UserNicknameEntity user)? create,
+    TResult Function(UserNicknameEntity user)? update,
+    TResult Function(UserNicknameEntity user)? delete,
+    required TResult orElse(),
+  }) {
+    if (update != null) {
+      return update(user);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(Fetch value) fetch,
+    required TResult Function(Create value) create,
+    required TResult Function(Update value) update,
+    required TResult Function(Delete value) delete,
+  }) {
+    return update(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(Fetch value)? fetch,
+    TResult Function(Create value)? create,
+    TResult Function(Update value)? update,
+    TResult Function(Delete value)? delete,
+    required TResult orElse(),
+  }) {
+    if (update != null) {
+      return update(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class Update implements FamilyUserAction {
+  const factory Update(UserNicknameEntity user) = _$Update;
+
+  UserNicknameEntity get user => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $UpdateCopyWith<Update> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $DeleteCopyWith<$Res> {
+  factory $DeleteCopyWith(Delete value, $Res Function(Delete) then) =
+      _$DeleteCopyWithImpl<$Res>;
+  $Res call({UserNicknameEntity user});
+
+  $UserNicknameEntityCopyWith<$Res> get user;
+}
+
+/// @nodoc
+class _$DeleteCopyWithImpl<$Res> extends _$FamilyUserActionCopyWithImpl<$Res>
+    implements $DeleteCopyWith<$Res> {
+  _$DeleteCopyWithImpl(Delete _value, $Res Function(Delete) _then)
+      : super(_value, (v) => _then(v as Delete));
+
+  @override
+  Delete get _value => super._value as Delete;
+
+  @override
+  $Res call({
+    Object? user = freezed,
+  }) {
+    return _then(Delete(
+      user == freezed
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserNicknameEntity,
+    ));
+  }
+
+  @override
+  $UserNicknameEntityCopyWith<$Res> get user {
+    return $UserNicknameEntityCopyWith<$Res>(_value.user, (value) {
+      return _then(_value.copyWith(user: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$Delete with DiagnosticableTreeMixin implements Delete {
+  const _$Delete(this.user);
+
+  @override
+  final UserNicknameEntity user;
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'FamilyUserAction.delete(user: $user)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'FamilyUserAction.delete'))
+      ..add(DiagnosticsProperty('user', user));
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is Delete &&
+            (identical(other.user, user) ||
+                const DeepCollectionEquality().equals(other.user, user)));
+  }
+
+  @override
+  int get hashCode =>
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(user);
+
+  @JsonKey(ignore: true)
+  @override
+  $DeleteCopyWith<Delete> get copyWith =>
+      _$DeleteCopyWithImpl<Delete>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetch,
+    required TResult Function(UserNicknameEntity user) create,
+    required TResult Function(UserNicknameEntity user) update,
+    required TResult Function(UserNicknameEntity user) delete,
+  }) {
+    return delete(user);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetch,
+    TResult Function(UserNicknameEntity user)? create,
+    TResult Function(UserNicknameEntity user)? update,
+    TResult Function(UserNicknameEntity user)? delete,
+    required TResult orElse(),
+  }) {
+    if (delete != null) {
+      return delete(user);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(Fetch value) fetch,
+    required TResult Function(Create value) create,
+    required TResult Function(Update value) update,
+    required TResult Function(Delete value) delete,
+  }) {
+    return delete(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(Fetch value)? fetch,
+    TResult Function(Create value)? create,
+    TResult Function(Update value)? update,
+    TResult Function(Delete value)? delete,
+    required TResult orElse(),
+  }) {
+    if (delete != null) {
+      return delete(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class Delete implements FamilyUserAction {
+  const factory Delete(UserNicknameEntity user) = _$Delete;
+
+  UserNicknameEntity get user => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $DeleteCopyWith<Delete> get copyWith => throw _privateConstructorUsedError;
 }

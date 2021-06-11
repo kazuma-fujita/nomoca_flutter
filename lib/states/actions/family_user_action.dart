@@ -8,4 +8,6 @@ part 'family_user_action.freezed.dart';
 abstract class FamilyUserAction with _$FamilyUserAction {
   const factory FamilyUserAction.fetch() = Fetch;
   const factory FamilyUserAction.create(UserNicknameEntity user) = Create;
+  const factory FamilyUserAction.update(UserNicknameEntity user) = Update;
+  const factory FamilyUserAction.delete(UserNicknameEntity user) = Delete;
 }
