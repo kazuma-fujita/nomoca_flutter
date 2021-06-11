@@ -38,7 +38,7 @@ final updateFamilyUserRepositoryProvider = Provider(
 );
 
 final createFamilyUserProvider =
-    FutureProvider.autoDispose.family<String, String>(
+    FutureProvider.autoDispose.family<UserNicknameEntity, String>(
   (ref, nickname) async => ref
       .read(createFamilyUserRepositoryProvider)
       .createUser(nickname: nickname),
@@ -116,12 +116,10 @@ class _Form extends ConsumerWidget {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       asyncValue.when(
-        data: (nickname) async {
-          print('Data here $nickname / $_nickname');
+        data: (entity) async {
+          print('Data here $entity');
           context.read(familyUserActionProvider).state =
-              FamilyUserAction.create(
-                  UserNicknameEntity(id: 1, nickname: _nickname));
-          // await context.refresh(familyUserListReducer);
+              FamilyUserAction.create(entity as UserNicknameEntity);
           await EasyLoading.dismiss();
           Navigator.pop(
             context,
