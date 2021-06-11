@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/api/fetch_family_user_list_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart';
 import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
+import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 
 final fetchFamilyUserListApiProvider = Provider(
   (ref) => FetchFamilyUserListApiImpl(
@@ -13,44 +15,76 @@ final fetchFamilyUserListApiProvider = Provider(
   ),
 );
 
-final fetchFamilyUserListRepositoryProvider = Provider(
-  (ref) => FetchFamilyUserListRepositoryImpl(
-    fetchFamilyUserListApi: ref.read(fetchFamilyUserListApiProvider),
-  ),
+// final fetchFamilyUserListRepositoryProvider =
+//     Provider<FetchFamilyUserListRepository>(
+//   (ref) => FetchFamilyUserListRepositoryImpl(
+//     fetchFamilyUserListApi: ref.read(fetchFamilyUserListApiProvider),
+//   ),
+// );
+
+final fetchFamilyUserListRepositoryProvider =
+    StateProvider<Future<List<UserNicknameEntity>>>(
+  (ref) {
+    // final repository = FetchFamilyUserListRepositoryImpl(
+    //     fetchFamilyUserListApi: ref.read(fetchFamilyUserListApiProvider));
+    final repository = FakeFetchFamilyUserListRepositoryImpl();
+    return repository.fetchList();
+  },
 );
 
+final familyUserActionProvider =
+    StateProvider<FamilyUserAction>((ref) => const FamilyUserAction.fetch());
+
 final familyUserListProvider =
-    FutureProvider.autoDispose<List<UserNicknameEntity>>(
-  (ref) async => ref.read(fetchFamilyUserListRepositoryProvider).fetchList(),
-);
+    FutureProvider.autoDispose<List<UserNicknameEntity>>((ref) async {
+  final action = ref.watch(familyUserActionProvider).state;
+  final currentList =
+      await ref.read(fetchFamilyUserListRepositoryProvider).state;
+  return action.when(
+    fetch: () => currentList,
+    create: (user) {
+      final newList = [...currentList, user];
+      ref.read(fetchFamilyUserListRepositoryProvider).state =
+          Future.value(newList);
+      return newList;
+    },
+  );
+});
 
 class FamilyUserListView extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    final asyncValue = useProvider(familyUserListProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('家族アカウント管理'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            disabledColor: Colors.black,
+            // List取得成功時以外は+ボタンdisabled
+            onPressed: () => asyncValue is AsyncData
+                ? _transitionToNextScreen(context)
+                : null,
+          ),
+        ],
       ),
-      body: _buildList(context),
-    );
-  }
-
-  Widget _buildList(BuildContext context) {
-    return useProvider(familyUserListProvider).when(
-      data: (entities) => entities.isNotEmpty
-          ? ListView.builder(
-              key: UniqueKey(),
-              padding: const EdgeInsets.all(16),
-              itemCount: entities.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _dismissible(entities[index], context);
-              },
-            )
-          : _emptyListView(),
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => ErrorSnackBar(
-        errorMessage: error.toString(),
-        callback: () => context.refresh(familyUserListProvider),
+      body: asyncValue.when(
+        data: (entities) => entities.isNotEmpty
+            ? ListView.builder(
+                key: UniqueKey(),
+                padding: const EdgeInsets.all(16),
+                itemCount: entities.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return _dismissible(entities[index], context);
+                },
+              )
+            : _emptyListView(),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => ErrorSnackBar(
+          errorMessage: error.toString(),
+          callback: () => context.refresh(familyUserListProvider),
+        ),
       ),
     );
   }
@@ -129,27 +163,23 @@ class FamilyUserListView extends HookWidget {
           ),
         ),
         onTap: () {
-          // TODO: ニックネーム更新画面へ遷移
-          // _transitionToNextScreen(context, todo: entity);
+          _transitionToNextScreen(context, user: entity);
         },
       ),
     );
   }
 
-  // TODO: 遷移処理
-  // Future<void> _transitionToNextScreen(BuildContext context,
-  //     {TodoEntity todo}) async {
-  //   final result = await Navigator.pushNamed(context, Const.routeNameUpsertTodo,
-  //       arguments: todo);
-  //
-  //   if (result != null) {
-  //     // ToastMessageを表示
-  //     await Fluttertoast.showToast(
-  //       msg: result.toString(),
-  //       backgroundColor: Colors.grey,
-  //     );
-  //   }
-  // }
+  Future<void> _transitionToNextScreen(BuildContext context,
+      {UserNicknameEntity? user}) async {
+    final result = await Navigator.pushNamed(context, RouteNames.upsertUser,
+        arguments: user) as String?;
+
+    if (result != null) {
+      // SnackBarを表示
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(result)));
+    }
+  }
 
   Future<bool?> _showDeleteConfirmDialog(
       String title, BuildContext context) async {

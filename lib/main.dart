@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
@@ -12,6 +13,17 @@ import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
 import 'package:nomoca_flutter/presentation/sign_up/sign_up_view_model.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
 import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
+
+import 'data/repository/create_family_user_repository.dart';
+
+enum ActionType {
+  fetchList,
+  create,
+  // update,
+  // delete,
+}
+
+final actionTypeProvider = StateProvider((ref) => ActionType.fetchList);
 
 final apiClientProvider = Provider(
   (_) => ApiClientImpl(
@@ -57,7 +69,7 @@ void main() {
           //   ),
           // ]),
         ),
-        familyUserListProvider.overrideWithValue(const AsyncValue.data([])),
+        // familyUserListProvider.overrideWithValue(const AsyncValue.data([])),
         // familyUserListProvider.overrideWithValue(const AsyncValue.data([
         //   UserNicknameEntity(id: 1234, nickname: '花子'),
         //   UserNicknameEntity(id: 1235, nickname: '次郎'),
@@ -67,9 +79,16 @@ void main() {
         //   (ref, param) => throw Exception('Error message.'),
         // ),
         // Loading (overrideWithProvider pattern)
-        createFamilyUserProvider.overrideWithProvider(
-          (ref, param) => Future.delayed(const Duration(seconds: 5)),
-        ),
+        // createFamilyUserProvider.overrideWithProvider(
+        //   (ref, param) => Future.delayed(const Duration(seconds: 5)),
+        // ),
+        // createFamilyUserProvider.overrideWithProvider(
+        //   (ref, param) => Future<void>.value(),
+        // ),
+        // fetchFamilyUserListRepositoryProvider
+        //     .overrideWithValue(FakeFetchFamilyUserListRepositoryImpl()),
+        createFamilyUserRepositoryProvider
+            .overrideWithValue(FakeCreateFamilyUserRepositoryImpl()),
       ],
       child: MyApp(),
     ),
@@ -82,7 +101,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Nomoca application',
       theme: ThemeData(primaryColor: Colors.white),
-      home: UpsertUserView(),
+      routes: <String, WidgetBuilder>{
+        RouteNames.upsertUser: (_) => UpsertUserView(),
+      },
+      home: FamilyUserListView(),
       builder: EasyLoading.init(),
     );
   }

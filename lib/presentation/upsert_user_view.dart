@@ -9,6 +9,8 @@ import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/create_family_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart';
 import 'package:nomoca_flutter/main.dart';
+import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
+import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 
 final createFamilyUserApiProvider = Provider(
   (ref) => CreateFamilyUserApiImpl(
@@ -22,7 +24,7 @@ final updateFamilyUserApiProvider = Provider(
   ),
 );
 
-final createFamilyUserRepositoryProvider = Provider(
+final createFamilyUserRepositoryProvider = Provider<CreateFamilyUserRepository>(
   (ref) => CreateFamilyUserRepositoryImpl(
     createFamilyUserApi: ref.read(createFamilyUserApiProvider),
   ),
@@ -35,7 +37,7 @@ final updateFamilyUserRepositoryProvider = Provider(
 );
 
 final createFamilyUserProvider =
-    FutureProvider.autoDispose.family<void, String>(
+    FutureProvider.autoDispose.family<String, String>(
   (ref, nickname) async => ref
       .read(createFamilyUserRepositoryProvider)
       .createUser(nickname: nickname),
@@ -61,14 +63,18 @@ class UpsertUserView extends StatelessWidget {
 }
 
 // ignore: must_be_immutable
-class _TodoForm extends StatelessWidget {
+class _TodoForm extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   String _nickname = '';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
+    // final asyncValue = useProvider(createFamilyUserProvider(_nickname));
     final user =
         ModalRoute.of(context)!.settings.arguments as UserNicknameEntity?;
+    final asyncValue = watch(user == null
+        ? createFamilyUserProvider(_nickname)
+        : updateFamilyUserProvider(user));
     return Form(
       key: _formKey,
       child: Container(
@@ -95,7 +101,7 @@ class _TodoForm extends StatelessWidget {
               },
             ),
             ElevatedButton(
-              onPressed: () => _submission(context),
+              onPressed: () => _submission(context, asyncValue: asyncValue),
               child: const Text('保存する'),
             ),
           ],
@@ -104,18 +110,25 @@ class _TodoForm extends StatelessWidget {
     );
   }
 
-  void _submission(BuildContext context) {
+  void _submission(BuildContext context, {required AsyncValue asyncValue}) {
     final user =
         ModalRoute.of(context)!.settings.arguments as UserNicknameEntity?;
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      final asyncValue = user == null
-          ? context.read(createFamilyUserProvider(_nickname))
-          : context.read(updateFamilyUserProvider(user));
+      // final asyncValue = user == null
+      //     ? context.read(createFamilyUserProvider(_nickname))
+      //     : context.read(updateFamilyUserProvider(user));
       // ignore: cascade_invocations
+      // asyncValue.when(
+      // context.read(createFamilyUserProvider(_nickname)).when(
+      // useProvider(createFamilyUserProvider(_nickname)).when(
       asyncValue.when(
-        data: (_) async {
-          print('Data here');
+        data: (nickname) async {
+          print('Data here $nickname / $_nickname');
+          context.read(familyUserActionProvider).state =
+              FamilyUserAction.create(
+                  UserNicknameEntity(id: 1, nickname: _nickname));
+          // await context.refresh(familyUserListProvider);
           await EasyLoading.dismiss();
           Navigator.pop(
             context,
@@ -129,14 +142,10 @@ class _TodoForm extends StatelessWidget {
         error: (error, _) {
           print('Error here');
           EasyLoading.dismiss();
-          _errorView(context, error.toString());
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(error.toString())));
         },
       );
     }
-  }
-
-  void _errorView(BuildContext context, String errorMessage) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(errorMessage)));
   }
 }

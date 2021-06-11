@@ -36,3 +36,11 @@ class FetchFamilyUserListRepositoryImpl
     }
   }
 }
+
+class FakeFetchFamilyUserListRepositoryImpl
+    implements FetchFamilyUserListRepository {
+  @override
+  Future<List<UserNicknameEntity>> fetchList() async {
+    return [const UserNicknameEntity(id: 1234, nickname: '花子')];
+  }
+}
