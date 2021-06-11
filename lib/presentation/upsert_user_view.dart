@@ -116,11 +116,13 @@ class _Form extends ConsumerWidget {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       asyncValue.when(
-        data: (entity) async {
-          print('Data here $entity');
+        data: (response) async {
+          print('Data here $response');
+          final entity = response as UserNicknameEntity;
           // 家族一覧画面の状態更新。familyUserActionを更新するとfamilyUserListReducerが再実行される
-          context.read(familyUserActionProvider).state =
-              FamilyUserAction.create(entity as UserNicknameEntity);
+          context.read(familyUserActionProvider).state = user == null
+              ? FamilyUserAction.create(entity)
+              : FamilyUserAction.update(entity);
           // ローディング非表示
           await EasyLoading.dismiss();
           // 一覧画面へ遷移

@@ -1,10 +1,8 @@
 import 'dart:convert';
 
 import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
-import 'package:nomoca_flutter/constants/nomoca_urls.dart';
 import 'package:nomoca_flutter/data/api/fetch_family_user_list_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
-import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 
 // ignore: one_member_abstracts
 abstract class FetchFamilyUserListRepository {
