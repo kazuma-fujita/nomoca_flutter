@@ -14,12 +14,11 @@ final _fetchFamilyUserListApiProvider = Provider(
 
 // Private scope
 // 家族ユーザ一覧の状態保持、一覧取得を行う。reducer内で一覧の状態更新が実行される
-final _familyUserListStateProvider =
+final familyUserListStateProvider =
     StateProvider<Future<List<UserNicknameEntity>>>(
-  (ref) {
-    // final repository = FetchFamilyUserListRepositoryImpl(
-    //     fetchFamilyUserListApi: ref.read(_fetchFamilyUserListApiProvider));
-    final repository = FakeFetchFamilyUserListRepositoryImpl();
+  (ref) async {
+    final repository = FetchFamilyUserListRepositoryImpl(
+        fetchFamilyUserListApi: ref.read(_fetchFamilyUserListApiProvider));
     return repository.fetchList();
   },
 );
@@ -33,13 +32,13 @@ final familyUserListReducer =
     FutureProvider.autoDispose<List<UserNicknameEntity>>((ref) async {
   // ref.readでrepositoryProviderが保持するList<UserNicknameEntity>の状態取得
   // ref.watchはこのreducer内でrepositoryProviderのstateを更新する度に再実行され無限ループする
-  final currentList = await ref.read(_familyUserListStateProvider).state;
+  final currentList = await ref.read(familyUserListStateProvider).state;
   return ref.watch(familyUserActionProvider).state.when(
         fetch: () => currentList,
         create: (user) {
           final newList = [...currentList, user];
           // 要素を追加した配列で_familyUserListStateProviderの状態を更新
-          ref.read(_familyUserListStateProvider).state = Future.value(newList);
+          ref.read(familyUserListStateProvider).state = Future.value(newList);
           return newList;
         },
         update: (user) {
@@ -47,14 +46,14 @@ final familyUserListReducer =
               .map((item) => user.id == item.id ? user : item)
               .toList();
           // 要素を変更した配列で_familyUserListStateProviderの状態を更新
-          ref.read(_familyUserListStateProvider).state = Future.value(newList);
+          ref.read(familyUserListStateProvider).state = Future.value(newList);
           return newList;
         },
         delete: (user) {
           final newList =
               currentList.where((item) => user.id != item.id).toList();
           // 要素を削除した配列で_familyUserListStateProviderの状態を更新
-          ref.read(_familyUserListStateProvider).state = Future.value(newList);
+          ref.read(familyUserListStateProvider).state = Future.value(newList);
           return newList;
         },
       );

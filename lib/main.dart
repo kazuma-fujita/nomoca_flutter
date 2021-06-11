@@ -12,6 +12,7 @@ import 'package:nomoca_flutter/data/api/authentication_api.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
 import 'package:nomoca_flutter/presentation/sign_up/sign_up_view_model.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
+import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
 
 import 'data/repository/create_family_user_repository.dart';
@@ -76,8 +77,13 @@ void main() {
         // createFamilyUserProvider.overrideWithProvider(
         //   (ref, param) => Future<void>.value(),
         // ),
-        // fetchFamilyUserListRepositoryProvider
-        //     .overrideWithValue(FakeFetchFamilyUserListRepositoryImpl()),
+        familyUserListStateProvider.overrideWithProvider(
+          StateProvider((ref) {
+            return Future.value([
+              const UserNicknameEntity(id: 1234, nickname: '花子'),
+            ]);
+          }),
+        ),
         createFamilyUserRepositoryProvider
             .overrideWithValue(FakeCreateFamilyUserRepositoryImpl()),
       ],
