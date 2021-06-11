@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nomoca_flutter/data/api/create_family_user_api.dart';
 import 'package:nomoca_flutter/data/api/update_family_user_api.dart';
-import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/create_family_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart';
 import 'package:nomoca_flutter/main.dart';
-import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
@@ -70,8 +67,10 @@ class _Form extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
+    // 一覧画面からuser情報を取得
     final user =
         ModalRoute.of(context)!.settings.arguments as UserNicknameEntity?;
+    // user情報があれば家族アカウント作成、無ければ更新
     final asyncValue = watch(user == null
         ? createFamilyUserProvider(_nickname)
         : updateFamilyUserProvider(user));
@@ -113,26 +112,28 @@ class _Form extends ConsumerWidget {
   void _submission(BuildContext context, {required AsyncValue asyncValue}) {
     final user =
         ModalRoute.of(context)!.settings.arguments as UserNicknameEntity?;
+    // TextFormFieldのvalidate実行
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       asyncValue.when(
         data: (entity) async {
           print('Data here $entity');
+          // 家族一覧画面の状態更新。familyUserActionを更新するとfamilyUserListReducerが再実行される
           context.read(familyUserActionProvider).state =
               FamilyUserAction.create(entity as UserNicknameEntity);
+          // ローディング非表示
           await EasyLoading.dismiss();
+          // 一覧画面へ遷移
           Navigator.pop(
-            context,
-            '$_nicknameを${user == null ? '作成' : '更新'}しました',
-          );
+              context, '$_nicknameを${user == null ? '作成' : '更新'}しました');
         },
         loading: () async {
-          print('Loading here');
+          // ローディング表示
           await EasyLoading.show();
         },
         error: (error, _) {
-          print('Error here');
           EasyLoading.dismiss();
+          // SnackBar表示
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(error.toString())));
         },
