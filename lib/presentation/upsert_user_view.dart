@@ -11,6 +11,7 @@ import 'package:nomoca_flutter/data/repository/update_family_user_repository.dar
 import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
+import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
 final createFamilyUserApiProvider = Provider(
   (ref) => CreateFamilyUserApiImpl(
@@ -57,19 +58,18 @@ class UpsertUserView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('家族アカウント'),
       ),
-      body: _TodoForm(),
+      body: _Form(),
     );
   }
 }
 
 // ignore: must_be_immutable
-class _TodoForm extends ConsumerWidget {
+class _Form extends ConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   String _nickname = '';
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
-    // final asyncValue = useProvider(createFamilyUserProvider(_nickname));
     final user =
         ModalRoute.of(context)!.settings.arguments as UserNicknameEntity?;
     final asyncValue = watch(user == null
@@ -115,20 +115,13 @@ class _TodoForm extends ConsumerWidget {
         ModalRoute.of(context)!.settings.arguments as UserNicknameEntity?;
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // final asyncValue = user == null
-      //     ? context.read(createFamilyUserProvider(_nickname))
-      //     : context.read(updateFamilyUserProvider(user));
-      // ignore: cascade_invocations
-      // asyncValue.when(
-      // context.read(createFamilyUserProvider(_nickname)).when(
-      // useProvider(createFamilyUserProvider(_nickname)).when(
       asyncValue.when(
         data: (nickname) async {
           print('Data here $nickname / $_nickname');
           context.read(familyUserActionProvider).state =
               FamilyUserAction.create(
                   UserNicknameEntity(id: 1, nickname: _nickname));
-          // await context.refresh(familyUserListProvider);
+          // await context.refresh(familyUserListReducer);
           await EasyLoading.dismiss();
           Navigator.pop(
             context,

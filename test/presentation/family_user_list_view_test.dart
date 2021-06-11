@@ -8,13 +8,14 @@ import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
+import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
 void main() {
   ProviderScope setUpProviderScope(
       AsyncValue<List<UserNicknameEntity>> asyncValue) {
     return ProviderScope(
       overrides: [
-        familyUserListProvider.overrideWithValue(asyncValue),
+        familyUserListReducer.overrideWithValue(asyncValue),
       ],
       child: MaterialApp(home: FamilyUserListView()),
     );

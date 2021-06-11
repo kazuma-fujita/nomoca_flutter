@@ -2,59 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
-import 'package:nomoca_flutter/data/api/fetch_family_user_list_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
-import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart';
-import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
-import 'package:nomoca_flutter/states/actions/family_user_action.dart';
-
-final fetchFamilyUserListApiProvider = Provider(
-  (ref) => FetchFamilyUserListApiImpl(
-    apiClient: ref.read(apiClientProvider),
-  ),
-);
-
-// final fetchFamilyUserListRepositoryProvider =
-//     Provider<FetchFamilyUserListRepository>(
-//   (ref) => FetchFamilyUserListRepositoryImpl(
-//     fetchFamilyUserListApi: ref.read(fetchFamilyUserListApiProvider),
-//   ),
-// );
-
-final fetchFamilyUserListRepositoryProvider =
-    StateProvider<Future<List<UserNicknameEntity>>>(
-  (ref) {
-    // final repository = FetchFamilyUserListRepositoryImpl(
-    //     fetchFamilyUserListApi: ref.read(fetchFamilyUserListApiProvider));
-    final repository = FakeFetchFamilyUserListRepositoryImpl();
-    return repository.fetchList();
-  },
-);
-
-final familyUserActionProvider =
-    StateProvider<FamilyUserAction>((ref) => const FamilyUserAction.fetch());
-
-final familyUserListProvider =
-    FutureProvider.autoDispose<List<UserNicknameEntity>>((ref) async {
-  final action = ref.watch(familyUserActionProvider).state;
-  final currentList =
-      await ref.read(fetchFamilyUserListRepositoryProvider).state;
-  return action.when(
-    fetch: () => currentList,
-    create: (user) {
-      final newList = [...currentList, user];
-      ref.read(fetchFamilyUserListRepositoryProvider).state =
-          Future.value(newList);
-      return newList;
-    },
-  );
-});
+import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
 class FamilyUserListView extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final asyncValue = useProvider(familyUserListProvider);
+    final asyncValue = useProvider(familyUserListReducer);
     return Scaffold(
       appBar: AppBar(
         title: const Text('家族アカウント管理'),
@@ -83,7 +38,7 @@ class FamilyUserListView extends HookWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => ErrorSnackBar(
           errorMessage: error.toString(),
-          callback: () => context.refresh(familyUserListProvider),
+          callback: () => context.refresh(familyUserListReducer),
         ),
       ),
     );

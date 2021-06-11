@@ -16,15 +16,6 @@ import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
 
 import 'data/repository/create_family_user_repository.dart';
 
-enum ActionType {
-  fetchList,
-  create,
-  // update,
-  // delete,
-}
-
-final actionTypeProvider = StateProvider((ref) => ActionType.fetchList);
-
 final apiClientProvider = Provider(
   (_) => ApiClientImpl(
     baseUrl:
@@ -69,8 +60,8 @@ void main() {
           //   ),
           // ]),
         ),
-        // familyUserListProvider.overrideWithValue(const AsyncValue.data([])),
-        // familyUserListProvider.overrideWithValue(const AsyncValue.data([
+        // familyUserListReducer.overrideWithValue(const AsyncValue.data([])),
+        // familyUserListReducer.overrideWithValue(const AsyncValue.data([
         //   UserNicknameEntity(id: 1234, nickname: '花子'),
         //   UserNicknameEntity(id: 1235, nickname: '次郎'),
         // ])),
