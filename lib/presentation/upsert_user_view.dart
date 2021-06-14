@@ -29,7 +29,7 @@ final createFamilyUserRepositoryProvider = Provider<CreateFamilyUserRepository>(
   ),
 );
 
-final updateFamilyUserRepositoryProvider = Provider(
+final updateFamilyUserRepositoryProvider = Provider<UpdateFamilyUserRepository>(
   (ref) => UpdateFamilyUserRepositoryImpl(
     updateFamilyUserApi: ref.read(updateFamilyUserApiProvider),
   ),

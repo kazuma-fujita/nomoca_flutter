@@ -4,6 +4,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
+import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
+import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
 class FamilyUserListView extends HookWidget {
@@ -68,23 +70,26 @@ class FamilyUserListView extends HookWidget {
     );
   }
 
-  Widget _dismissible(UserNicknameEntity entity, BuildContext context) {
+  Widget _dismissible(UserNicknameEntity user, BuildContext context) {
     // ListViewのswipeができるwidget
     return Dismissible(
       // ユニークな値を設定
-      key: Key(entity.id.toString()),
+      key: Key(user.id.toString()),
       confirmDismiss: (direction) async {
         final confirmResult =
-            await _showDeleteConfirmDialog(entity.nickname, context);
+            await _showDeleteConfirmDialog(user.nickname, context);
         // Future<bool> で確認結果を返す。False の場合削除されない
         return confirmResult;
       },
       onDismissed: (DismissDirection direction) {
-        // TODO:viewModelのtodoList要素を削除
-        // context.read(todoListViewModelProvider).deleteTodo(entity.id);
+        // 家族一覧画面の状態更新。dispatcherのstateを更新するとfamilyUserListReducerが再実行される
+        context.read(familyUserActionDispatcher).state =
+            FamilyUserAction.delete(user);
+        // 診察券画面の状態更新。patientCardStateではAPI経由で診察券情報を再取得する
+        context.refresh(patientCardState);
         // 削除メッセージを表示
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('${entity.nickname}を削除しました')));
+            .showSnackBar(SnackBar(content: Text('${user.nickname}を削除しました')));
       },
       // swipe中ListTileのbackground
       background: Container(
@@ -99,26 +104,26 @@ class FamilyUserListView extends HookWidget {
           ),
         ),
       ),
-      child: _listItem(entity, context),
+      child: _listItem(user, context),
     );
   }
 
-  Widget _listItem(UserNicknameEntity entity, BuildContext context) {
+  Widget _listItem(UserNicknameEntity user, BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(width: 1, color: Colors.grey)),
       ),
       child: ListTile(
-        key: Key(entity.id.toString()),
+        key: Key(user.id.toString()),
         title: Text(
-          entity.nickname,
+          user.nickname,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 16,
           ),
         ),
         onTap: () {
-          _transitionToNextScreen(context, user: entity);
+          _transitionToNextScreen(context, user: user);
         },
       ),
     );

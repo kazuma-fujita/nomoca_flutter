@@ -15,7 +15,9 @@ import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
 
+import 'data/entity/remote/patient_card_entity.dart';
 import 'data/repository/create_family_user_repository.dart';
+import 'data/repository/update_family_user_repository.dart';
 
 final apiClientProvider = Provider(
   (_) => ApiClientImpl(
@@ -49,17 +51,17 @@ void main() {
     ProviderScope(
       overrides: [
         patientCardState.overrideWithValue(
-          AsyncValue.error(Exception('network error')),
-          // const AsyncData([
-          //   PatientCardEntity(
-          //     nickname: '太郎',
-          //     qrCodeImageUrl: '$contentsBaseUrl/qr/1344/ueR8q99hD7Ux4VrK.png',
-          //   ),
-          //   PatientCardEntity(
-          //     nickname: '花子',
-          //     qrCodeImageUrl: '$contentsBaseUrl/qr/1372/MbQRuYNDyPFxLPhY.png',
-          //   ),
-          // ]),
+          // AsyncValue.error(Exception('network error')),
+          const AsyncData([
+            PatientCardEntity(
+              nickname: '太郎',
+              qrCodeImageUrl: '$contentsBaseUrl/qr/1344/ueR8q99hD7Ux4VrK.png',
+            ),
+            PatientCardEntity(
+              nickname: '花子',
+              qrCodeImageUrl: '$contentsBaseUrl/qr/1372/MbQRuYNDyPFxLPhY.png',
+            ),
+          ]),
         ),
         // familyUserListReducer.overrideWithValue(const AsyncValue.data([])),
         // familyUserListReducer.overrideWithValue(const AsyncValue.data([
@@ -86,6 +88,8 @@ void main() {
         ),
         createFamilyUserRepositoryProvider
             .overrideWithValue(FakeCreateFamilyUserRepositoryImpl()),
+        updateFamilyUserRepositoryProvider
+            .overrideWithValue(FakeUpdateFamilyUserRepositoryImpl()),
       ],
       child: MyApp(),
     ),
