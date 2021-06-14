@@ -8,14 +8,14 @@ void main() {
   ProviderContainer setUpProviderContainer(FamilyUserAction action) {
     return ProviderContainer(
       overrides: [
-        familyUserListStateProvider.overrideWithProvider(
+        familyUserListState.overrideWithProvider(
           StateProvider((ref) {
             return Future.value([
               const UserNicknameEntity(id: 1234, nickname: '花子'),
             ]);
           }),
         ),
-        familyUserActionProvider
+        familyUserActionDispatcher
             .overrideWithProvider(StateProvider((ref) => action)),
       ],
     );
@@ -23,7 +23,8 @@ void main() {
 
   group('Testing family user list provider.', () {
     test('Testing fetch family user list.', () async {
-      final container = setUpProviderContainer(const FamilyUserAction.fetch());
+      final container =
+          setUpProviderContainer(const FamilyUserAction.fetchList());
       // The first read if the loading state
       expect(container.read(familyUserListReducer), const AsyncValue.loading());
       // Wait for the request to finish

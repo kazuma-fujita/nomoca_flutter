@@ -120,7 +120,7 @@ class _Form extends ConsumerWidget {
           print('Data here $response');
           final entity = response as UserNicknameEntity;
           // 家族一覧画面の状態更新。familyUserActionを更新するとfamilyUserListReducerが再実行される
-          context.read(familyUserActionProvider).state = user == null
+          context.read(familyUserActionDispatcher).state = user == null
               ? FamilyUserAction.create(entity)
               : FamilyUserAction.update(entity);
           // ローディング非表示

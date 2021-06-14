@@ -16,8 +16,8 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$FamilyUserActionTearOff {
   const _$FamilyUserActionTearOff();
 
-  Fetch fetch() {
-    return const Fetch();
+  FetchList fetchList() {
+    return const FetchList();
   }
 
   Create create(UserNicknameEntity user) {
@@ -46,7 +46,7 @@ const $FamilyUserAction = _$FamilyUserActionTearOff();
 mixin _$FamilyUserAction {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function() fetchList,
     required TResult Function(UserNicknameEntity user) create,
     required TResult Function(UserNicknameEntity user) update,
     required TResult Function(UserNicknameEntity user) delete,
@@ -54,7 +54,7 @@ mixin _$FamilyUserAction {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function()? fetchList,
     TResult Function(UserNicknameEntity user)? create,
     TResult Function(UserNicknameEntity user)? update,
     TResult Function(UserNicknameEntity user)? delete,
@@ -63,7 +63,7 @@ mixin _$FamilyUserAction {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Fetch value) fetch,
+    required TResult Function(FetchList value) fetchList,
     required TResult Function(Create value) create,
     required TResult Function(Update value) update,
     required TResult Function(Delete value) delete,
@@ -71,7 +71,7 @@ mixin _$FamilyUserAction {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Fetch value)? fetch,
+    TResult Function(FetchList value)? fetchList,
     TResult Function(Create value)? create,
     TResult Function(Update value)? update,
     TResult Function(Delete value)? delete,
@@ -98,40 +98,40 @@ class _$FamilyUserActionCopyWithImpl<$Res>
 }
 
 /// @nodoc
-abstract class $FetchCopyWith<$Res> {
-  factory $FetchCopyWith(Fetch value, $Res Function(Fetch) then) =
-      _$FetchCopyWithImpl<$Res>;
+abstract class $FetchListCopyWith<$Res> {
+  factory $FetchListCopyWith(FetchList value, $Res Function(FetchList) then) =
+      _$FetchListCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class _$FetchCopyWithImpl<$Res> extends _$FamilyUserActionCopyWithImpl<$Res>
-    implements $FetchCopyWith<$Res> {
-  _$FetchCopyWithImpl(Fetch _value, $Res Function(Fetch) _then)
-      : super(_value, (v) => _then(v as Fetch));
+class _$FetchListCopyWithImpl<$Res> extends _$FamilyUserActionCopyWithImpl<$Res>
+    implements $FetchListCopyWith<$Res> {
+  _$FetchListCopyWithImpl(FetchList _value, $Res Function(FetchList) _then)
+      : super(_value, (v) => _then(v as FetchList));
 
   @override
-  Fetch get _value => super._value as Fetch;
+  FetchList get _value => super._value as FetchList;
 }
 
 /// @nodoc
 
-class _$Fetch with DiagnosticableTreeMixin implements Fetch {
-  const _$Fetch();
+class _$FetchList with DiagnosticableTreeMixin implements FetchList {
+  const _$FetchList();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'FamilyUserAction.fetch()';
+    return 'FamilyUserAction.fetchList()';
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties..add(DiagnosticsProperty('type', 'FamilyUserAction.fetch'));
+    properties..add(DiagnosticsProperty('type', 'FamilyUserAction.fetchList'));
   }
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other is Fetch);
+    return identical(this, other) || (other is FetchList);
   }
 
   @override
@@ -140,25 +140,25 @@ class _$Fetch with DiagnosticableTreeMixin implements Fetch {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function() fetchList,
     required TResult Function(UserNicknameEntity user) create,
     required TResult Function(UserNicknameEntity user) update,
     required TResult Function(UserNicknameEntity user) delete,
   }) {
-    return fetch();
+    return fetchList();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function()? fetchList,
     TResult Function(UserNicknameEntity user)? create,
     TResult Function(UserNicknameEntity user)? update,
     TResult Function(UserNicknameEntity user)? delete,
     required TResult orElse(),
   }) {
-    if (fetch != null) {
-      return fetch();
+    if (fetchList != null) {
+      return fetchList();
     }
     return orElse();
   }
@@ -166,32 +166,32 @@ class _$Fetch with DiagnosticableTreeMixin implements Fetch {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Fetch value) fetch,
+    required TResult Function(FetchList value) fetchList,
     required TResult Function(Create value) create,
     required TResult Function(Update value) update,
     required TResult Function(Delete value) delete,
   }) {
-    return fetch(this);
+    return fetchList(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Fetch value)? fetch,
+    TResult Function(FetchList value)? fetchList,
     TResult Function(Create value)? create,
     TResult Function(Update value)? update,
     TResult Function(Delete value)? delete,
     required TResult orElse(),
   }) {
-    if (fetch != null) {
-      return fetch(this);
+    if (fetchList != null) {
+      return fetchList(this);
     }
     return orElse();
   }
 }
 
-abstract class Fetch implements FamilyUserAction {
-  const factory Fetch() = _$Fetch;
+abstract class FetchList implements FamilyUserAction {
+  const factory FetchList() = _$FetchList;
 }
 
 /// @nodoc
@@ -273,7 +273,7 @@ class _$Create with DiagnosticableTreeMixin implements Create {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function() fetchList,
     required TResult Function(UserNicknameEntity user) create,
     required TResult Function(UserNicknameEntity user) update,
     required TResult Function(UserNicknameEntity user) delete,
@@ -284,7 +284,7 @@ class _$Create with DiagnosticableTreeMixin implements Create {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function()? fetchList,
     TResult Function(UserNicknameEntity user)? create,
     TResult Function(UserNicknameEntity user)? update,
     TResult Function(UserNicknameEntity user)? delete,
@@ -299,7 +299,7 @@ class _$Create with DiagnosticableTreeMixin implements Create {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Fetch value) fetch,
+    required TResult Function(FetchList value) fetchList,
     required TResult Function(Create value) create,
     required TResult Function(Update value) update,
     required TResult Function(Delete value) delete,
@@ -310,7 +310,7 @@ class _$Create with DiagnosticableTreeMixin implements Create {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Fetch value)? fetch,
+    TResult Function(FetchList value)? fetchList,
     TResult Function(Create value)? create,
     TResult Function(Update value)? update,
     TResult Function(Delete value)? delete,
@@ -410,7 +410,7 @@ class _$Update with DiagnosticableTreeMixin implements Update {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function() fetchList,
     required TResult Function(UserNicknameEntity user) create,
     required TResult Function(UserNicknameEntity user) update,
     required TResult Function(UserNicknameEntity user) delete,
@@ -421,7 +421,7 @@ class _$Update with DiagnosticableTreeMixin implements Update {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function()? fetchList,
     TResult Function(UserNicknameEntity user)? create,
     TResult Function(UserNicknameEntity user)? update,
     TResult Function(UserNicknameEntity user)? delete,
@@ -436,7 +436,7 @@ class _$Update with DiagnosticableTreeMixin implements Update {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Fetch value) fetch,
+    required TResult Function(FetchList value) fetchList,
     required TResult Function(Create value) create,
     required TResult Function(Update value) update,
     required TResult Function(Delete value) delete,
@@ -447,7 +447,7 @@ class _$Update with DiagnosticableTreeMixin implements Update {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Fetch value)? fetch,
+    TResult Function(FetchList value)? fetchList,
     TResult Function(Create value)? create,
     TResult Function(Update value)? update,
     TResult Function(Delete value)? delete,
@@ -547,7 +547,7 @@ class _$Delete with DiagnosticableTreeMixin implements Delete {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
+    required TResult Function() fetchList,
     required TResult Function(UserNicknameEntity user) create,
     required TResult Function(UserNicknameEntity user) update,
     required TResult Function(UserNicknameEntity user) delete,
@@ -558,7 +558,7 @@ class _$Delete with DiagnosticableTreeMixin implements Delete {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
+    TResult Function()? fetchList,
     TResult Function(UserNicknameEntity user)? create,
     TResult Function(UserNicknameEntity user)? update,
     TResult Function(UserNicknameEntity user)? delete,
@@ -573,7 +573,7 @@ class _$Delete with DiagnosticableTreeMixin implements Delete {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Fetch value) fetch,
+    required TResult Function(FetchList value) fetchList,
     required TResult Function(Create value) create,
     required TResult Function(Update value) update,
     required TResult Function(Delete value) delete,
@@ -584,7 +584,7 @@ class _$Delete with DiagnosticableTreeMixin implements Delete {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Fetch value)? fetch,
+    TResult Function(FetchList value)? fetchList,
     TResult Function(Create value)? create,
     TResult Function(Update value)? update,
     TResult Function(Delete value)? delete,

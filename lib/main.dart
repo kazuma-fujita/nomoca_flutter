@@ -77,7 +77,7 @@ void main() {
         // createFamilyUserProvider.overrideWithProvider(
         //   (ref, param) => Future<void>.value(),
         // ),
-        familyUserListStateProvider.overrideWithProvider(
+        familyUserListState.overrideWithProvider(
           StateProvider((ref) {
             return Future.value([
               const UserNicknameEntity(id: 1234, nickname: '花子'),
