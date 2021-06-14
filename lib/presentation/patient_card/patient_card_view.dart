@@ -23,7 +23,7 @@ final patientCardRepositoryProvider = Provider(
   ),
 );
 
-final patientCardProvider =
+final patientCardState =
     FutureProvider.autoDispose<List<PatientCardEntity>>((ref) async {
   return ref.read(patientCardRepositoryProvider).fetchList();
 });
@@ -31,7 +31,7 @@ final patientCardProvider =
 class PatientCardView extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final asyncValue = useProvider(patientCardProvider);
+    final asyncValue = useProvider(patientCardState);
     return DefaultTabController(
       length: asyncValue is AsyncData ? asyncValue.data!.value.length : 0,
       child: Scaffold(
@@ -86,7 +86,7 @@ class PatientCardView extends HookWidget {
 class _PatientCardView extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    return useProvider(patientCardProvider).when(
+    return useProvider(patientCardState).when(
       data: (patientCardList) {
         print('fetch data. $patientCardList');
         // Stack Widgetで背景画像の上にQRコードを配置する
@@ -122,7 +122,7 @@ class _PatientCardView extends HookWidget {
         print('error here $error');
         return ErrorSnackBar(
           errorMessage: error.toString(),
-          callback: () => context.refresh(patientCardProvider),
+          callback: () => context.refresh(patientCardState),
         );
       },
     );

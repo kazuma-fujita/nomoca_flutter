@@ -18,7 +18,7 @@ void main() {
       AsyncValue<List<PatientCardEntity>> asyncValue) {
     return ProviderScope(
       overrides: [
-        patientCardProvider.overrideWithValue(asyncValue),
+        patientCardState.overrideWithValue(asyncValue),
       ],
       child: MaterialApp(home: PatientCardView()),
     );

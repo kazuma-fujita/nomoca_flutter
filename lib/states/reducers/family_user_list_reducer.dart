@@ -26,7 +26,8 @@ final familyUserListState = StateProvider<Future<List<UserNicknameEntity>>>(
 // Public scope
 // UpsertUserViewでユーザ作成、更新時ActionStateを更新してreducerを再実行する
 final familyUserActionDispatcher = StateProvider<FamilyUserAction>(
-    (ref) => const FamilyUserAction.fetchList());
+  (ref) => const FamilyUserAction.fetchList(),
+);
 
 final familyUserListReducer =
     FutureProvider.autoDispose<List<UserNicknameEntity>>((ref) async {

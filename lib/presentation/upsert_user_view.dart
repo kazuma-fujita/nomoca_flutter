@@ -7,6 +7,7 @@ import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/create_family_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart';
 import 'package:nomoca_flutter/main.dart';
+import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
@@ -119,10 +120,12 @@ class _Form extends ConsumerWidget {
         data: (response) async {
           print('Data here $response');
           final entity = response as UserNicknameEntity;
-          // 家族一覧画面の状態更新。familyUserActionを更新するとfamilyUserListReducerが再実行される
+          // 家族一覧画面の状態更新。dispatcherのstateを更新するとfamilyUserListReducerが再実行される
           context.read(familyUserActionDispatcher).state = user == null
               ? FamilyUserAction.create(entity)
               : FamilyUserAction.update(entity);
+          // 診察券画面の状態更新。patientCardStateではAPI経由で診察券情報を再取得する
+          await context.refresh(patientCardState);
           // ローディング非表示
           await EasyLoading.dismiss();
           // 一覧画面へ遷移

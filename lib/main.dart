@@ -48,7 +48,7 @@ void main() {
   runApp(
     ProviderScope(
       overrides: [
-        patientCardProvider.overrideWithValue(
+        patientCardState.overrideWithValue(
           AsyncValue.error(Exception('network error')),
           // const AsyncData([
           //   PatientCardEntity(
