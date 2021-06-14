@@ -122,6 +122,7 @@ class FamilyUserListView extends HookWidget {
             fontSize: 16,
           ),
         ),
+        trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {
           _transitionToNextScreen(context, user: user);
         },
