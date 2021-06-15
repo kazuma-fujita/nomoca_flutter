@@ -43,7 +43,7 @@ final createFamilyUserProvider =
 );
 
 final updateFamilyUserProvider =
-    FutureProvider.autoDispose.family<void, UserNicknameEntity>(
+    FutureProvider.autoDispose.family<UserNicknameEntity, UserNicknameEntity>(
   (ref, entity) async => ref
       .read(updateFamilyUserRepositoryProvider)
       .updateUser(familyUserId: entity.id, nickname: entity.nickname),
@@ -52,9 +52,11 @@ final updateFamilyUserProvider =
 class UpsertUserView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final user =
+        ModalRoute.of(context)!.settings.arguments as UserNicknameEntity?;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('家族アカウント'),
+        title: Text('家族アカウント${user == null ? '作成' : '編集'}'),
       ),
       body: _Form(),
     );
@@ -129,8 +131,7 @@ class _Form extends ConsumerWidget {
           // ローディング非表示
           await EasyLoading.dismiss();
           // 一覧画面へ遷移
-          Navigator.pop(
-              context, '$_nicknameを${user == null ? '作成' : '更新'}しました');
+          Navigator.pop(context, '家族アカウントを${user == null ? '作成' : '編集'}しました');
         },
         loading: () async {
           // ローディング表示

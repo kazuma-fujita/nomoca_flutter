@@ -18,6 +18,12 @@ void main() {
   }
 
   group('Testing the family user list view.', () {
+    testWidgets('Testing view of element.', (WidgetTester tester) async {
+      await tester.pumpWidget(setUpProviderScope(const AsyncValue.loading()));
+      expect(find.text('家族アカウント管理'), findsOneWidget);
+      expect(find.byIcon(Icons.add), findsOneWidget);
+    });
+
     testWidgets('Testing widget of loading.', (WidgetTester tester) async {
       await tester.pumpWidget(setUpProviderScope(const AsyncValue.loading()));
       expect(find.text('花子'), findsNothing);
