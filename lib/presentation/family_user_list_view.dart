@@ -2,11 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
+import 'package:nomoca_flutter/data/api/delete_family_user_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
+import 'package:nomoca_flutter/data/repository/delete_family_user_repository.dart';
+import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
+
+final deleteFamilyUserApiProvider = Provider(
+  (ref) => DeleteFamilyUserApiImpl(
+    apiClient: ref.read(apiClientProvider),
+  ),
+);
+
+final deleteFamilyUserProvider =
+    FutureProvider.autoDispose.family<void, int>((ref, familyUserId) async {
+  final repository = DeleteFamilyUserRepositoryImpl(
+    deleteFamilyUserApi: ref.read(deleteFamilyUserApiProvider),
+  );
+  return repository.deleteUser(familyUserId: familyUserId);
+});
 
 class FamilyUserListView extends HookWidget {
   @override
@@ -70,44 +87,6 @@ class FamilyUserListView extends HookWidget {
     );
   }
 
-  Widget _dismissible(UserNicknameEntity user, BuildContext context) {
-    // ListViewのswipeができるwidget
-    return Dismissible(
-      // ユニークな値を設定
-      key: Key(user.id.toString()),
-      confirmDismiss: (direction) async {
-        final confirmResult =
-            await _showDeleteConfirmDialog(user.nickname, context);
-        // Future<bool> で確認結果を返す。False の場合削除されない
-        return confirmResult;
-      },
-      onDismissed: (DismissDirection direction) {
-        // 家族一覧画面の状態更新。dispatcherのstateを更新するとfamilyUserListReducerが再実行される
-        context.read(familyUserActionDispatcher).state =
-            FamilyUserAction.delete(user);
-        // 診察券画面の状態更新。patientCardStateではAPI経由で診察券情報を再取得する
-        context.refresh(patientCardState);
-        // 削除メッセージを表示
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('${user.nickname}を削除しました')));
-      },
-      // swipe中ListTileのbackground
-      background: Container(
-        alignment: Alignment.centerLeft,
-        // backgroundが赤/ゴミ箱Icon表示
-        color: Colors.red,
-        child: const Padding(
-          padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-          child: Icon(
-            Icons.delete,
-            color: Colors.white,
-          ),
-        ),
-      ),
-      child: _listItem(user, context),
-    );
-  }
-
   Widget _listItem(UserNicknameEntity user, BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
@@ -142,6 +121,37 @@ class FamilyUserListView extends HookWidget {
     }
   }
 
+  Widget _dismissible(UserNicknameEntity user, BuildContext context) {
+    // ListViewのswipeができるwidget
+    return Dismissible(
+      // ユニークな値を設定
+      key: Key(user.id.toString()),
+      confirmDismiss: (direction) async {
+        final confirmResult =
+            await _showDeleteConfirmDialog(user.nickname, context);
+        // Future<bool> で確認結果を返す。False の場合削除されない
+        return confirmResult;
+      },
+      onDismissed: (DismissDirection direction) {
+        _deleteFamilyUser(context, user);
+      },
+      // swipe中ListTileのbackground
+      background: Container(
+        alignment: Alignment.centerLeft,
+        // backgroundが赤/ゴミ箱Icon表示
+        color: Colors.red,
+        child: const Padding(
+          padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+          child: Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      child: _listItem(user, context),
+    );
+  }
+
   Future<bool?> _showDeleteConfirmDialog(
       String title, BuildContext context) async {
     final result = await showDialog<bool>(
@@ -164,5 +174,26 @@ class FamilyUserListView extends HookWidget {
           );
         });
     return result;
+  }
+
+  Future<void> _deleteFamilyUser(
+      BuildContext context, UserNicknameEntity user) async {
+    await context.read(deleteFamilyUserProvider(user.id)).maybeWhen(
+        data: (_) async {
+          // 家族一覧画面の状態更新。dispatcherのstateを更新するとfamilyUserListReducerが再実行される
+          context.read(familyUserActionDispatcher).state =
+              FamilyUserAction.delete(user);
+          // 診察券画面の状態更新。patientCardStateではAPI経由で診察券情報を再取得する
+          await context.refresh(patientCardState);
+          // 削除メッセージを表示
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('${user.nickname}を削除しました')));
+        },
+        error: (error, _) {
+          // SnackBar表示
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(error.toString())));
+        },
+        orElse: () {});
   }
 }

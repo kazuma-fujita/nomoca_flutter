@@ -23,7 +23,7 @@ void main() {
         patientCardState.overrideWithValue(const AsyncData([])),
       ],
       child: MaterialApp(
-        home: FamilyUserListView(),
+        home: Scaffold(body: FamilyUserListView()),
         routes: <String, WidgetBuilder>{
           RouteNames.upsertUser: (_) => UpsertUserView(),
         },
@@ -44,13 +44,13 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsNothing);
   }
 
-  group('Testing the family user list view.', () {
-    testWidgets('Created user of family.', (WidgetTester tester) async {
+  group('Testing the family user list view and the upsert user view.', () {
+    testWidgets('Testing create user of family.', (WidgetTester tester) async {
       // 家族アカウント作成APIレスポンスデータを設定
       final futureProvider = createFamilyUserProvider.overrideWithProvider(
           (ref, param) =>
               Future.value(const UserNicknameEntity(id: 1237, nickname: '花子')));
-      // 空データ配列で家族アカウント一覧画面を描写
+      // 空データ配列で家族アカウント一覧画面をレンダリング
       await tester
           .pumpWidget(setUpProviderScope(Future.value([]), futureProvider));
       await _verifyTheStatusBeforeAfterLoading(tester);
@@ -73,10 +73,12 @@ void main() {
       expect(find.text('花子'), findsOneWidget);
     });
 
-    testWidgets('Updated user of family.', (WidgetTester tester) async {
+    testWidgets('Testing update user of family.', (WidgetTester tester) async {
+      // 家族アカウント更新APIレスポンスデータを設定
       final futureProvider = updateFamilyUserProvider.overrideWithProvider(
           (ref, param) =>
               Future.value(const UserNicknameEntity(id: 1237, nickname: '次郎')));
+      // 配列要素が一つの家族一覧画面Widgetをレンダリング
       await tester.pumpWidget(setUpProviderScope(
           Future.value([const UserNicknameEntity(id: 1237, nickname: '花子')]),
           futureProvider));
@@ -99,6 +101,35 @@ void main() {
       // 家族一覧の要素が更新されたことを確認
       expect(find.text('家族アカウント管理'), findsOneWidget);
       expect(find.text('次郎'), findsOneWidget);
+    });
+
+    testWidgets('Testing delete user of family.', (WidgetTester tester) async {
+      // 家族アカウント削除APIレスポンスデータを設定
+      final futureProvider = deleteFamilyUserProvider
+          .overrideWithProvider((ref, param) => Future.value());
+      // 配列要素が一つの家族一覧画面Widgetをレンダリング
+      await tester.pumpWidget(setUpProviderScope(
+          Future.value([const UserNicknameEntity(id: 1237, nickname: '花子')]),
+          futureProvider));
+      await _verifyTheStatusBeforeAfterLoading(tester);
+      // 一覧に一つの要素が表示されていることを確認
+      expect(find.text('花子'), findsOneWidget);
+      // 一覧の要素をスワイプ
+      await tester.drag(find.byType(Dismissible), const Offset(500, 0));
+      // Widgetがレンダリング完了するまで処理を待機
+      await tester.pumpAndSettle();
+      // 削除確認ダイアログ表示チェック
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text('OK'), findsOneWidget);
+      expect(find.text('Cancel'), findsOneWidget);
+      // OKボタンをタップ
+      await tester.tap(find.text('OK'));
+      // Widgetがレンダリング完了するまで処理を待機
+      await tester.pumpAndSettle();
+      // 削除確認ダイアログ非表示チェック
+      expect(find.byType(AlertDialog), findsNothing);
+      // 一覧画面の要素が削除されていることを確認
+      expect(find.text('花子'), findsNothing);
     });
   });
 }

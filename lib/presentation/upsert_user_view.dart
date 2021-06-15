@@ -23,31 +23,22 @@ final updateFamilyUserApiProvider = Provider(
   ),
 );
 
-final createFamilyUserRepositoryProvider = Provider<CreateFamilyUserRepository>(
-  (ref) => CreateFamilyUserRepositoryImpl(
+final createFamilyUserProvider = FutureProvider.autoDispose
+    .family<UserNicknameEntity, String>((ref, nickname) async {
+  final repository = CreateFamilyUserRepositoryImpl(
     createFamilyUserApi: ref.read(createFamilyUserApiProvider),
-  ),
-);
+  );
+  return repository.createUser(nickname: nickname);
+});
 
-final updateFamilyUserRepositoryProvider = Provider<UpdateFamilyUserRepository>(
-  (ref) => UpdateFamilyUserRepositoryImpl(
+final updateFamilyUserProvider = FutureProvider.autoDispose
+    .family<UserNicknameEntity, UserNicknameEntity>((ref, entity) async {
+  final repository = UpdateFamilyUserRepositoryImpl(
     updateFamilyUserApi: ref.read(updateFamilyUserApiProvider),
-  ),
-);
-
-final createFamilyUserProvider =
-    FutureProvider.autoDispose.family<UserNicknameEntity, String>(
-  (ref, nickname) async => ref
-      .read(createFamilyUserRepositoryProvider)
-      .createUser(nickname: nickname),
-);
-
-final updateFamilyUserProvider =
-    FutureProvider.autoDispose.family<UserNicknameEntity, UserNicknameEntity>(
-  (ref, entity) async => ref
-      .read(updateFamilyUserRepositoryProvider)
-      .updateUser(familyUserId: entity.id, nickname: entity.nickname),
-);
+  );
+  return repository.updateUser(
+      familyUserId: entity.id, nickname: entity.nickname);
+});
 
 class UpsertUserView extends StatelessWidget {
   @override

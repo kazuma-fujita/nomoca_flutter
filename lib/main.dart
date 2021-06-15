@@ -83,13 +83,16 @@ void main() {
           StateProvider((ref) {
             return Future.value([
               const UserNicknameEntity(id: 1234, nickname: '花子'),
+              const UserNicknameEntity(id: 1235, nickname: '次郎'),
             ]);
           }),
         ),
-        createFamilyUserRepositoryProvider
-            .overrideWithValue(FakeCreateFamilyUserRepositoryImpl()),
-        updateFamilyUserRepositoryProvider
-            .overrideWithValue(FakeUpdateFamilyUserRepositoryImpl()),
+        createFamilyUserProvider.overrideWithProvider((ref, param) =>
+            Future.value(const UserNicknameEntity(id: 1234, nickname: '花子'))),
+        updateFamilyUserProvider.overrideWithProvider((ref, param) =>
+            Future.value(const UserNicknameEntity(id: 1234, nickname: '次郎'))),
+        deleteFamilyUserProvider
+            .overrideWithProvider((ref, param) => Future.value()),
       ],
       child: MyApp(),
     ),
