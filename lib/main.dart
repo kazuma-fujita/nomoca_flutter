@@ -12,6 +12,7 @@ import 'package:nomoca_flutter/data/api/authentication_api.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
 import 'package:nomoca_flutter/presentation/sign_up/sign_up_view_model.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
+import 'package:nomoca_flutter/presentation/user_management_view.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
 
@@ -108,7 +109,7 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         RouteNames.upsertUser: (_) => UpsertUserView(),
       },
-      home: FamilyUserListView(),
+      home: UserManagementView(),
       builder: EasyLoading.init(),
     );
   }
