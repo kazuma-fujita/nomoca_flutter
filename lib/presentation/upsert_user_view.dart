@@ -109,6 +109,10 @@ class _Form extends ConsumerWidget {
     // TextFormFieldのvalidate実行
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      // context
+      //     .read(user == null
+      //         ? createFamilyUserProvider(_nickname)
+      //         : updateFamilyUserProvider(user))
       asyncValue.when(
         data: (response) async {
           print('Data here $response');

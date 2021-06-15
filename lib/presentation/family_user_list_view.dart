@@ -111,11 +111,12 @@ class FamilyUserListView extends HookWidget {
 
   Future<void> _transitionToNextScreen(BuildContext context,
       {UserNicknameEntity? user}) async {
+    // upsert-user画面へ遷移。pushNamedの戻り値は遷移先から取得した値。
     final result = await Navigator.pushNamed(context, RouteNames.upsertUser,
         arguments: user) as String?;
 
     if (result != null) {
-      // SnackBarを表示
+      // 家族アカウントを(作成/更新)しましたメッセージをSnackBarで表示
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(result)));
     }
@@ -133,6 +134,7 @@ class FamilyUserListView extends HookWidget {
         return confirmResult;
       },
       onDismissed: (DismissDirection direction) {
+        // listItem削除のcallback処理。以下関数で削除APIを実行
         _deleteFamilyUser(context, user);
       },
       // swipe中ListTileのbackground

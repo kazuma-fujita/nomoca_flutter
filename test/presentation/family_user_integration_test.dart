@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
@@ -23,10 +24,11 @@ void main() {
         patientCardState.overrideWithValue(const AsyncData([])),
       ],
       child: MaterialApp(
-        home: Scaffold(body: FamilyUserListView()),
+        home: FamilyUserListView(),
         routes: <String, WidgetBuilder>{
           RouteNames.upsertUser: (_) => UpsertUserView(),
         },
+        builder: EasyLoading.init(),
       ),
     );
   }
