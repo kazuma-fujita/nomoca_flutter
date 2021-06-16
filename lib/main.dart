@@ -1,24 +1,26 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nomoca_flutter/constants/route_names.dart';
-import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
-import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
-import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/constants/environment_variables.dart';
 import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
+import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/api/api_client.dart';
 import 'package:nomoca_flutter/data/api/authentication_api.dart';
+import 'package:nomoca_flutter/data/entity/database/user.dart';
+import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
+import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
+import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/sign_up/sign_up_view_model.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
 import 'package:nomoca_flutter/presentation/user_management_view.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
-
 import 'data/entity/remote/patient_card_entity.dart';
-import 'data/repository/create_family_user_repository.dart';
-import 'data/repository/update_family_user_repository.dart';
 
 final apiClientProvider = Provider(
   (_) => ApiClientImpl(
@@ -45,9 +47,15 @@ final signupViewModelProvider = StateNotifierProvider.autoDispose(
   ),
 );
 
-void main() {
+Future<void> main() async {
   const contentsBaseUrl = 'https://contents-debug.nomoca.com';
   initEasyLoading();
+  // Initializes Hive.
+  // final path = Directory.current.path;
+  // Hive.init(path);
+  await Hive.initFlutter();
+  Hive.registerAdapter<User>(UserAdapter());
+  await Hive.openBox<User>('users');
   runApp(
     ProviderScope(
       overrides: [
