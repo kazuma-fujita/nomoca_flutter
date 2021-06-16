@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive/hive.dart';
@@ -20,6 +18,8 @@ import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
 import 'package:nomoca_flutter/presentation/user_management_view.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
+
+import 'constants/db_table_names.dart';
 import 'data/entity/remote/patient_card_entity.dart';
 
 final apiClientProvider = Provider(
@@ -51,11 +51,9 @@ Future<void> main() async {
   const contentsBaseUrl = 'https://contents-debug.nomoca.com';
   initEasyLoading();
   // Initializes Hive.
-  // final path = Directory.current.path;
-  // Hive.init(path);
   await Hive.initFlutter();
   Hive.registerAdapter<User>(UserAdapter());
-  await Hive.openBox<User>('users');
+  await Hive.openBox<User>(DBTableNames.users);
   runApp(
     ProviderScope(
       overrides: [

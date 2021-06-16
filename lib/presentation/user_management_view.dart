@@ -2,7 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
+import 'package:nomoca_flutter/data/dao/user_dao.dart';
+import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
+
+class AuthenticationError extends Error {}
+
+final userManagementViewState = FutureProvider.autoDispose<User>((ref) async {
+  final dao = UserDaoImpl();
+  final user = dao.get();
+  if (user == null) {
+    throw AuthenticationError();
+  }
+  return user;
+});
 
 @immutable
 class UserManagementViewData {
@@ -40,40 +53,57 @@ class UserManagementView extends HookWidget {
   Widget build(BuildContext context) {
     final viewDataList = context.read(userManagementViewDataProvider);
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 64),
-          const Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: Text(
-              'ようこそ○○○さん',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontSize: 32,
-              ),
-            ),
-          ),
-          Center(
-            child: ElevatedButton(
-              onPressed: () {},
-              child: const Text('プロフィール編集'),
-            ),
-          ),
-          ListView.builder(
-            key: UniqueKey(),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(16),
-            itemCount: viewDataList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _listItem(viewDataList[index], context);
+      // DBからUserEntity取得
+      body: context.read(userManagementViewState).maybeWhen(
+            data: (user) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 64),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Text(
+                      'ようこそ${user.nickname}さん',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 32,
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('プロフィール編集'),
+                    ),
+                  ),
+                  ListView.builder(
+                    key: UniqueKey(),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(16),
+                    itemCount: viewDataList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _listItem(viewDataList[index], context);
+                    },
+                  ),
+                ],
+              );
             },
+            error: (error, _) {
+              WidgetsBinding.instance!.addPostFrameCallback((_) async {
+                if (error is AuthenticationError) {
+                  // 認証エラーはログイン画面へ遷移
+                  await Navigator.pushNamed(context, RouteNames.signIn);
+                }
+                // その他エラーをSnackBarで表示
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(error.toString())));
+              });
+            },
+            orElse: () {},
           ),
-        ],
-      ),
     );
   }
 
