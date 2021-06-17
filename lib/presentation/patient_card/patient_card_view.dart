@@ -88,7 +88,6 @@ class _PatientCardView extends HookWidget {
   Widget build(BuildContext context) {
     return useProvider(patientCardState).when(
       data: (patientCardList) {
-        print('fetch data. $patientCardList');
         // Stack Widgetで背景画像の上にQRコードを配置する
         return Stack(
           children: [
@@ -115,11 +114,9 @@ class _PatientCardView extends HookWidget {
         );
       },
       loading: () {
-        print('loading here');
         return Container();
       },
       error: (error, _) {
-        print('error here $error');
         return ErrorSnackBar(
           errorMessage: error.toString(),
           callback: () => context.refresh(patientCardState),
@@ -135,7 +132,6 @@ class _TabPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(imageUrl);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

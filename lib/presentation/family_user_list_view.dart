@@ -8,6 +8,7 @@ import 'package:nomoca_flutter/data/repository/delete_family_user_repository.dar
 import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
+import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
@@ -113,10 +114,11 @@ class FamilyUserListView extends HookWidget {
       {UserNicknameEntity? user}) async {
     // upsert-user画面へ遷移。pushNamedの戻り値は遷移先から取得した値。
     final result = await Navigator.pushNamed(context, RouteNames.upsertUser,
-        arguments: user) as String?;
+            arguments: UpsertUserViewArguments(isFamilyUser: true, user: user))
+        as String?;
 
     if (result != null) {
-      // 家族アカウントを(作成/更新)しましたメッセージをSnackBarで表示
+      // 家族アカウントを(作成/編集)しましたメッセージをSnackBarで表示
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(result)));
     }

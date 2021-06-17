@@ -8,6 +8,7 @@ import 'package:nomoca_flutter/data/repository/create_family_user_repository.dar
 import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart';
 import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
+import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
@@ -43,11 +44,12 @@ final updateFamilyUserProvider = FutureProvider.autoDispose
 class UpsertUserView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final user =
-        ModalRoute.of(context)!.settings.arguments as UserNicknameEntity?;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as UpsertUserViewArguments?;
     return Scaffold(
       appBar: AppBar(
-        title: Text('家族アカウント${user == null ? '作成' : '編集'}'),
+        // title: Text('家族アカウント${user == null ? '作成' : '編集'}'),
+        title: Text(args!.screenTitle()),
       ),
       body: _Form(),
     );
@@ -62,12 +64,12 @@ class _Form extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     // 一覧画面からuser情報を取得
-    final user =
-        ModalRoute.of(context)!.settings.arguments as UserNicknameEntity?;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as UpsertUserViewArguments?;
     // user情報があれば家族アカウント作成、無ければ更新
-    final asyncValue = watch(user == null
+    final asyncValue = watch(args!.user == null
         ? createFamilyUserProvider(_nickname)
-        : updateFamilyUserProvider(user));
+        : updateFamilyUserProvider(args.user!));
     return Form(
       key: _formKey,
       child: Container(
@@ -76,7 +78,8 @@ class _Form extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             TextFormField(
-              initialValue: user != null ? user.nickname : '',
+              // initialValue: user != null ? user.nickname : '',
+              initialValue: args.textFormFieldInitialValue(),
               maxLength: 20,
               // maxLength以上入力不可
               // maxLengthEnforced: true,
@@ -104,35 +107,31 @@ class _Form extends ConsumerWidget {
   }
 
   void _submission(BuildContext context, {required AsyncValue asyncValue}) {
-    final user =
-        ModalRoute.of(context)!.settings.arguments as UserNicknameEntity?;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as UpsertUserViewArguments?;
     // TextFormFieldのvalidate実行
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // context
-      //     .read(user == null
-      //         ? createFamilyUserProvider(_nickname)
-      //         : updateFamilyUserProvider(user))
       asyncValue.when(
         data: (response) async {
-          print('Data here $response');
           final entity = response as UserNicknameEntity;
           // 家族一覧画面の状態更新。dispatcherのstateを更新するとfamilyUserListReducerが再実行される
-          context.read(familyUserActionDispatcher).state = user == null
+          context.read(familyUserActionDispatcher).state = args!.user == null
               ? FamilyUserAction.create(entity)
               : FamilyUserAction.update(entity);
           // 診察券画面の状態更新。patientCardStateではAPI経由で診察券情報を再取得する
           await context.refresh(patientCardState);
           // ローディング非表示
           await EasyLoading.dismiss();
-          // 一覧画面へ遷移
-          Navigator.pop(context, '家族アカウントを${user == null ? '作成' : '編集'}しました');
+          // 一覧画面へ遷移。引数に遷移後の表示メッセージを設定
+          Navigator.pop(context, args.navigationPopMessage());
         },
         loading: () async {
           // ローディング表示
           await EasyLoading.show();
         },
         error: (error, _) {
+          // ローディング非表示
           EasyLoading.dismiss();
           // SnackBar表示
           ScaffoldMessenger.of(context)

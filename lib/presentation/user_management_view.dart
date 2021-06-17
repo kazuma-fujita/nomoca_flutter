@@ -3,18 +3,19 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/dao/user_dao.dart';
-import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
+import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
 
 class AuthenticationError extends Error {}
 
-final userManagementViewState = FutureProvider.autoDispose<User>((ref) async {
+final userManagementViewState =
+    FutureProvider.autoDispose<UserNicknameEntity>((ref) async {
   final dao = UserDaoImpl();
   final user = dao.get();
-  if (user == null) {
+  if (user == null || user.userId == null || user.nickname == null) {
     throw AuthenticationError();
   }
-  return user;
+  return UserNicknameEntity(id: user.userId!, nickname: user.nickname!);
 });
 
 @immutable
@@ -74,7 +75,8 @@ class UserManagementView extends HookWidget {
                   ),
                   Center(
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () =>
+                          _transitionToNextScreen(context, user: user),
                       child: const Text('プロフィール編集'),
                     ),
                   ),
@@ -136,13 +138,13 @@ class UserManagementView extends HookWidget {
   }
 
   Future<void> _transitionToNextScreen(BuildContext context,
-      {UserNicknameEntity? user}) async {
+      {required UserNicknameEntity user}) async {
     // upsert-user画面へ遷移。pushNamedの戻り値は遷移先から取得した値。
     final result = await Navigator.pushNamed(context, RouteNames.upsertUser,
-        arguments: user) as String?;
+        arguments: UpsertUserViewArguments(user: user)) as String?;
 
     if (result != null) {
-      // 家族アカウントを(作成/更新)しましたメッセージをSnackBarで表示
+      // プロフィールを更新しましたメッセージをSnackBarで表示
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(result)));
     }

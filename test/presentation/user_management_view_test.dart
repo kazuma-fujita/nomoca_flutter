@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
-import 'package:nomoca_flutter/data/entity/database/user.dart';
+import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/presentation/sign_in_view.dart';
 import 'package:nomoca_flutter/presentation/user_management_view.dart';
 
 void main() {
-  ProviderScope setUpProviderScope(AsyncValue<User> asyncValue) {
+  ProviderScope setUpProviderScope(AsyncValue<UserNicknameEntity> asyncValue) {
     return ProviderScope(
       overrides: [
         // 家族アカウント追加・更新・削除時に診察券画面のデータ再取得実行
@@ -31,10 +31,8 @@ void main() {
 
   group('Testing the user management view.', () {
     testWidgets('Testing element of view.', (WidgetTester tester) async {
-      final user = User()
-        ..userId = 1
-        ..nickname = '太郎';
-      await tester.pumpWidget(setUpProviderScope(AsyncValue.data(user)));
+      const user = UserNicknameEntity(id: 1, nickname: '太郎');
+      await tester.pumpWidget(setUpProviderScope(const AsyncValue.data(user)));
       _verifyElementOfView();
       expect(find.text('ようこそ太郎さん'), findsOneWidget);
     });
