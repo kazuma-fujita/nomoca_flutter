@@ -3,12 +3,15 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/api/create_family_user_api.dart';
 import 'package:nomoca_flutter/data/api/update_family_user_api.dart';
+import 'package:nomoca_flutter/data/api/update_user_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/create_family_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart';
+import 'package:nomoca_flutter/data/repository/update_user_repository.dart';
 import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
+import 'package:nomoca_flutter/presentation/user_management_view.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
@@ -24,6 +27,12 @@ final updateFamilyUserApiProvider = Provider(
   ),
 );
 
+final updateUserApiProvider = Provider(
+  (ref) => UpdateUserApiImpl(
+    apiClient: ref.read(apiClientProvider),
+  ),
+);
+
 final createFamilyUserProvider = FutureProvider.autoDispose
     .family<UserNicknameEntity, String>((ref, nickname) async {
   final repository = CreateFamilyUserRepositoryImpl(
@@ -33,12 +42,19 @@ final createFamilyUserProvider = FutureProvider.autoDispose
 });
 
 final updateFamilyUserProvider = FutureProvider.autoDispose
-    .family<UserNicknameEntity, UserNicknameEntity>((ref, entity) async {
+    .family<UserNicknameEntity, UserNicknameEntity>((ref, user) async {
   final repository = UpdateFamilyUserRepositoryImpl(
     updateFamilyUserApi: ref.read(updateFamilyUserApiProvider),
   );
-  return repository.updateUser(
-      familyUserId: entity.id, nickname: entity.nickname);
+  return repository.updateUser(familyUserId: user.id, nickname: user.nickname);
+});
+
+final updateUserProvider = FutureProvider.autoDispose
+    .family<UserNicknameEntity, UserNicknameEntity>((ref, user) async {
+  final repository = UpdateUserRepositoryImpl(
+    updateUserApi: ref.read(updateUserApiProvider),
+  );
+  return repository.updateUser(userId: user.id, nickname: user.nickname);
 });
 
 class UpsertUserView extends StatelessWidget {
@@ -66,10 +82,12 @@ class _Form extends ConsumerWidget {
     // 一覧画面からuser情報を取得
     final args =
         ModalRoute.of(context)!.settings.arguments as UpsertUserViewArguments?;
-    // user情報があれば家族アカウント作成、無ければ更新
-    final asyncValue = watch(args!.user == null
+    final user = args!.user;
+    final asyncValue = watch(user == null
         ? createFamilyUserProvider(_nickname)
-        : updateFamilyUserProvider(args.user!.copyWith(nickname: _nickname)));
+        : args.isFamilyUser
+            ? updateFamilyUserProvider(user.copyWith(nickname: _nickname))
+            : updateUserProvider(user.copyWith(nickname: _nickname)));
     return Form(
       key: _formKey,
       child: Container(
@@ -78,7 +96,6 @@ class _Form extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             TextFormField(
-              // initialValue: user != null ? user.nickname : '',
               initialValue: args.textFormFieldInitialValue(),
               maxLength: 20,
               // maxLength以上入力不可
@@ -115,10 +132,15 @@ class _Form extends ConsumerWidget {
       asyncValue.when(
         data: (response) async {
           final entity = response as UserNicknameEntity;
-          // 家族一覧画面の状態更新。dispatcherのstateを更新するとfamilyUserListReducerが再実行される
-          context.read(familyUserActionDispatcher).state = args!.user == null
-              ? FamilyUserAction.create(entity)
-              : FamilyUserAction.update(entity);
+          if (args!.isFamilyUser) {
+            // 家族一覧画面の状態更新。dispatcherのstateを更新するとfamilyUserListReducerが再実行される
+            context.read(familyUserActionDispatcher).state = args.user == null
+                ? FamilyUserAction.create(entity)
+                : FamilyUserAction.update(entity);
+          } else if (args.user != null) {
+            // プロフィール画面のニックネーム更新
+            await context.refresh(userManagementViewState);
+          }
           // 診察券画面の状態更新。patientCardStateではAPI経由で診察券情報を再取得する
           await context.refresh(patientCardState);
           // ローディング非表示
