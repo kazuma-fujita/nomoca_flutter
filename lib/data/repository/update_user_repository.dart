@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 import 'package:nomoca_flutter/data/api/update_user_api.dart';
 import 'package:nomoca_flutter/data/dao/user_dao.dart';
-import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
+import 'package:nomoca_flutter/presentation/user_management_view.dart';
 
 // ignore: one_member_abstracts
 abstract class UpdateUserRepository {
@@ -26,8 +26,12 @@ class UpdateUserRepositoryImpl extends UpdateUserRepository {
     required int userId,
     required String nickname,
   }) async {
-    // TODO: DBからtoken取得
-    const authenticationToken = '${NomocaApiProperties.jwtPrefix} dummy';
+    final user = userDao.get();
+    if (user == null || user.authenticationToken == null) {
+      throw AuthenticationError();
+    }
+    final authenticationToken =
+        '${NomocaApiProperties.jwtPrefix} ${user.authenticationToken}';
     try {
       final responseBody = await updateUserApi(
         authenticationToken: authenticationToken,
@@ -38,11 +42,10 @@ class UpdateUserRepositoryImpl extends UpdateUserRepository {
       // Conversion json to entity.
       final entity =
           UserNicknameEntity.fromJson(decodedJson as Map<String, dynamic>);
-
       // Update nickname.
-      await userDao.save(User()
-        ..userId = userId
-        ..nickname = nickname);
+      // user.nickname = nickname;
+      // await user.save();
+      await userDao.save(user..nickname = nickname);
 
       return entity;
     } on Exception catch (error) {

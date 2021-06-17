@@ -53,6 +53,7 @@ final updateUserProvider = FutureProvider.autoDispose
     .family<UserNicknameEntity, UserNicknameEntity>((ref, user) async {
   final repository = UpdateUserRepositoryImpl(
     updateUserApi: ref.read(updateUserApiProvider),
+    userDao: ref.read(userDaoProvider),
   );
   return repository.updateUser(userId: user.id, nickname: user.nickname);
 });

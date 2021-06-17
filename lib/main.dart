@@ -8,6 +8,7 @@ import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/api/api_client.dart';
 import 'package:nomoca_flutter/data/api/authentication_api.dart';
+import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
@@ -21,6 +22,10 @@ import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
 
 import 'constants/db_table_names.dart';
 import 'data/entity/remote/patient_card_entity.dart';
+
+final userDaoProvider = Provider(
+  (_) => UserDaoImpl(),
+);
 
 final apiClientProvider = Provider(
   (_) => ApiClientImpl(

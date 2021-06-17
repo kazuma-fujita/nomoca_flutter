@@ -6,6 +6,8 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:nomoca_flutter/data/api/update_user_api.dart' as _i2;
+import 'package:nomoca_flutter/data/dao/user_dao.dart' as _i4;
+import 'package:nomoca_flutter/data/entity/database/user.dart' as _i5;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: comment_references
@@ -31,4 +33,19 @@ class MockUpdateUserApi extends _i1.Mock implements _i2.UpdateUserApi {
             #nickname: nickname
           }),
           returnValue: Future<String>.value('')) as _i3.Future<String>);
+}
+
+/// A class which mocks [UserDao].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUserDao extends _i1.Mock implements _i4.UserDao {
+  MockUserDao() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<void> save(_i5.User? user) =>
+      (super.noSuchMethod(Invocation.method(#save, [user]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future.value()) as _i3.Future<void>);
 }
