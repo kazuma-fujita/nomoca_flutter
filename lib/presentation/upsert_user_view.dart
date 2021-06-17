@@ -69,7 +69,7 @@ class _Form extends ConsumerWidget {
     // user情報があれば家族アカウント作成、無ければ更新
     final asyncValue = watch(args!.user == null
         ? createFamilyUserProvider(_nickname)
-        : updateFamilyUserProvider(args.user!));
+        : updateFamilyUserProvider(args.user!.copyWith(nickname: _nickname)));
     return Form(
       key: _formKey,
       child: Container(
