@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
-import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
+
+import '../main.dart';
 
 class AuthenticationError extends Error {}
 
 final userManagementViewState =
     FutureProvider.autoDispose<UserNicknameEntity>((ref) async {
-  final dao = UserDaoImpl();
+  final dao = ref.read(userDaoProvider);
   final user = dao.get();
   if (user == null || user.userId == null || user.nickname == null) {
     throw AuthenticationError();

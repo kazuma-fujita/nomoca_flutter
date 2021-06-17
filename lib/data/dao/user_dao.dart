@@ -8,13 +8,16 @@ abstract class UserDao {
 }
 
 class UserDaoImpl extends UserDao {
-  final Box<User> _users = Hive.box<User>(DBTableNames.users);
+  // final Box<User> _users = Hive.box<User>(DBTableNames.users);
+  UserDaoImpl(this.users);
+
+  final Box<User> users;
 
   void _verifyDBStatus() {
-    if (!_users.isOpen) {
+    if (!users.isOpen) {
       throw Exception('Table name ${DBTableNames.users} is not open.');
     }
-    if (_users.length > 1) {
+    if (users.length > 1) {
       throw Exception(
           'Table name ${DBTableNames.users} is more than one record.');
     }
@@ -23,20 +26,20 @@ class UserDaoImpl extends UserDao {
   @override
   Future<void> save(User user) async {
     _verifyDBStatus();
-    if (_users.length == 0) {
-      await _users.add(user);
+    if (users.length == 0) {
+      await users.add(user);
     } else {
-      final entity = _users.getAt(0);
+      final entity = users.getAt(0);
       if (entity == null) {
         throw Exception('Table name ${DBTableNames.users} record is null.');
       }
-      await _users.put(entity.key, user);
+      await users.put(entity.key, user);
     }
   }
 
   @override
   User? get() {
     _verifyDBStatus();
-    return _users.length == 1 ? _users.getAt(0) : null;
+    return users.length == 1 ? users.getAt(0) : null;
   }
 }

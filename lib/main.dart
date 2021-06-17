@@ -24,7 +24,7 @@ import 'constants/db_table_names.dart';
 import 'data/entity/remote/patient_card_entity.dart';
 
 final userDaoProvider = Provider(
-  (_) => UserDaoImpl(),
+  (_) => UserDaoImpl(Hive.box<User>(DBTableNames.users)),
 );
 
 final apiClientProvider = Provider(
