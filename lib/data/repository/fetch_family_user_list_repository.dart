@@ -1,24 +1,26 @@
 import 'dart:convert';
 
-import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 import 'package:nomoca_flutter/data/api/fetch_family_user_list_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
+import 'package:nomoca_flutter/data/dao/user_dao.dart';
+import 'package:nomoca_flutter/data/repository/authenticated.dart';
 
 // ignore: one_member_abstracts
-abstract class FetchFamilyUserListRepository {
+abstract class FetchFamilyUserListRepository with Authenticated {
   Future<List<UserNicknameEntity>> fetchList();
 }
 
-class FetchFamilyUserListRepositoryImpl
-    implements FetchFamilyUserListRepository {
-  FetchFamilyUserListRepositoryImpl({required this.fetchFamilyUserListApi});
+class FetchFamilyUserListRepositoryImpl extends FetchFamilyUserListRepository {
+  FetchFamilyUserListRepositoryImpl(
+      {required this.fetchFamilyUserListApi, required this.userDao});
 
   final FetchFamilyUserListApi fetchFamilyUserListApi;
+  final UserDao userDao;
 
   @override
   Future<List<UserNicknameEntity>> fetchList() async {
-    // TODO: DBからtoken取得
-    const authenticationToken = '${NomocaApiProperties.jwtPrefix} dummy';
+    final user = userDao.get();
+    final authenticationToken = getAuthenticationToken(user);
     try {
       final responseBody = await fetchFamilyUserListApi(
           authenticationToken: authenticationToken);
@@ -36,7 +38,7 @@ class FetchFamilyUserListRepositoryImpl
 }
 
 class FakeFetchFamilyUserListRepositoryImpl
-    implements FetchFamilyUserListRepository {
+    extends FetchFamilyUserListRepository {
   @override
   Future<List<UserNicknameEntity>> fetchList() async {
     print('Execute FakeFetchFamilyUserListRepositoryImpl.fetchList()');

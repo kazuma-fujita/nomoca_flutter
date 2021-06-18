@@ -22,6 +22,7 @@ final deleteFamilyUserRepositoryProvider =
     Provider.autoDispose<DeleteFamilyUserRepository>(
   (ref) => DeleteFamilyUserRepositoryImpl(
     deleteFamilyUserApi: ref.read(_deleteFamilyUserApiProvider),
+    userDao: ref.read(userDaoProvider),
   ),
 );
 

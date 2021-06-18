@@ -21,6 +21,7 @@ final patientCardRepositoryProvider =
     Provider.autoDispose<PatientCardRepository>(
   (ref) => PatientCardRepositoryImpl(
     patientCardApi: ref.read(patientCardApiProvider),
+    userDao: ref.read(userDaoProvider),
   ),
 );
 

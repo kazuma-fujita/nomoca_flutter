@@ -2,24 +2,30 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nomoca_flutter/data/api/patient_card_api.dart';
+import 'package:nomoca_flutter/data/dao/user_dao.dart';
+import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 import 'package:nomoca_flutter/data/repository/patient_card_repository.dart';
 import '../../fixture.dart';
 import 'patient_card_repository_test.mocks.dart';
 
-@GenerateMocks([PatientCardApi])
+@GenerateMocks([PatientCardApi, UserDao])
 void main() {
   late MockPatientCardApi _api;
   late PatientCardRepository _repository;
+  late MockUserDao _userDao;
 
   setUp(() async {
     _api = MockPatientCardApi();
-    _repository = PatientCardRepositoryImpl(patientCardApi: _api);
+    _userDao = MockUserDao();
+    _repository =
+        PatientCardRepositoryImpl(patientCardApi: _api, userDao: _userDao);
   });
 
   group('Testing the patient card repository.', () {
     test('Testing the conversion of api responses to entities.', () async {
       // Create the stub.
+      when(_userDao.get()).thenReturn(User()..authenticationToken = 'dummy');
       when(
         _api.get(authenticationToken: anyNamed('authenticationToken')),
       ).thenAnswer((_) async => fixture('patient_card.json'));
@@ -44,12 +50,14 @@ void main() {
       );
       // Validate the method call.
       verify(_api.get(authenticationToken: anyNamed('authenticationToken')));
+      verify(_userDao.get());
     });
   });
 
   group('Error testing of the patient card repository.', () {
     test('Error testing for json conversion.', () async {
       // Create the stub.
+      when(_userDao.get()).thenReturn(User()..authenticationToken = 'dummy');
       when(
         _api.get(
           authenticationToken: anyNamed('authenticationToken'),
@@ -62,6 +70,7 @@ void main() {
       );
       // Validate the method call.
       verify(_api.get(authenticationToken: anyNamed('authenticationToken')));
+      verify(_userDao.get());
     });
   });
 }

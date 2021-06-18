@@ -16,6 +16,7 @@ final fetchFamilyUserListRepositoryProvider =
     Provider.autoDispose<FetchFamilyUserListRepository>(
   (ref) => FetchFamilyUserListRepositoryImpl(
     fetchFamilyUserListApi: ref.read(_fetchFamilyUserListApiProvider),
+    userDao: ref.read(userDaoProvider),
   ),
 );
 

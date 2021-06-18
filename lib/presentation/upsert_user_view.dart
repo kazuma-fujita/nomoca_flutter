@@ -37,6 +37,7 @@ final createFamilyUserRepositoryProvider =
     Provider.autoDispose<CreateFamilyUserRepository>(
   (ref) => CreateFamilyUserRepositoryImpl(
     createFamilyUserApi: ref.read(_createFamilyUserApiProvider),
+    userDao: ref.read(userDaoProvider),
   ),
 );
 
@@ -44,6 +45,7 @@ final updateFamilyUserRepositoryProvider =
     Provider.autoDispose<UpdateFamilyUserRepository>(
   (ref) => UpdateFamilyUserRepositoryImpl(
     updateFamilyUserApi: ref.read(_updateFamilyUserApiProvider),
+    userDao: ref.read(userDaoProvider),
   ),
 );
 

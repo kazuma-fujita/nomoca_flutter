@@ -5,20 +5,21 @@
 import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:nomoca_flutter/data/entity/database/user.dart' as _i5;
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart'
-    as _i9;
+    as _i10;
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart'
     as _i2;
 import 'package:nomoca_flutter/data/repository/create_family_user_repository.dart'
     as _i3;
 import 'package:nomoca_flutter/data/repository/delete_family_user_repository.dart'
-    as _i6;
-import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart'
     as _i7;
-import 'package:nomoca_flutter/data/repository/patient_card_repository.dart'
+import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart'
     as _i8;
+import 'package:nomoca_flutter/data/repository/patient_card_repository.dart'
+    as _i9;
 import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart'
-    as _i5;
+    as _i6;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: comment_references
@@ -44,13 +45,17 @@ class MockCreateFamilyUserRepository extends _i1.Mock
           returnValue: Future<_i2.UserNicknameEntity>.value(
               _FakeUserNicknameEntity())) as _i4
       .Future<_i2.UserNicknameEntity>);
+  @override
+  String getAuthenticationToken(_i5.User? user) =>
+      (super.noSuchMethod(Invocation.method(#getAuthenticationToken, [user]),
+          returnValue: '') as String);
 }
 
 /// A class which mocks [UpdateFamilyUserRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockUpdateFamilyUserRepository extends _i1.Mock
-    implements _i5.UpdateFamilyUserRepository {
+    implements _i6.UpdateFamilyUserRepository {
   MockUpdateFamilyUserRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -64,13 +69,17 @@ class MockUpdateFamilyUserRepository extends _i1.Mock
               returnValue: Future<_i2.UserNicknameEntity>.value(
                   _FakeUserNicknameEntity()))
           as _i4.Future<_i2.UserNicknameEntity>);
+  @override
+  String getAuthenticationToken(_i5.User? user) =>
+      (super.noSuchMethod(Invocation.method(#getAuthenticationToken, [user]),
+          returnValue: '') as String);
 }
 
 /// A class which mocks [DeleteFamilyUserRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockDeleteFamilyUserRepository extends _i1.Mock
-    implements _i6.DeleteFamilyUserRepository {
+    implements _i7.DeleteFamilyUserRepository {
   MockDeleteFamilyUserRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -80,13 +89,17 @@ class MockDeleteFamilyUserRepository extends _i1.Mock
       Invocation.method(#deleteUser, [], {#familyUserId: familyUserId}),
       returnValue: Future<void>.value(),
       returnValueForMissingStub: Future.value()) as _i4.Future<void>);
+  @override
+  String getAuthenticationToken(_i5.User? user) =>
+      (super.noSuchMethod(Invocation.method(#getAuthenticationToken, [user]),
+          returnValue: '') as String);
 }
 
 /// A class which mocks [FetchFamilyUserListRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockFetchFamilyUserListRepository extends _i1.Mock
-    implements _i7.FetchFamilyUserListRepository {
+    implements _i8.FetchFamilyUserListRepository {
   MockFetchFamilyUserListRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -97,21 +110,29 @@ class MockFetchFamilyUserListRepository extends _i1.Mock
               returnValue: Future<List<_i2.UserNicknameEntity>>.value(
                   <_i2.UserNicknameEntity>[]))
           as _i4.Future<List<_i2.UserNicknameEntity>>);
+  @override
+  String getAuthenticationToken(_i5.User? user) =>
+      (super.noSuchMethod(Invocation.method(#getAuthenticationToken, [user]),
+          returnValue: '') as String);
 }
 
 /// A class which mocks [PatientCardRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockPatientCardRepository extends _i1.Mock
-    implements _i8.PatientCardRepository {
+    implements _i9.PatientCardRepository {
   MockPatientCardRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<List<_i9.PatientCardEntity>> fetchList() =>
+  _i4.Future<List<_i10.PatientCardEntity>> fetchList() =>
       (super.noSuchMethod(Invocation.method(#fetchList, []),
-              returnValue: Future<List<_i9.PatientCardEntity>>.value(
-                  <_i9.PatientCardEntity>[]))
-          as _i4.Future<List<_i9.PatientCardEntity>>);
+              returnValue: Future<List<_i10.PatientCardEntity>>.value(
+                  <_i10.PatientCardEntity>[]))
+          as _i4.Future<List<_i10.PatientCardEntity>>);
+  @override
+  String getAuthenticationToken(_i5.User? user) =>
+      (super.noSuchMethod(Invocation.method(#getAuthenticationToken, [user]),
+          returnValue: '') as String);
 }

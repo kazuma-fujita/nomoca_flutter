@@ -1,11 +1,12 @@
 import 'dart:convert';
 
-import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 import 'package:nomoca_flutter/data/api/update_family_user_api.dart';
+import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
+import 'package:nomoca_flutter/data/repository/authenticated.dart';
 
 // ignore: one_member_abstracts
-abstract class UpdateFamilyUserRepository {
+abstract class UpdateFamilyUserRepository with Authenticated {
   Future<UserNicknameEntity> updateUser({
     required int familyUserId,
     required String nickname,
@@ -13,17 +14,19 @@ abstract class UpdateFamilyUserRepository {
 }
 
 class UpdateFamilyUserRepositoryImpl extends UpdateFamilyUserRepository {
-  UpdateFamilyUserRepositoryImpl({required this.updateFamilyUserApi});
+  UpdateFamilyUserRepositoryImpl(
+      {required this.updateFamilyUserApi, required this.userDao});
 
   final UpdateFamilyUserApi updateFamilyUserApi;
+  final UserDao userDao;
 
   @override
   Future<UserNicknameEntity> updateUser({
     required int familyUserId,
     required String nickname,
   }) async {
-    // TODO: DBからtoken取得
-    const authenticationToken = '${NomocaApiProperties.jwtPrefix} dummy';
+    final user = userDao.get();
+    final authenticationToken = getAuthenticationToken(user);
     try {
       final responseBody = await updateFamilyUserApi(
         authenticationToken: authenticationToken,

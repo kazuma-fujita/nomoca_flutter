@@ -1,13 +1,12 @@
 import 'dart:convert';
 
-import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 import 'package:nomoca_flutter/data/api/update_user_api.dart';
 import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
-import 'package:nomoca_flutter/errors/authentication_error.dart';
+import 'package:nomoca_flutter/data/repository/authenticated.dart';
 
 // ignore: one_member_abstracts
-abstract class UpdateUserRepository {
+abstract class UpdateUserRepository with Authenticated {
   Future<UserNicknameEntity> updateUser({
     required int userId,
     required String nickname,
@@ -27,11 +26,7 @@ class UpdateUserRepositoryImpl extends UpdateUserRepository {
     required String nickname,
   }) async {
     final user = userDao.get();
-    if (user == null || user.authenticationToken == null) {
-      throw AuthenticationError();
-    }
-    final authenticationToken =
-        '${NomocaApiProperties.jwtPrefix} ${user.authenticationToken}';
+    final authenticationToken = getAuthenticationToken(user);
     try {
       final responseBody = await updateUserApi(
         authenticationToken: authenticationToken,
@@ -45,7 +40,7 @@ class UpdateUserRepositoryImpl extends UpdateUserRepository {
       // Update nickname.
       // user.nickname = nickname;
       // await user.save();
-      await userDao.save(user..nickname = nickname);
+      await userDao.save(user!..nickname = nickname);
 
       return entity;
     } on Exception catch (error) {
