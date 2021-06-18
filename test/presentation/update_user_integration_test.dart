@@ -103,15 +103,5 @@ void main() {
           userId: anyNamed('userId'), nickname: anyNamed('nickname')));
       verify(_patientCardRepository.fetchList());
     });
-
-    // testWidgets('Testing error of authentication.',
-    //     (WidgetTester tester) async {
-    //   // 認証エラーを発生させてログイン画面へ遷移
-    //   await tester.pumpWidget(
-    //       setUpProviderScope(AsyncValue.error(AuthenticationError())));
-    //   // 遷移先画面Widgetがレンダリングし終わるまで待機
-    //   await tester.pumpAndSettle();
-    //   expect(find.text('ログイン'), findsOneWidget);
-    // });
   });
 }

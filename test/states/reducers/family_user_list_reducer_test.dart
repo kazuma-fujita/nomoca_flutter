@@ -9,14 +9,14 @@ void main() {
     return ProviderContainer(
       overrides: [
         familyUserListState.overrideWithProvider(
-          StateProvider((ref) {
+          StateProvider.autoDispose((ref) {
             return Future.value([
               const UserNicknameEntity(id: 1234, nickname: '花子'),
             ]);
           }),
         ),
         familyUserActionDispatcher
-            .overrideWithProvider(StateProvider((ref) => action)),
+            .overrideWithProvider(StateProvider.autoDispose((ref) => action)),
       ],
     );
   }

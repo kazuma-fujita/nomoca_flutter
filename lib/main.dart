@@ -92,7 +92,7 @@ Future<void> main() async {
         //   (ref, param) => Future<void>.value(),
         // ),
         familyUserListState.overrideWithProvider(
-          StateProvider((ref) {
+          StateProvider.autoDispose((ref) {
             return Future.value([
               const UserNicknameEntity(id: 1234, nickname: '花子'),
               const UserNicknameEntity(id: 1235, nickname: '次郎'),

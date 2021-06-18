@@ -12,17 +12,22 @@ import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
-final deleteFamilyUserApiProvider = Provider(
+final _deleteFamilyUserApiProvider = Provider.autoDispose(
   (ref) => DeleteFamilyUserApiImpl(
     apiClient: ref.read(apiClientProvider),
   ),
 );
 
+final deleteFamilyUserRepositoryProvider =
+    Provider.autoDispose<DeleteFamilyUserRepository>(
+  (ref) => DeleteFamilyUserRepositoryImpl(
+    deleteFamilyUserApi: ref.read(_deleteFamilyUserApiProvider),
+  ),
+);
+
 final deleteFamilyUserProvider =
     FutureProvider.autoDispose.family<void, int>((ref, familyUserId) async {
-  final repository = DeleteFamilyUserRepositoryImpl(
-    deleteFamilyUserApi: ref.read(deleteFamilyUserApiProvider),
-  );
+  final repository = ref.read(deleteFamilyUserRepositoryProvider);
   return repository.deleteUser(familyUserId: familyUserId);
 });
 

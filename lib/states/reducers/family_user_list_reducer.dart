@@ -6,26 +6,31 @@ import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 
 // Private scope
-final _fetchFamilyUserListApiProvider = Provider(
+final _fetchFamilyUserListApiProvider = Provider.autoDispose(
   (ref) => FetchFamilyUserListApiImpl(
     apiClient: ref.read(apiClientProvider),
   ),
 );
 
-// Private scope
+final fetchFamilyUserListRepositoryProvider =
+    Provider.autoDispose<FetchFamilyUserListRepository>(
+  (ref) => FetchFamilyUserListRepositoryImpl(
+    fetchFamilyUserListApi: ref.read(_fetchFamilyUserListApiProvider),
+  ),
+);
+
 // 家族ユーザ一覧の状態保持、一覧取得を行う。reducer内で一覧の状態更新が実行される
-final familyUserListState = StateProvider<Future<List<UserNicknameEntity>>>(
+final familyUserListState =
+    StateProvider.autoDispose<Future<List<UserNicknameEntity>>>(
   (ref) async {
-    final repository = FetchFamilyUserListRepositoryImpl(
-      fetchFamilyUserListApi: ref.read(_fetchFamilyUserListApiProvider),
-    );
+    final repository = ref.read(fetchFamilyUserListRepositoryProvider);
     return repository.fetchList();
   },
 );
 
 // Public scope
 // UpsertUserViewでユーザ作成、更新時ActionStateを更新してreducerを再実行する
-final familyUserActionDispatcher = StateProvider<FamilyUserAction>(
+final familyUserActionDispatcher = StateProvider.autoDispose<FamilyUserAction>(
   (ref) => const FamilyUserAction.fetchList(),
 );
 

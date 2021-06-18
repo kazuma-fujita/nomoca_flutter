@@ -15,46 +15,56 @@ import 'package:nomoca_flutter/presentation/user_management_view.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
-final createFamilyUserApiProvider = Provider(
+final _createFamilyUserApiProvider = Provider(
   (ref) => CreateFamilyUserApiImpl(
     apiClient: ref.read(apiClientProvider),
   ),
 );
 
-final updateFamilyUserApiProvider = Provider(
+final _updateFamilyUserApiProvider = Provider(
   (ref) => UpdateFamilyUserApiImpl(
     apiClient: ref.read(apiClientProvider),
   ),
 );
 
-final updateUserApiProvider = Provider(
+final _updateUserApiProvider = Provider(
   (ref) => UpdateUserApiImpl(
     apiClient: ref.read(apiClientProvider),
   ),
 );
 
+final createFamilyUserRepositoryProvider =
+    Provider.autoDispose<CreateFamilyUserRepository>(
+  (ref) => CreateFamilyUserRepositoryImpl(
+    createFamilyUserApi: ref.read(_createFamilyUserApiProvider),
+  ),
+);
+
+final updateFamilyUserRepositoryProvider =
+    Provider.autoDispose<UpdateFamilyUserRepository>(
+  (ref) => UpdateFamilyUserRepositoryImpl(
+    updateFamilyUserApi: ref.read(_updateFamilyUserApiProvider),
+  ),
+);
+
+final updateUserRepositoryProvider = Provider.autoDispose<UpdateUserRepository>(
+  (ref) => UpdateUserRepositoryImpl(
+    updateUserApi: ref.read(_updateUserApiProvider),
+    userDao: ref.read(userDaoProvider),
+  ),
+);
+
 final createFamilyUserProvider = FutureProvider.autoDispose
     .family<UserNicknameEntity, String>((ref, nickname) async {
-  final repository = CreateFamilyUserRepositoryImpl(
-    createFamilyUserApi: ref.read(createFamilyUserApiProvider),
-  );
+  final repository = ref.read(createFamilyUserRepositoryProvider);
   return repository.createUser(nickname: nickname);
 });
 
 final updateFamilyUserProvider = FutureProvider.autoDispose
     .family<UserNicknameEntity, UserNicknameEntity>((ref, user) async {
-  final repository = UpdateFamilyUserRepositoryImpl(
-    updateFamilyUserApi: ref.read(updateFamilyUserApiProvider),
-  );
+  final repository = ref.read(updateFamilyUserRepositoryProvider);
   return repository.updateUser(familyUserId: user.id, nickname: user.nickname);
 });
-
-final updateUserRepositoryProvider = Provider.autoDispose<UpdateUserRepository>(
-  (ref) => UpdateUserRepositoryImpl(
-    updateUserApi: ref.read(updateUserApiProvider),
-    userDao: ref.read(userDaoProvider),
-  ),
-);
 
 final updateUserProvider = FutureProvider.autoDispose
     .family<UserNicknameEntity, UserNicknameEntity>((ref, user) async {
