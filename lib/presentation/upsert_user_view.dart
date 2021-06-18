@@ -49,12 +49,16 @@ final updateFamilyUserProvider = FutureProvider.autoDispose
   return repository.updateUser(familyUserId: user.id, nickname: user.nickname);
 });
 
-final updateUserProvider = FutureProvider.autoDispose
-    .family<UserNicknameEntity, UserNicknameEntity>((ref, user) async {
-  final repository = UpdateUserRepositoryImpl(
+final updateUserRepositoryProvider = Provider.autoDispose<UpdateUserRepository>(
+  (ref) => UpdateUserRepositoryImpl(
     updateUserApi: ref.read(updateUserApiProvider),
     userDao: ref.read(userDaoProvider),
-  );
+  ),
+);
+
+final updateUserProvider = FutureProvider.autoDispose
+    .family<UserNicknameEntity, UserNicknameEntity>((ref, user) async {
+  final repository = ref.read(updateUserRepositoryProvider);
   return repository.updateUser(userId: user.id, nickname: user.nickname);
 });
 
@@ -130,6 +134,7 @@ class _Form extends ConsumerWidget {
     // TextFormFieldのvalidate実行
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      // プロフィール or 家族アカウント作成・更新
       asyncValue.when(
         data: (response) async {
           final entity = response as UserNicknameEntity;
@@ -139,7 +144,7 @@ class _Form extends ConsumerWidget {
                 ? FamilyUserAction.create(entity)
                 : FamilyUserAction.update(entity);
           } else if (args.user != null) {
-            // プロフィール画面のニックネーム更新
+            // プロフィール画面のニックネーム更新。DBからニックネーム再取得
             await context.refresh(userManagementViewState);
           }
           // 診察券画面の状態更新。patientCardStateではAPI経由で診察券情報を再取得する

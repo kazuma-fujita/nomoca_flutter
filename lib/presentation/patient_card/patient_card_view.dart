@@ -11,13 +11,14 @@ import 'package:nomoca_flutter/data/repository/patient_card_repository.dart';
 import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 
-final patientCardApiProvider = Provider(
+final patientCardApiProvider = Provider.autoDispose(
   (ref) => PatientCardApiImpl(
     apiClient: ref.read(apiClientProvider),
   ),
 );
 
-final patientCardRepositoryProvider = Provider(
+final patientCardRepositoryProvider =
+    Provider.autoDispose<PatientCardRepository>(
   (ref) => PatientCardRepositoryImpl(
     patientCardApi: ref.read(patientCardApiProvider),
   ),

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
+import 'package:nomoca_flutter/errors/authentication_error.dart';
 import 'package:nomoca_flutter/presentation/sign_in_view.dart';
 import 'package:nomoca_flutter/presentation/user_management_view.dart';
 
@@ -10,7 +11,7 @@ void main() {
   ProviderScope setUpProviderScope(AsyncValue<UserNicknameEntity> asyncValue) {
     return ProviderScope(
       overrides: [
-        // 家族アカウント追加・更新・削除時に診察券画面のデータ再取得実行
+        // ニックネームをDBから取得
         userManagementViewState.overrideWithValue(asyncValue),
       ],
       child: MaterialApp(

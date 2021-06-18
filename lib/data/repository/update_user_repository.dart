@@ -4,7 +4,7 @@ import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 import 'package:nomoca_flutter/data/api/update_user_api.dart';
 import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
-import 'package:nomoca_flutter/presentation/user_management_view.dart';
+import 'package:nomoca_flutter/errors/authentication_error.dart';
 
 // ignore: one_member_abstracts
 abstract class UpdateUserRepository {

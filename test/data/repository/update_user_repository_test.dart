@@ -6,7 +6,8 @@ import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/update_user_repository.dart';
-import 'package:nomoca_flutter/presentation/user_management_view.dart';
+import 'package:nomoca_flutter/errors/authentication_error.dart';
+
 import '../../fixture.dart';
 import 'update_user_repository_test.mocks.dart';
 
