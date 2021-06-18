@@ -119,6 +119,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primaryColor: Colors.white),
       routes: <String, WidgetBuilder>{
         RouteNames.upsertUser: (_) => UpsertUserView(),
+        RouteNames.notificationDetail: (_) => UpsertUserView(),
       },
       home: UserManagementView(),
       builder: EasyLoading.init(),
