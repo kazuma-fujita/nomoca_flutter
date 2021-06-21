@@ -19,7 +19,6 @@ import 'package:nomoca_flutter/presentation/notification_list_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/sign_up/sign_up_view_model.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
-import 'package:nomoca_flutter/presentation/user_management_view.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/notification_list_reducer.dart';
 import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
@@ -127,6 +126,8 @@ Future<void> main() async {
             ]);
           }),
         ),
+        updateReadPostProvider
+            .overrideWithProvider((ref, param) => Future.value()),
         familyUserListState.overrideWithProvider(
           StateProvider.autoDispose((ref) {
             return Future.value([

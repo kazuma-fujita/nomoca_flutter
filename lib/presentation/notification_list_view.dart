@@ -2,10 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nomoca_flutter/constants/asset_paths.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
+import 'package:nomoca_flutter/states/actions/notification_list_action.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/notification_list_reducer.dart';
 
@@ -67,16 +67,20 @@ class NotificationListView extends HookWidget with AssetImagePath {
           notification.detail.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.black,
             fontSize: 16,
+            fontWeight:
+                notification.isRead ? FontWeight.normal : FontWeight.bold,
           ),
         ),
         subtitle: Text(
           notification.detail.deliveryDate,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.black,
             fontSize: 10,
+            fontWeight:
+                notification.isRead ? FontWeight.normal : FontWeight.bold,
           ),
         ),
         // 施設画像があれば画像取得。無ければデフォルト施設画像をランダムで表示
@@ -102,12 +106,14 @@ class NotificationListView extends HookWidget with AssetImagePath {
   Future<void> _transitionToNextScreen(
       BuildContext context, NotificationEntity notification) async {
     // 詳細画面へ遷移。pushNamedの戻り値は遷移先から取得した値。
-    final result = await Navigator.pushNamed(
+    final notificationId = await Navigator.pushNamed(
             context, RouteNames.notificationDetail, arguments: notification)
-        as String?;
+        as int?;
 
-    if (result != null) {
+    if (notificationId != null) {
       // 既読未読を更新
+      context.read(notificationListActionDispatcher).state =
+          NotificationListAction.isRead(notificationId);
     }
   }
 }

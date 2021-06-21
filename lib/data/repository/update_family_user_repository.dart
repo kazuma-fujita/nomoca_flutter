@@ -25,8 +25,7 @@ class UpdateFamilyUserRepositoryImpl extends UpdateFamilyUserRepository {
     required int familyUserId,
     required String nickname,
   }) async {
-    final user = userDao.get();
-    final authenticationToken = getAuthenticationToken(user);
+    final authenticationToken = getAuthenticationToken(userDao.get());
     try {
       final responseBody = await updateFamilyUserApi(
         authenticationToken: authenticationToken,

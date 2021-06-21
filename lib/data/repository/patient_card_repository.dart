@@ -19,8 +19,7 @@ class PatientCardRepositoryImpl extends PatientCardRepository {
 
   @override
   Future<List<PatientCardEntity>> fetchList() async {
-    final user = userDao.get();
-    final authenticationToken = getAuthenticationToken(user);
+    final authenticationToken = getAuthenticationToken(userDao.get());
     try {
       final responseBody =
           await patientCardApi.get(authenticationToken: authenticationToken);
