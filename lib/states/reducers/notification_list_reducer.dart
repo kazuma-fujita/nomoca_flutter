@@ -1,3 +1,4 @@
+import 'package:flutter/scheduler.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/api/fetch_notification_list_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
@@ -19,12 +20,9 @@ final fetchNotificationListRepositoryProvider =
   ),
 );
 
-// 一覧の状態保持、一覧取得を行う。reducer内で一覧の状態更新が実行される
-final notificationListState =
-    StateProvider.autoDispose<Future<List<NotificationEntity>>>((ref) async {
-  final repository = ref.read(fetchNotificationListRepositoryProvider);
-  return repository.fetchList();
-});
+// 一覧State。reducer内で一覧の状態更新が実行される。画面をまたいで利用されるのでautoDisposeしない
+final _notificationListState =
+    StateProvider<List<NotificationEntity>>((ref) => []);
 
 // ActionStateを更新してreducerを再実行する
 final notificationListActionDispatcher =
@@ -34,20 +32,28 @@ final notificationListActionDispatcher =
 
 final notificationListReducer =
     FutureProvider.autoDispose<List<NotificationEntity>>((ref) async {
-  // ref.readでrepositoryProviderが保持するListの状態取得
-  // ref.watchはこのreducer内でrepositoryProviderのstateを更新する度に再実行され無限ループする
-  final currentList = await ref.read(notificationListState).state;
   return ref.watch(notificationListActionDispatcher).state.when(
-        fetchList: () => currentList,
-        isRead: (notificationId) {
-          final newList = currentList
-              .map((entity) => entity.id == notificationId
-                  ? entity.copyWith(isRead: true)
-                  : entity)
-              .toList();
-          // 要素を追加した配列でlistStateProviderの状態を更新
-          ref.read(notificationListState).state = Future.value(newList);
-          return newList;
-        },
-      );
+    fetchList: () async {
+      // API経由で一覧配列を取得
+      final repository = ref.read(fetchNotificationListRepositoryProvider);
+      final newList = await repository.fetchList();
+      // リポジトリから取得した配列でlistStateProviderの状態を更新
+      ref.read(_notificationListState).state = newList;
+      return newList;
+    },
+    isRead: (notificationId) {
+      final currentList = ref.read(_notificationListState).state;
+      final newList = currentList
+          .map((entity) => entity.id == notificationId
+              ? entity.copyWith(isRead: true)
+              : entity)
+          .toList();
+      // 一覧のWidgetがBuildし終わるまで待機
+      SchedulerBinding.instance!.addPostFrameCallback((_) {
+        // 要素を追加した配列でlistStateProviderの状態を更新
+        ref.read(_notificationListState).state = newList;
+      });
+      return newList;
+    },
+  );
 });
