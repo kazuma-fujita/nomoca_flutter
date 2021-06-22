@@ -1,0 +1,28 @@
+[
+  {
+    "id": 92506,
+    "name": "渋谷リーフクリニック",
+    "address": "渋谷区道玄坂2-23-14",
+    "is_large_icon": true,
+    "is_favorite": false,
+    "building_name": "道玄坂225ビル4F",
+    "image1": "institutions/test/image1/top1.jpg",
+    "image2": "institutions/test/image2/2.jpg",
+    "image3": "",
+    "image4": "",
+    "image5": ""
+  },
+  {
+    "id": 90093,
+    "name": "小笠原歯科",
+    "address": "渋谷区道玄坂2-25-5",
+    "is_large_icon": true,
+    "is_favorite": true,
+    "building_name": "島田ビル4F",
+    "image1": "institutions/100027/image1/e907cf5540089bcdb1787a2d979e6a7b.jpg",
+    "image2": "institutions/100027/image4/8191a0e68a83a305c1f5c007b3ae1225.jpg",
+    "image3": "institutions/100027/image5/149e69d2d9726d61c98a05329e57bea6.jpg",
+    "image4": "institutions/100620/image5/f6d2d5248c0e35a9b094ed1c0d092102.jpg",
+    "image5": "institutions/102125/image3/bccffca6b7d7b44e951a0d80d6ab6586.jpg"
+  }
+]

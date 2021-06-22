@@ -11,8 +11,8 @@ abstract class KeywordSearchRepository with Authenticated {
     required String query,
     required int offset,
     required int limit,
-    required double? latitude,
-    required double? longitude,
+    double? latitude,
+    double? longitude,
   });
 }
 
@@ -28,8 +28,8 @@ class KeywordSearchRepositoryImpl extends KeywordSearchRepository {
     required String query,
     required int offset,
     required int limit,
-    required double? latitude,
-    required double? longitude,
+    double? latitude,
+    double? longitude,
   }) async {
     final authenticationToken = getAuthenticationToken(userDao.get());
     try {

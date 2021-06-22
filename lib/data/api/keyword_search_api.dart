@@ -9,8 +9,8 @@ abstract class KeywordSearchApi {
     required String query,
     required int offset,
     required int limit,
-    required double? latitude,
-    required double? longitude,
+    double? latitude,
+    double? longitude,
   });
 }
 
@@ -25,8 +25,8 @@ class KeywordSearchApiImpl implements KeywordSearchApi {
     required String query,
     required int offset,
     required int limit,
-    required double? latitude,
-    required double? longitude,
+    double? latitude,
+    double? longitude,
   }) async {
     var getQuery = 'q=$query&offset=$offset&limit=$limit';
     if (latitude != null && longitude != null) {
