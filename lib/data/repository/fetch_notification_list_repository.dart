@@ -1,10 +1,8 @@
 import 'dart:convert';
 
-import 'package:nomoca_flutter/data/api/fetch_family_user_list_api.dart';
 import 'package:nomoca_flutter/data/api/fetch_notification_list_api.dart';
-import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
-import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/dao/user_dao.dart';
+import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
 import 'package:nomoca_flutter/data/repository/authenticated.dart';
 
 // ignore: one_member_abstracts
@@ -63,9 +61,7 @@ class FakeFetchNotificationListRepositoryImpl
         isRead: false,
         detail: NotificationDetailEntity(
             title: 'お知らせTitle2お知らせTitle2お知らせタイトル2お知らせタイトル2',
-            // ignore: lines_longer_than_80_chars
-            body:
-                'お知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\n',
+            body: 'お知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\nお知らせBody2\n',
             contributor: 'テスト歯科からのお知らせテスト歯科からのお知らせテスト歯科からのお知らせ',
             deliveryDate: '2021/05/01 09:05',
             // imageUrl: null),
