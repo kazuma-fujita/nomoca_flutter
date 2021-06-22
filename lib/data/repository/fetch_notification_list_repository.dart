@@ -22,8 +22,7 @@ class FetchNotificationListRepositoryImpl
 
   @override
   Future<List<NotificationEntity>> fetchList() async {
-    final user = userDao.get();
-    final authenticationToken = getAuthenticationToken(user);
+    final authenticationToken = getAuthenticationToken(userDao.get());
     try {
       final responseBody = await fetchNotificationListApi(
           authenticationToken: authenticationToken);

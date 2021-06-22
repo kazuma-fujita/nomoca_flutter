@@ -16,8 +16,7 @@ class DeleteFamilyUserRepositoryImpl extends DeleteFamilyUserRepository {
 
   @override
   Future<void> deleteUser({required int familyUserId}) async {
-    final user = userDao.get();
-    final authenticationToken = getAuthenticationToken(user);
+    final authenticationToken = getAuthenticationToken(userDao.get());
     await deleteFamilyUserApi(
       authenticationToken: authenticationToken,
       familyUserId: familyUserId,

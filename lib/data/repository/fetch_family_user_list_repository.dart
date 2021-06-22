@@ -19,8 +19,7 @@ class FetchFamilyUserListRepositoryImpl extends FetchFamilyUserListRepository {
 
   @override
   Future<List<UserNicknameEntity>> fetchList() async {
-    final user = userDao.get();
-    final authenticationToken = getAuthenticationToken(user);
+    final authenticationToken = getAuthenticationToken(userDao.get());
     try {
       final responseBody = await fetchFamilyUserListApi(
           authenticationToken: authenticationToken);

@@ -19,8 +19,7 @@ class CreateFamilyUserRepositoryImpl extends CreateFamilyUserRepository {
 
   @override
   Future<UserNicknameEntity> createUser({required String nickname}) async {
-    final user = userDao.get();
-    final authenticationToken = getAuthenticationToken(user);
+    final authenticationToken = getAuthenticationToken(userDao.get());
     try {
       final responseBody = await createFamilyUserApi(
         authenticationToken: authenticationToken,
