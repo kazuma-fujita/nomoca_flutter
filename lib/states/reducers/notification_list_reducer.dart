@@ -21,6 +21,7 @@ final fetchNotificationListRepositoryProvider =
 );
 
 // 一覧State。reducer内で一覧の状態更新が実行される。画面をまたいで利用されるのでautoDisposeしない
+// stateはreducer以外からのアクセスを禁止する為private scope
 final _notificationListState =
     StateProvider<List<NotificationEntity>>((ref) => []);
 

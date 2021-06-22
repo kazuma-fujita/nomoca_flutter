@@ -13,6 +13,7 @@ import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
+import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_notification_list_repository.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/notification_detail_view.dart';
@@ -99,14 +100,8 @@ Future<void> main() async {
             .overrideWithValue(FakeFetchNotificationListRepositoryImpl()),
         updateReadPostProvider
             .overrideWithProvider((ref, param) => Future.value()),
-        familyUserListState.overrideWithProvider(
-          StateProvider.autoDispose((ref) {
-            return Future.value([
-              const UserNicknameEntity(id: 1234, nickname: '花子'),
-              const UserNicknameEntity(id: 1235, nickname: '次郎'),
-            ]);
-          }),
-        ),
+        fetchFamilyUserListRepositoryProvider
+            .overrideWithValue(FakeFetchFamilyUserListRepositoryImpl()),
         createFamilyUserProvider.overrideWithProvider((ref, param) =>
             Future.value(const UserNicknameEntity(id: 1234, nickname: '花子'))),
         updateFamilyUserProvider.overrideWithProvider((ref, param) =>
