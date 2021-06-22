@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
 import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
-
 import 'components/molecules/error_snack_bar.dart';
 
 class KeywordSearchView extends StatelessWidget {

@@ -51,7 +51,7 @@ void main() {
                   // ignore: lines_longer_than_80_chars
                   '胃カメラ（上部内視鏡）は、小さなカメラによって食道・胃のポリープやがん、炎症などを調べるのに用いられる検査機器です。\n疑わしい部分の粘膜を直接観察できるため、病変の大きさや形、色、出血の有無までがはっきりとわかります。')
               .having((entity) => entity.detail.imageUrl, 'imageUrl',
-                  'institutions/23/image1/1715503ad621053c05cbbb95719afdfc.jpg'),
+                  '/institutions/23/image1/1715503ad621053c05cbbb95719afdfc.jpg'),
           isA<NotificationEntity>()
               .having((entity) => entity.id, 'id', 251971)
               .having((entity) => entity.isRead, 'isRead', true)
@@ -66,7 +66,7 @@ void main() {
                   // ignore: lines_longer_than_80_chars
                   '治療が途中のまま来院されなくなったので、心配しています。その後お変わりはありませんか？\nそのままにされていますと再度痛み出す事もありますので、早めにご都合の良い日に治療再開することをお勧めします。\nご予約のお電話をお待ちしています。')
               .having((entity) => entity.detail.imageUrl, 'imageUrl',
-                  'institutions/251971/image1/7d38138911f294749a70eda1d602355d.jpg'),
+                  '/institutions/251971/image1/7d38138911f294749a70eda1d602355d.jpg'),
         ],
       );
       // Validate the method call.
