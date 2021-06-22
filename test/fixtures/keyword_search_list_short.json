@@ -5,12 +5,12 @@
     "address": "渋谷区道玄坂2-23-14",
     "is_large_icon": true,
     "is_favorite": false,
-    "building_name": "道玄坂225ビル4F",
+    "building_name": null,
     "image1": "institutions/test/image1/top1.jpg",
     "image2": "institutions/test/image2/2.jpg",
-    "image3": "",
-    "image4": "",
-    "image5": ""
+    "image3": null,
+    "image4": null,
+    "image5": null
   },
   {
     "id": 90093,

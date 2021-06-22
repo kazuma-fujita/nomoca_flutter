@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:nomoca_flutter/constants/nomoca_urls.dart';
 import 'package:nomoca_flutter/data/api/fetch_notification_list_api.dart';
 import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
@@ -27,9 +28,19 @@ class FetchNotificationListRepositoryImpl
 
       final decodedJson = json.decode(responseBody) as List<dynamic>;
       // Conversion json to entity.
-      return decodedJson
+      final list = decodedJson
           .map((dynamic itemJson) =>
               NotificationEntity.fromJson(itemJson as Map<String, dynamic>))
+          .toList();
+      return list
+          .map(
+            (entity) => entity.copyWith(
+                detail: entity.detail.copyWith(
+              imageUrl: entity.detail.imageUrl != null
+                  ? '${NomocaUrls.contentsBaseUrl}/${entity.detail.imageUrl}'
+                  : null,
+            )),
+          )
           .toList();
     } on Exception catch (error) {
       throw Exception(error);

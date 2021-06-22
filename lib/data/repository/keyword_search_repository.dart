@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:nomoca_flutter/constants/nomoca_urls.dart';
 import 'package:nomoca_flutter/data/api/keyword_search_api.dart';
 import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
@@ -44,9 +45,31 @@ class KeywordSearchRepositoryImpl extends KeywordSearchRepository {
 
       final decodedJson = json.decode(responseBody) as List<dynamic>;
       // Conversion json to entity.
-      return decodedJson
+      final list = decodedJson
           .map((dynamic itemJson) =>
               KeywordSearchEntity.fromJson(itemJson as Map<String, dynamic>))
+          .toList();
+      return list
+          .map(
+            (entity) => entity.copyWith(
+              buildingName: entity.buildingName ?? '',
+              image1: entity.image1 != null
+                  ? '${NomocaUrls.contentsBaseUrl}/${entity.image1}'
+                  : null,
+              image2: entity.image2 != null
+                  ? '${NomocaUrls.contentsBaseUrl}/${entity.image2}'
+                  : null,
+              image3: entity.image3 != null
+                  ? '${NomocaUrls.contentsBaseUrl}/${entity.image3}'
+                  : null,
+              image4: entity.image4 != null
+                  ? '${NomocaUrls.contentsBaseUrl}/${entity.image4}'
+                  : null,
+              image5: entity.image5 != null
+                  ? '${NomocaUrls.contentsBaseUrl}/${entity.image5}'
+                  : null,
+            ),
+          )
           .toList();
     } on Exception catch (error) {
       throw Exception(error);
