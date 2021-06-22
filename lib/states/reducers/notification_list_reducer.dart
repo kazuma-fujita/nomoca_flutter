@@ -42,6 +42,7 @@ final notificationListReducer =
       return newList;
     },
     isRead: (notificationId) {
+      // 一覧を既読状態に変更
       final currentList = ref.read(_notificationListState).state;
       final newList = currentList
           .map((entity) => entity.id == notificationId
