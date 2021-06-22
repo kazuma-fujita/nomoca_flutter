@@ -13,12 +13,12 @@ _$_KeywordSearchEntity _$_$_KeywordSearchEntityFromJson(
       id: $checkedConvert(json, 'id', (v) => v as int),
       name: $checkedConvert(json, 'name', (v) => v as String),
       address: $checkedConvert(json, 'address', (v) => v as String),
-      buildingName: $checkedConvert(json, 'building_name', (v) => v as String),
-      image1: $checkedConvert(json, 'image1', (v) => v as String),
-      image2: $checkedConvert(json, 'image2', (v) => v as String),
-      image3: $checkedConvert(json, 'image3', (v) => v as String),
-      image4: $checkedConvert(json, 'image4', (v) => v as String),
-      image5: $checkedConvert(json, 'image5', (v) => v as String),
+      buildingName: $checkedConvert(json, 'building_name', (v) => v as String?),
+      image1: $checkedConvert(json, 'image1', (v) => v as String?),
+      image2: $checkedConvert(json, 'image2', (v) => v as String?),
+      image3: $checkedConvert(json, 'image3', (v) => v as String?),
+      image4: $checkedConvert(json, 'image4', (v) => v as String?),
+      image5: $checkedConvert(json, 'image5', (v) => v as String?),
       isFavorite: $checkedConvert(json, 'is_favorite', (v) => v as bool),
     );
     return val;

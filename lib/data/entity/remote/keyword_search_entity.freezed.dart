@@ -24,12 +24,12 @@ class _$KeywordSearchEntityTearOff {
       {required int id,
       required String name,
       required String address,
-      @JsonKey(name: 'building_name') required String buildingName,
-      required String image1,
-      required String image2,
-      required String image3,
-      required String image4,
-      required String image5,
+      @JsonKey(name: 'building_name') String? buildingName,
+      String? image1,
+      String? image2,
+      String? image3,
+      String? image4,
+      String? image5,
       @JsonKey(name: 'is_favorite') required bool isFavorite}) {
     return _KeywordSearchEntity(
       id: id,
@@ -59,12 +59,12 @@ mixin _$KeywordSearchEntity {
   String get name => throw _privateConstructorUsedError;
   String get address => throw _privateConstructorUsedError;
   @JsonKey(name: 'building_name')
-  String get buildingName => throw _privateConstructorUsedError;
-  String get image1 => throw _privateConstructorUsedError;
-  String get image2 => throw _privateConstructorUsedError;
-  String get image3 => throw _privateConstructorUsedError;
-  String get image4 => throw _privateConstructorUsedError;
-  String get image5 => throw _privateConstructorUsedError;
+  String? get buildingName => throw _privateConstructorUsedError;
+  String? get image1 => throw _privateConstructorUsedError;
+  String? get image2 => throw _privateConstructorUsedError;
+  String? get image3 => throw _privateConstructorUsedError;
+  String? get image4 => throw _privateConstructorUsedError;
+  String? get image5 => throw _privateConstructorUsedError;
   @JsonKey(name: 'is_favorite')
   bool get isFavorite => throw _privateConstructorUsedError;
 
@@ -83,12 +83,12 @@ abstract class $KeywordSearchEntityCopyWith<$Res> {
       {int id,
       String name,
       String address,
-      @JsonKey(name: 'building_name') String buildingName,
-      String image1,
-      String image2,
-      String image3,
-      String image4,
-      String image5,
+      @JsonKey(name: 'building_name') String? buildingName,
+      String? image1,
+      String? image2,
+      String? image3,
+      String? image4,
+      String? image5,
       @JsonKey(name: 'is_favorite') bool isFavorite});
 }
 
@@ -130,27 +130,27 @@ class _$KeywordSearchEntityCopyWithImpl<$Res>
       buildingName: buildingName == freezed
           ? _value.buildingName
           : buildingName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       image1: image1 == freezed
           ? _value.image1
           : image1 // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       image2: image2 == freezed
           ? _value.image2
           : image2 // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       image3: image3 == freezed
           ? _value.image3
           : image3 // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       image4: image4 == freezed
           ? _value.image4
           : image4 // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       image5: image5 == freezed
           ? _value.image5
           : image5 // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       isFavorite: isFavorite == freezed
           ? _value.isFavorite
           : isFavorite // ignore: cast_nullable_to_non_nullable
@@ -170,12 +170,12 @@ abstract class _$KeywordSearchEntityCopyWith<$Res>
       {int id,
       String name,
       String address,
-      @JsonKey(name: 'building_name') String buildingName,
-      String image1,
-      String image2,
-      String image3,
-      String image4,
-      String image5,
+      @JsonKey(name: 'building_name') String? buildingName,
+      String? image1,
+      String? image2,
+      String? image3,
+      String? image4,
+      String? image5,
       @JsonKey(name: 'is_favorite') bool isFavorite});
 }
 
@@ -219,27 +219,27 @@ class __$KeywordSearchEntityCopyWithImpl<$Res>
       buildingName: buildingName == freezed
           ? _value.buildingName
           : buildingName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       image1: image1 == freezed
           ? _value.image1
           : image1 // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       image2: image2 == freezed
           ? _value.image2
           : image2 // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       image3: image3 == freezed
           ? _value.image3
           : image3 // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       image4: image4 == freezed
           ? _value.image4
           : image4 // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       image5: image5 == freezed
           ? _value.image5
           : image5 // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       isFavorite: isFavorite == freezed
           ? _value.isFavorite
           : isFavorite // ignore: cast_nullable_to_non_nullable
@@ -257,12 +257,12 @@ class _$_KeywordSearchEntity
       {required this.id,
       required this.name,
       required this.address,
-      @JsonKey(name: 'building_name') required this.buildingName,
-      required this.image1,
-      required this.image2,
-      required this.image3,
-      required this.image4,
-      required this.image5,
+      @JsonKey(name: 'building_name') this.buildingName,
+      this.image1,
+      this.image2,
+      this.image3,
+      this.image4,
+      this.image5,
       @JsonKey(name: 'is_favorite') required this.isFavorite});
 
   factory _$_KeywordSearchEntity.fromJson(Map<String, dynamic> json) =>
@@ -276,17 +276,17 @@ class _$_KeywordSearchEntity
   final String address;
   @override
   @JsonKey(name: 'building_name')
-  final String buildingName;
+  final String? buildingName;
   @override
-  final String image1;
+  final String? image1;
   @override
-  final String image2;
+  final String? image2;
   @override
-  final String image3;
+  final String? image3;
   @override
-  final String image4;
+  final String? image4;
   @override
-  final String image5;
+  final String? image5;
   @override
   @JsonKey(name: 'is_favorite')
   final bool isFavorite;
@@ -373,12 +373,12 @@ abstract class _KeywordSearchEntity implements KeywordSearchEntity {
           {required int id,
           required String name,
           required String address,
-          @JsonKey(name: 'building_name') required String buildingName,
-          required String image1,
-          required String image2,
-          required String image3,
-          required String image4,
-          required String image5,
+          @JsonKey(name: 'building_name') String? buildingName,
+          String? image1,
+          String? image2,
+          String? image3,
+          String? image4,
+          String? image5,
           @JsonKey(name: 'is_favorite') required bool isFavorite}) =
       _$_KeywordSearchEntity;
 
@@ -393,17 +393,17 @@ abstract class _KeywordSearchEntity implements KeywordSearchEntity {
   String get address => throw _privateConstructorUsedError;
   @override
   @JsonKey(name: 'building_name')
-  String get buildingName => throw _privateConstructorUsedError;
+  String? get buildingName => throw _privateConstructorUsedError;
   @override
-  String get image1 => throw _privateConstructorUsedError;
+  String? get image1 => throw _privateConstructorUsedError;
   @override
-  String get image2 => throw _privateConstructorUsedError;
+  String? get image2 => throw _privateConstructorUsedError;
   @override
-  String get image3 => throw _privateConstructorUsedError;
+  String? get image3 => throw _privateConstructorUsedError;
   @override
-  String get image4 => throw _privateConstructorUsedError;
+  String? get image4 => throw _privateConstructorUsedError;
   @override
-  String get image5 => throw _privateConstructorUsedError;
+  String? get image5 => throw _privateConstructorUsedError;
   @override
   @JsonKey(name: 'is_favorite')
   bool get isFavorite => throw _privateConstructorUsedError;
