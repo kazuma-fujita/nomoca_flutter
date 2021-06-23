@@ -94,9 +94,10 @@ class FakeKeywordSearchRepositoryImpl extends KeywordSearchRepository {
     if (end > list.length) {
       end = list.length;
     }
-    print(
-        'FakeKeywordSearchRepositoryImpl offset: $offset limit: $limit end: $end');
-    return list.sublist(offset, end);
+    print('FakeKeywordSearch offset: $offset limit: $limit end: $end');
+    return Future.delayed(const Duration(seconds: 2), () {
+      return list.sublist(offset, end);
+    });
   }
 
   static const contentsBaseUrl = 'https://contents.nomoca.com';

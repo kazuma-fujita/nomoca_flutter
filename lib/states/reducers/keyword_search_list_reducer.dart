@@ -1,5 +1,6 @@
 import 'package:flutter/scheduler.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nomoca_flutter/constants/keyword_search_properties.dart';
 import 'package:nomoca_flutter/data/api/keyword_search_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
@@ -22,14 +23,15 @@ final keywordSearchRepositoryProvider =
 
 // 一覧State。reducer内で一覧の状態更新が実行される。画面をまたいで利用されるのでautoDisposeしない
 // stateはreducer以外からのアクセスを禁止する為private scope
-final _keywordSearchListState =
+final keywordSearchListState =
     StateProvider<List<KeywordSearchEntity>>((ref) => []);
 
 // ActionStateを更新してreducerを再実行する
 final keywordSearchListActionDispatcher =
     StateProvider.autoDispose<KeywordSearchListAction>(
-  (ref) =>
-      const KeywordSearchListAction.fetchList(query: '', offset: 0, limit: 5),
+  // 画面初期表示する一覧のoffset/limitをfetchList Actionに設定
+  (ref) => const KeywordSearchListAction.fetchList(
+      query: '', offset: 0, limit: KeywordSearchProperties.limit),
 );
 
 final keywordSearchListReducer =
@@ -37,7 +39,7 @@ final keywordSearchListReducer =
   return ref.watch(keywordSearchListActionDispatcher).state.when(
     fetchList: (query, offset, limit, latitude, longitude) async {
       // 現在の配列を取得
-      final currentList = ref.read(_keywordSearchListState).state;
+      final currentList = ref.read(keywordSearchListState).state;
       // API経由で一覧配列を取得
       final repository = ref.read(keywordSearchRepositoryProvider);
       final pagingList = await repository.fetchList(
@@ -51,16 +53,13 @@ final keywordSearchListReducer =
       pagingList.asMap().forEach((index, e) => print('$index:${e.name}'));
       // 現在の配列にページングしたリストを追加
       final newList = [...currentList, ...pagingList];
-      // 一覧のWidgetがBuildし終わるまで待機
-      SchedulerBinding.instance!.addPostFrameCallback((_) {
-        // リポジトリから取得した配列でlistStateProviderの状態を更新
-        ref.read(_keywordSearchListState).state = newList;
-      });
+      // リポジトリから取得した配列でlistStateの状態を更新
+      ref.read(keywordSearchListState).state = newList;
       return newList;
     },
     toggleFavorite: (institutionId) {
       // 一覧を既読状態に変更
-      final currentList = ref.read(_keywordSearchListState).state;
+      final currentList = ref.read(keywordSearchListState).state;
       final newList = currentList
           .map((entity) => entity.id == institutionId
               ? entity.copyWith(isFavorite: !entity.isFavorite)
@@ -69,7 +68,7 @@ final keywordSearchListReducer =
       // 一覧のWidgetがBuildし終わるまで待機
       SchedulerBinding.instance!.addPostFrameCallback((_) {
         // 要素を追加した配列でlistStateProviderの状態を更新
-        ref.read(_keywordSearchListState).state = newList;
+        ref.read(keywordSearchListState).state = newList;
       });
       return newList;
     },

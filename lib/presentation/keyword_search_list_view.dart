@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:like_button/like_button.dart';
+import 'package:nomoca_flutter/constants/keyword_search_properties.dart';
 import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
 import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
@@ -22,38 +23,62 @@ class KeywordSearchView extends StatelessWidget {
 
 class _ScrollListView extends HookWidget {
   static const _threshold = 0.8;
-  static const _limit = 5;
+
   @override
   Widget build(BuildContext context) {
     final offset = useState(0);
-    return useProvider(keywordSearchListReducer).when(
-      data: (items) => NotificationListener<ScrollNotification>(
-        onNotification: (ScrollNotification scrollInfo) {
-          final scrollProportion =
-              scrollInfo.metrics.pixels / scrollInfo.metrics.maxScrollExtent;
-          if (scrollProportion > _threshold) {
-            offset.value += _limit;
-            print('offset: ${offset.value} limit: $_limit');
-            context.read(keywordSearchListActionDispatcher).state =
-                KeywordSearchListAction.fetchList(
-                    query: '', offset: offset.value, limit: _limit);
-          }
-          return false;
-        },
-        child: items.isNotEmpty
-            ? ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (BuildContext _context, int index) {
-                  return _buildRow(context, items[index], index);
-                },
-              )
-            : _emptyListView(),
-      ),
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => ErrorSnackBar(
-        errorMessage: error.toString(),
-        callback: () => context.refresh(keywordSearchListReducer),
-      ),
+    final asyncValue = useProvider(keywordSearchListReducer);
+    // キーワード検索画面はページネーションの行う為、直接listStateを参照
+    final items = useProvider(keywordSearchListState).state;
+    // 画面のスクロール量を取得する為、ListViewをNotificationListenerでWrapする
+    return NotificationListener<ScrollNotification>(
+      // 画面スクロールをトリガーに onNotification callback がcallされる
+      onNotification: (ScrollNotification scrollInfo) {
+        asyncValue.when(
+          data: (_) {
+            // ListViewの高さに対する画面の表示割合
+            final scrollProportion =
+                scrollInfo.metrics.pixels / scrollInfo.metrics.maxScrollExtent;
+            // 次回取得予定のオフセット値
+            final nextOffset = offset.value + KeywordSearchProperties.limit;
+            // 画面表示割合がListViewの高さに対する閾値を超える
+            // かつ、ListViewの長さ = 次回取得予定オフセット値ならばAPI経由でページングリストを取得
+            if (scrollProportion > _threshold && items.length == nextOffset) {
+              // オフセット値の更新
+              offset.value = nextOffset;
+              print(
+                  'offset: ${offset.value} limit: ${KeywordSearchProperties.limit}');
+              // API経由でページングリストの取得
+              context.read(keywordSearchListActionDispatcher).state =
+                  KeywordSearchListAction.fetchList(
+                query: '',
+                offset: offset.value,
+                limit: KeywordSearchProperties.limit,
+              );
+            }
+          },
+          loading: () {
+            const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+          error: (error, _) {
+            ErrorSnackBar(
+              errorMessage: error.toString(),
+              callback: () => context.refresh(keywordSearchListReducer),
+            );
+          },
+        );
+        return false;
+      },
+      child: items.isNotEmpty
+          ? ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (BuildContext _context, int index) {
+                return _buildRow(context, items[index], index);
+              },
+            )
+          : _emptyListView(),
     );
   }
 
