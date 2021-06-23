@@ -23,15 +23,17 @@ class _ScrollListView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final offset = useState(0);
     return useProvider(keywordSearchListReducer).when(
       data: (items) => NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification scrollInfo) {
           final scrollProportion =
               scrollInfo.metrics.pixels / scrollInfo.metrics.maxScrollExtent;
           if (scrollProportion > _threshold) {
+            offset.value += 10;
             context.read(keywordSearchListActionDispatcher).state =
-                const KeywordSearchListAction.fetchList(
-                    query: '', offset: 0, limit: 10);
+                KeywordSearchListAction.fetchList(
+                    query: '', offset: offset.value, limit: 10);
           }
           return false;
         },
@@ -53,30 +55,26 @@ class _ScrollListView extends HookWidget {
   }
 
   Widget _buildRow(KeywordSearchEntity entity) {
-    return SizedBox(
-      height: 80,
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Column(
-            children: [
-              Text(
-                entity.name,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '${entity.address} ${entity.buildingName}',
-                style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            entity.name,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
+          Text(
+            '${entity.address} ${entity.buildingName}',
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ],
       ),
     );
   }
