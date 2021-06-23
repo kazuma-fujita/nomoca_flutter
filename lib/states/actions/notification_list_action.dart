@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'notification_list_action.freezed.dart';
 
 @freezed
-abstract class NotificationListAction with _$NotificationListAction {
+class NotificationListAction with _$NotificationListAction {
   const factory NotificationListAction.fetchList() = FetchList;
   const factory NotificationListAction.isRead(int notificationId) = IsRead;
 }

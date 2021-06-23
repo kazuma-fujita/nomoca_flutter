@@ -20,6 +20,8 @@ _$_KeywordSearchEntity _$_$_KeywordSearchEntityFromJson(
       image4: $checkedConvert(json, 'image4', (v) => v as String?),
       image5: $checkedConvert(json, 'image5', (v) => v as String?),
       isFavorite: $checkedConvert(json, 'is_favorite', (v) => v as bool),
+      images: $checkedConvert(json, 'images',
+          (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
     );
     return val;
   }, fieldKeyMap: const {
@@ -41,4 +43,5 @@ Map<String, dynamic> _$_$_KeywordSearchEntityToJson(
       'image4': instance.image4,
       'image5': instance.image5,
       'is_favorite': instance.isFavorite,
+      'images': instance.images,
     };

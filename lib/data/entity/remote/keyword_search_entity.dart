@@ -5,7 +5,7 @@ part 'keyword_search_entity.freezed.dart';
 part 'keyword_search_entity.g.dart';
 
 @freezed
-abstract class KeywordSearchEntity with _$KeywordSearchEntity {
+class KeywordSearchEntity with _$KeywordSearchEntity {
   const factory KeywordSearchEntity({
     required int id,
     required String name,
@@ -17,6 +17,7 @@ abstract class KeywordSearchEntity with _$KeywordSearchEntity {
     String? image4,
     String? image5,
     @JsonKey(name: 'is_favorite') required bool isFavorite,
+    List<String>? images,
   }) = _KeywordSearchEntity;
 
   factory KeywordSearchEntity.fromJson(Map<String, dynamic> json) =>

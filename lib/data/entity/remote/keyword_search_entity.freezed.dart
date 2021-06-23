@@ -30,7 +30,8 @@ class _$KeywordSearchEntityTearOff {
       String? image3,
       String? image4,
       String? image5,
-      @JsonKey(name: 'is_favorite') required bool isFavorite}) {
+      @JsonKey(name: 'is_favorite') required bool isFavorite,
+      List<String>? images}) {
     return _KeywordSearchEntity(
       id: id,
       name: name,
@@ -42,6 +43,7 @@ class _$KeywordSearchEntityTearOff {
       image4: image4,
       image5: image5,
       isFavorite: isFavorite,
+      images: images,
     );
   }
 
@@ -67,6 +69,7 @@ mixin _$KeywordSearchEntity {
   String? get image5 => throw _privateConstructorUsedError;
   @JsonKey(name: 'is_favorite')
   bool get isFavorite => throw _privateConstructorUsedError;
+  List<String>? get images => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -89,7 +92,8 @@ abstract class $KeywordSearchEntityCopyWith<$Res> {
       String? image3,
       String? image4,
       String? image5,
-      @JsonKey(name: 'is_favorite') bool isFavorite});
+      @JsonKey(name: 'is_favorite') bool isFavorite,
+      List<String>? images});
 }
 
 /// @nodoc
@@ -113,6 +117,7 @@ class _$KeywordSearchEntityCopyWithImpl<$Res>
     Object? image4 = freezed,
     Object? image5 = freezed,
     Object? isFavorite = freezed,
+    Object? images = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -155,6 +160,10 @@ class _$KeywordSearchEntityCopyWithImpl<$Res>
           ? _value.isFavorite
           : isFavorite // ignore: cast_nullable_to_non_nullable
               as bool,
+      images: images == freezed
+          ? _value.images
+          : images // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -176,7 +185,8 @@ abstract class _$KeywordSearchEntityCopyWith<$Res>
       String? image3,
       String? image4,
       String? image5,
-      @JsonKey(name: 'is_favorite') bool isFavorite});
+      @JsonKey(name: 'is_favorite') bool isFavorite,
+      List<String>? images});
 }
 
 /// @nodoc
@@ -202,6 +212,7 @@ class __$KeywordSearchEntityCopyWithImpl<$Res>
     Object? image4 = freezed,
     Object? image5 = freezed,
     Object? isFavorite = freezed,
+    Object? images = freezed,
   }) {
     return _then(_KeywordSearchEntity(
       id: id == freezed
@@ -244,6 +255,10 @@ class __$KeywordSearchEntityCopyWithImpl<$Res>
           ? _value.isFavorite
           : isFavorite // ignore: cast_nullable_to_non_nullable
               as bool,
+      images: images == freezed
+          ? _value.images
+          : images // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -263,7 +278,8 @@ class _$_KeywordSearchEntity
       this.image3,
       this.image4,
       this.image5,
-      @JsonKey(name: 'is_favorite') required this.isFavorite});
+      @JsonKey(name: 'is_favorite') required this.isFavorite,
+      this.images});
 
   factory _$_KeywordSearchEntity.fromJson(Map<String, dynamic> json) =>
       _$_$_KeywordSearchEntityFromJson(json);
@@ -290,10 +306,12 @@ class _$_KeywordSearchEntity
   @override
   @JsonKey(name: 'is_favorite')
   final bool isFavorite;
+  @override
+  final List<String>? images;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'KeywordSearchEntity(id: $id, name: $name, address: $address, buildingName: $buildingName, image1: $image1, image2: $image2, image3: $image3, image4: $image4, image5: $image5, isFavorite: $isFavorite)';
+    return 'KeywordSearchEntity(id: $id, name: $name, address: $address, buildingName: $buildingName, image1: $image1, image2: $image2, image3: $image3, image4: $image4, image5: $image5, isFavorite: $isFavorite, images: $images)';
   }
 
   @override
@@ -310,7 +328,8 @@ class _$_KeywordSearchEntity
       ..add(DiagnosticsProperty('image3', image3))
       ..add(DiagnosticsProperty('image4', image4))
       ..add(DiagnosticsProperty('image5', image5))
-      ..add(DiagnosticsProperty('isFavorite', isFavorite));
+      ..add(DiagnosticsProperty('isFavorite', isFavorite))
+      ..add(DiagnosticsProperty('images', images));
   }
 
   @override
@@ -339,7 +358,9 @@ class _$_KeywordSearchEntity
                 const DeepCollectionEquality().equals(other.image5, image5)) &&
             (identical(other.isFavorite, isFavorite) ||
                 const DeepCollectionEquality()
-                    .equals(other.isFavorite, isFavorite)));
+                    .equals(other.isFavorite, isFavorite)) &&
+            (identical(other.images, images) ||
+                const DeepCollectionEquality().equals(other.images, images)));
   }
 
   @override
@@ -354,7 +375,8 @@ class _$_KeywordSearchEntity
       const DeepCollectionEquality().hash(image3) ^
       const DeepCollectionEquality().hash(image4) ^
       const DeepCollectionEquality().hash(image5) ^
-      const DeepCollectionEquality().hash(isFavorite);
+      const DeepCollectionEquality().hash(isFavorite) ^
+      const DeepCollectionEquality().hash(images);
 
   @JsonKey(ignore: true)
   @override
@@ -370,17 +392,17 @@ class _$_KeywordSearchEntity
 
 abstract class _KeywordSearchEntity implements KeywordSearchEntity {
   const factory _KeywordSearchEntity(
-          {required int id,
-          required String name,
-          required String address,
-          @JsonKey(name: 'building_name') String? buildingName,
-          String? image1,
-          String? image2,
-          String? image3,
-          String? image4,
-          String? image5,
-          @JsonKey(name: 'is_favorite') required bool isFavorite}) =
-      _$_KeywordSearchEntity;
+      {required int id,
+      required String name,
+      required String address,
+      @JsonKey(name: 'building_name') String? buildingName,
+      String? image1,
+      String? image2,
+      String? image3,
+      String? image4,
+      String? image5,
+      @JsonKey(name: 'is_favorite') required bool isFavorite,
+      List<String>? images}) = _$_KeywordSearchEntity;
 
   factory _KeywordSearchEntity.fromJson(Map<String, dynamic> json) =
       _$_KeywordSearchEntity.fromJson;
@@ -407,6 +429,8 @@ abstract class _KeywordSearchEntity implements KeywordSearchEntity {
   @override
   @JsonKey(name: 'is_favorite')
   bool get isFavorite => throw _privateConstructorUsedError;
+  @override
+  List<String>? get images => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$KeywordSearchEntityCopyWith<_KeywordSearchEntity> get copyWith =>

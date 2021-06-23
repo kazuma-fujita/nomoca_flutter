@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'keyword_search_list_action.freezed.dart';
 
 @freezed
-abstract class KeywordSearchListAction with _$KeywordSearchListAction {
+class KeywordSearchListAction with _$KeywordSearchListAction {
   const factory KeywordSearchListAction.fetchList({
     required String query,
     required int offset,
