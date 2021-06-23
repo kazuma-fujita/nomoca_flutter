@@ -33,7 +33,7 @@ class _ImageSliderState extends State<ImageSlider> {
       ),
       // 画像が四角の角丸からはみ出さない設定
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      elevation: 8,
+      elevation: 4,
       child: SizedBox(
         // 画像表示領域の高さ
         height: 240,

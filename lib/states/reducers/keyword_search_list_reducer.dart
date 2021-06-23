@@ -29,22 +29,28 @@ final _keywordSearchListState =
 final keywordSearchListActionDispatcher =
     StateProvider.autoDispose<KeywordSearchListAction>(
   (ref) =>
-      const KeywordSearchListAction.fetchList(query: '', offset: 0, limit: 10),
+      const KeywordSearchListAction.fetchList(query: '', offset: 0, limit: 5),
 );
 
 final keywordSearchListReducer =
     FutureProvider.autoDispose<List<KeywordSearchEntity>>((ref) async {
   return ref.watch(keywordSearchListActionDispatcher).state.when(
     fetchList: (query, offset, limit, latitude, longitude) async {
+      // 現在の配列を取得
+      final currentList = ref.read(_keywordSearchListState).state;
       // API経由で一覧配列を取得
       final repository = ref.read(keywordSearchRepositoryProvider);
-      final newList = await repository.fetchList(
+      final pagingList = await repository.fetchList(
         query: query,
         offset: offset,
         limit: limit,
         latitude: latitude,
         longitude: longitude,
       );
+      // DEBUG
+      pagingList.asMap().forEach((index, e) => print('$index:${e.name}'));
+      // 現在の配列にページングしたリストを追加
+      final newList = [...currentList, ...pagingList];
       // 一覧のWidgetがBuildし終わるまで待機
       SchedulerBinding.instance!.addPostFrameCallback((_) {
         // リポジトリから取得した配列でlistStateProviderの状態を更新
