@@ -69,7 +69,7 @@ class _ScrollListView extends HookWidget {
               ? ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (BuildContext _context, int index) {
-                    return _buildRow(context, items[index], index);
+                    return _buildRow(context, items[index]);
                   },
                 )
               : _emptyListView(),
@@ -78,8 +78,7 @@ class _ScrollListView extends HookWidget {
     );
   }
 
-  Widget _buildRow(
-      BuildContext context, KeywordSearchEntity entity, int verticalIndex) {
+  Widget _buildRow(BuildContext context, KeywordSearchEntity entity) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       child: Column(
@@ -96,7 +95,7 @@ class _ScrollListView extends HookWidget {
                       top: 24,
                       right: 24,
                       child: LikeButton(
-                        key: Key(verticalIndex.toString()),
+                        key: Key('like-${entity.id.toString()}'),
                         isLiked: entity.isFavorite,
                         onTap: (bool isLiked) async {
                           // update API実行
@@ -125,7 +124,8 @@ class _ScrollListView extends HookWidget {
                   ),
                 ),
                 Text(
-                  '${entity.address} ${entity.buildingName}',
+                  // ignore: lines_longer_than_80_chars
+                  '${entity.address}${entity.buildingName != null ? ' ${entity.buildingName}' : ''}',
                   style: const TextStyle(
                     fontSize: 10,
                     color: Colors.black54,

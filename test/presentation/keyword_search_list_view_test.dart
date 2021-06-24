@@ -3,10 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:like_button/like_button.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
+import 'package:nomoca_flutter/presentation/components/molecules/image_slider.dart';
 import 'package:nomoca_flutter/presentation/keyword_search_list_view.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
 
@@ -70,6 +73,79 @@ void main() {
         limit: anyNamed('limit'),
       ));
     });
+
+    testWidgets('Testing display widget of list.', (WidgetTester tester) async {
+      const contentsBaseUrl = 'https://contents.nomoca.com';
+      final results = [
+        const KeywordSearchEntity(
+          id: 92506,
+          name: '渋谷リーフクリニック',
+          address: '渋谷区道玄坂2-23-14',
+          isFavorite: false,
+          buildingName: null,
+          images: null,
+        ),
+        const KeywordSearchEntity(
+          id: 120,
+          name: 'タカデンタルクリニック',
+          address: '渋谷区恵比寿1-19-18',
+          isFavorite: false,
+          buildingName: '石渡ビル3F',
+          images: [
+            '$contentsBaseUrl/institutions/120/image1/2ac467ca7fec709b12ae312efd83dea9.jpg',
+            '$contentsBaseUrl/institutions/120/image2/ed8e976d057a014575cee7730d120717.jpg',
+            '$contentsBaseUrl/institutions/120/image4/e907cf5540089bcdb1787a2d979e6a7b.jpg',
+          ],
+        ),
+        const KeywordSearchEntity(
+          id: 90093,
+          name: '小笠原歯科',
+          address: '渋谷区道玄坂2-25-5',
+          isFavorite: true,
+          buildingName: '島田ビル4F',
+          images: [
+            '$contentsBaseUrl/institutions/100027/image1/e907cf5540089bcdb1787a2d979e6a7b.jpg',
+            '$contentsBaseUrl/institutions/100027/image4/8191a0e68a83a305c1f5c007b3ae1225.jpg',
+            '$contentsBaseUrl/institutions/100027/image5/149e69d2d9726d61c98a05329e57bea6.jpg',
+            '$contentsBaseUrl/institutions/100620/image5/f6d2d5248c0e35a9b094ed1c0d092102.jpg',
+            '$contentsBaseUrl/institutions/102125/image3/bccffca6b7d7b44e951a0d80d6ab6586.jpg',
+          ],
+        )
+      ];
+      // 一覧APIレスポンスデータを設定
+      when(_listRepository.fetchList(
+        query: anyNamed('query'),
+        offset: anyNamed('offset'),
+        limit: anyNamed('limit'),
+      )).thenAnswer((_) async => results);
+      // 一覧画面Widgetをレンダリング
+      await tester.pumpWidget(_setUpProviderScope());
+      await _verifyTheStatusBeforeAfterLoading(tester);
+      // 画面要素を確認
+      expect(find.text('渋谷リーフクリニック'), findsOneWidget);
+      expect(find.text('渋谷区道玄坂2-23-14'), findsOneWidget);
+      expect(find.text('タカデンタルクリニック'), findsOneWidget);
+      expect(find.text('渋谷区恵比寿1-19-18 石渡ビル3F'), findsOneWidget);
+      expect(find.text('小笠原歯科'), findsOneWidget);
+      expect(find.text('渋谷区道玄坂2-25-5 島田ビル4F'), findsOneWidget);
+      expect(find.byType(ImageSlider), findsNWidgets(2));
+      expect(find.byType(LikeButton), findsNWidgets(2));
+      // LikeButtonチェック KeyはinstitutionId
+      final likeButton1Finder = find.byKey(const Key('like-120'));
+      final likeButton1 = tester.firstWidget(likeButton1Finder) as LikeButton;
+      expect(likeButton1Finder, findsOneWidget);
+      expect(likeButton1.isLiked, false);
+      final likeButton2Finder = find.byKey(const Key('like-90093'));
+      final likeButton2 = tester.firstWidget(likeButton2Finder) as LikeButton;
+      expect(likeButton2Finder, findsOneWidget);
+      expect(likeButton2.isLiked, true);
+      // Mock呼び出しを検証
+      verify(_listRepository.fetchList(
+        query: anyNamed('query'),
+        offset: anyNamed('offset'),
+        limit: anyNamed('limit'),
+      ));
+    });
   });
 
   group('Testing error of keyword search view.', () {
@@ -96,129 +172,5 @@ void main() {
         limit: anyNamed('limit'),
       ));
     });
-    //   testWidgets('Testing update read post.', (WidgetTester tester) async {
-    //     const contentsBaseUrl = 'https://contents-debug.nomoca.com';
-    //     const responseData = [
-    //       NotificationEntity(
-    //         id: 140188,
-    //         isRead: false,
-    //         detail: NotificationDetailEntity(
-    //             title: 'お知らせTitle1',
-    //             body: 'お知らせBody1',
-    //             contributor: 'テストクリニックからのお知らせ',
-    //             deliveryDate: '2021/06/21 12:15',
-    //             // imageUrl: null),
-    //             imageUrl:
-    //                 '$contentsBaseUrl/institutions/140188/image1/381e52949a3fb4ce444a6de59c8e1190.jpg'),
-    //       ),
-    //       NotificationEntity(
-    //         id: 141338,
-    //         isRead: false,
-    //         detail: NotificationDetailEntity(
-    //             title: 'お知らせTitle2',
-    //             // ignore: lines_longer_than_80_chars
-    //             body: 'お知らせBody2',
-    //             contributor: 'テスト歯科からのお知らせ',
-    //             deliveryDate: '2021/05/01 09:05',
-    //             // imageUrl: null),
-    //             imageUrl:
-    //                 '$contentsBaseUrl/institutions/141338/image1/a35d6ac6ad8258db2891a1bc69ae8c1b.jpg'),
-    //       ),
-    //     ];
-    //     // 一覧APIレスポンスデータを設定
-    //     when(_listRepository.fetchList()).thenAnswer((_) async => responseData);
-    //     // お知らせ既読APIレスポンスデータを設定
-    //     when(_updateReadPostRepository.updateReadPost(
-    //             notificationId: anyNamed('notificationId')))
-    //         .thenAnswer((_) async => Future.value());
-    //     // 一覧画面をレンダリング
-    //     await tester.pumpWidget(_setUpProviderScope());
-    //     await _verifyTheStatusBeforeAfterLoading(tester);
-    //     // 一覧リスト要素を確認。未読状態のFontWeight.boldを確認
-    //     final title1Finder = find.text('お知らせTitle1');
-    //     var title1 = tester.firstWidget(title1Finder) as Text;
-    //     final date1Finder = find.text('2021/06/21 12:15');
-    //     var date1 = tester.firstWidget(title1Finder) as Text;
-    //     final title2Finder = find.text('お知らせTitle2');
-    //     var title2 = tester.firstWidget(title2Finder) as Text;
-    //     final date2Finder = find.text('2021/05/01 09:05');
-    //     var date2 = tester.firstWidget(title2Finder) as Text;
-    //     expect(title1Finder, findsOneWidget);
-    //     expect(title1.style!.fontWeight, FontWeight.bold);
-    //     expect(title1.maxLines, 1);
-    //     expect(title1.overflow, TextOverflow.ellipsis);
-    //     expect(date1Finder, findsOneWidget);
-    //     expect(date1.style!.fontWeight, FontWeight.bold);
-    //     expect(title2Finder, findsOneWidget);
-    //     expect(title2.style!.fontWeight, FontWeight.bold);
-    //     expect(title2.maxLines, 1);
-    //     expect(title2.overflow, TextOverflow.ellipsis);
-    //     expect(date2Finder, findsOneWidget);
-    //     expect(date2.style!.fontWeight, FontWeight.bold);
-    //     expect(find.byType(CircleAvatar), findsNWidgets(2));
-    //     // 一覧要素をタップ
-    //     await tester.tap(title1Finder);
-    //     // 画面遷移後のWidgetがレンダリング完了するまで処理を待機
-    //     await tester.pumpAndSettle();
-    //     // 遷移先画面の要素チェック
-    //     expect(find.text('テストクリニックからのお知らせ'), findsOneWidget);
-    //     expect(find.text('お知らせTitle1'), findsOneWidget);
-    //     expect(find.text('2021/06/21 12:15'), findsOneWidget);
-    //     expect(find.text('お知らせBody1'), findsOneWidget);
-    //     expect(find.byType(CircleAvatar), findsOneWidget);
-    //     expect(find.byTooltip('Back'), findsOneWidget);
-    //     // 戻るボタンタップ
-    //     await tester.tap(find.byTooltip('Back'));
-    //     // 画面遷移後のWidgetがレンダリング完了するまで処理を待機
-    //     await tester.pumpAndSettle();
-    //     // 一覧リスト要素を確認。お知らせTitle1が既読状態FontWeight.normalであることを確認
-    //     title1 = tester.firstWidget(title1Finder) as Text;
-    //     date1 = tester.firstWidget(date1Finder) as Text;
-    //     title2 = tester.firstWidget(title2Finder) as Text;
-    //     date2 = tester.firstWidget(date2Finder) as Text;
-    //     expect(title1Finder, findsOneWidget);
-    //     expect(title1.style!.fontWeight, FontWeight.normal);
-    //     expect(date1Finder, findsOneWidget);
-    //     expect(date1.style!.fontWeight, FontWeight.normal);
-    //     expect(title2Finder, findsOneWidget);
-    //     expect(title2.style!.fontWeight, FontWeight.bold);
-    //     expect(date2Finder, findsOneWidget);
-    //     expect(date2.style!.fontWeight, FontWeight.bold);
-    //     expect(find.byType(CircleAvatar), findsNWidgets(2));
-    //     // 一覧要素をタップ
-    //     await tester.tap(title2Finder);
-    //     // 画面遷移後のWidgetがレンダリング完了するまで処理を待機
-    //     await tester.pumpAndSettle();
-    //     // 遷移先画面の要素チェック
-    //     expect(find.text('テスト歯科からのお知らせ'), findsOneWidget);
-    //     expect(find.text('お知らせTitle2'), findsOneWidget);
-    //     expect(find.text('2021/05/01 09:05'), findsOneWidget);
-    //     expect(find.text('お知らせBody2'), findsOneWidget);
-    //     expect(find.byType(CircleAvatar), findsOneWidget);
-    //     expect(find.byTooltip('Back'), findsOneWidget);
-    //     // 戻るボタンタップ
-    //     await tester.tap(find.byTooltip('Back'));
-    //     // 画面遷移後のWidgetがレンダリング完了するまで処理を待機
-    //     await tester.pumpAndSettle();
-    //     // 一覧リスト要素を確認。お知らせTitle1、2が既読状態FontWeight.normalであることを確認
-    //     title1 = tester.firstWidget(title1Finder) as Text;
-    //     date1 = tester.firstWidget(date1Finder) as Text;
-    //     title2 = tester.firstWidget(title2Finder) as Text;
-    //     date2 = tester.firstWidget(date2Finder) as Text;
-    //     expect(title1Finder, findsOneWidget);
-    //     expect(title1.style!.fontWeight, FontWeight.normal);
-    //     expect(date1Finder, findsOneWidget);
-    //     expect(date1.style!.fontWeight, FontWeight.normal);
-    //     expect(title2Finder, findsOneWidget);
-    //     expect(title2.style!.fontWeight, FontWeight.normal);
-    //     expect(date2Finder, findsOneWidget);
-    //     expect(date2.style!.fontWeight, FontWeight.normal);
-    //     expect(find.byType(CircleAvatar), findsNWidgets(2));
-    //     // Mock呼び出しを検証
-    //     verify(_listRepository.fetchList());
-    //     verify(_updateReadPostRepository.updateReadPost(
-    //             notificationId: anyNamed('notificationId')))
-    //         .called(2);
-    //   });
   });
 }

@@ -97,10 +97,10 @@ Future<void> main() async {
         // createFamilyUserProvider.overrideWithProvider(
         //   (ref, param) => Future<void>.value(),
         // ),
-        // keywordSearchRepositoryProvider
-        //     .overrideWithValue(FakeKeywordSearchRepositoryImpl()),
-        keywordSearchListReducer
-            .overrideWithValue(AsyncValue.error(Exception('Error message.'))),
+        keywordSearchRepositoryProvider
+            .overrideWithValue(FakeKeywordSearchRepositoryImpl()),
+        // keywordSearchListReducer
+        //     .overrideWithValue(AsyncValue.error(Exception('Error message.'))),
         fetchNotificationListRepositoryProvider
             .overrideWithValue(FakeFetchNotificationListRepositoryImpl()),
         updateReadPostProvider
