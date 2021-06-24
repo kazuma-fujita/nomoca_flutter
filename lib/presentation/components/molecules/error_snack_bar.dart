@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 
 class ErrorSnackBar extends StatelessWidget {
-  const ErrorSnackBar({required this.errorMessage, required this.callback});
+  const ErrorSnackBar({
+    required this.errorMessage,
+    required this.callback,
+    this.backScreenWidget,
+  });
   final String errorMessage;
   final Function() callback;
+  final Widget? backScreenWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +28,6 @@ class ErrorSnackBar extends StatelessWidget {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     });
-    return Container();
+    return backScreenWidget ?? Container();
   }
 }

@@ -27,15 +27,22 @@ class _ScrollListView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final offset = useState(0);
-    final asyncValue = useProvider(keywordSearchListReducer);
-    // キーワード検索画面はページネーションの行う為、直接listStateを参照
+    // キーワード検索画面はページネーションを行う為、直接listStateを参照
     final items = useProvider(keywordSearchListState).state;
-    // 画面のスクロール量を取得する為、ListViewをNotificationListenerでWrapする
-    return NotificationListener<ScrollNotification>(
-      // 画面スクロールをトリガーに onNotification callback がcallされる
-      onNotification: (ScrollNotification scrollInfo) {
-        asyncValue.when(
-          data: (_) {
+    return useProvider(keywordSearchListReducer).maybeWhen(
+      error: (error, _) {
+        return ErrorSnackBar(
+          errorMessage: error.toString(),
+          callback: () => context.refresh(keywordSearchListReducer),
+          backScreenWidget: _emptyListView(),
+        );
+      },
+      // ページネーションローディング時の再ビルド防止の為、エラー以外はListViewを表示
+      orElse: () {
+        // 画面のスクロール量を取得する為、ListViewをNotificationListenerでWrapする
+        return NotificationListener<ScrollNotification>(
+          // 画面スクロールをトリガーに onNotification callback がcallされる
+          onNotification: (ScrollNotification scrollInfo) {
             // ListViewの高さに対する画面の表示割合
             final scrollProportion =
                 scrollInfo.metrics.pixels / scrollInfo.metrics.maxScrollExtent;
@@ -56,29 +63,18 @@ class _ScrollListView extends HookWidget {
                 limit: KeywordSearchProperties.limit,
               );
             }
+            return false;
           },
-          loading: () {
-            const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
-          error: (error, _) {
-            ErrorSnackBar(
-              errorMessage: error.toString(),
-              callback: () => context.refresh(keywordSearchListReducer),
-            );
-          },
+          child: items.isNotEmpty
+              ? ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (BuildContext _context, int index) {
+                    return _buildRow(context, items[index], index);
+                  },
+                )
+              : _emptyListView(),
         );
-        return false;
       },
-      child: items.isNotEmpty
-          ? ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (BuildContext _context, int index) {
-                return _buildRow(context, items[index], index);
-              },
-            )
-          : _emptyListView(),
     );
   }
 

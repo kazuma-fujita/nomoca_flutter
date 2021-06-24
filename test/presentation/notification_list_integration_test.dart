@@ -8,13 +8,13 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
-import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/fetch_notification_list_repository.dart';
 import 'package:nomoca_flutter/data/repository/update_read_post_repository.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/notification_detail_view.dart';
 import 'package:nomoca_flutter/presentation/notification_list_view.dart';
 import 'package:nomoca_flutter/states/reducers/notification_list_reducer.dart';
+
 import 'notification_list_integration_test.mocks.dart';
 
 @GenerateMocks([
