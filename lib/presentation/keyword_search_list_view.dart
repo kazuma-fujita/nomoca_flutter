@@ -22,19 +22,37 @@ class KeywordSearchView extends StatelessWidget {
 }
 
 class _KeywordSearchView extends HookWidget {
+  static const _threshold = 0.8;
+
   @override
   Widget build(BuildContext context) {
-    final textController = useTextEditingController();
+    final textController = useTextEditingController(
+        text: context.read(keywordSearchQueryState).state);
     final focusNode = useFocusNode();
-    // focusイベントは複数走る為、同時に走るイベントは一度のみ実行するように制御
+    final offset = useState(0);
+    // focusイベントは常に複数走る為、useEffectで同時に走るイベントは一度のみ実行するように制御
     useEffect(() {
       // TextFieldのfocus in/outをハンドリング
       focusNode.addListener(() {
         debugPrint("Focus Change : ${focusNode.hasFocus}");
-        // TextFieldのfocusが外れたらSearchKeywordStateの状態変更
+        // TextFieldのfocusが外れたら検索処理開始
         if (!focusNode.hasFocus) {
-          // 検索文字列が同じ場合、API検索処理を走らせないこと
-          print('Search keyword[${textController.text}]');
+          // 検索文字列が前回と同じ場合、API検索処理を走らせない
+          final pastQuery = context.read(keywordSearchQueryState).state;
+          if (textController.text != pastQuery) {
+            print('Search keyword[${textController.text}]');
+            // offset初期化
+            offset.value = 0;
+            // 検索文字列更新
+            context.read(keywordSearchQueryState).state = textController.text;
+            // TextFieldのfocusが外れたら検索文字列で一覧取得
+            context.read(keywordSearchListActionDispatcher).state =
+                KeywordSearchListAction.fetchList(
+              query: textController.text,
+              offset: 0,
+              limit: KeywordSearchProperties.limit,
+            );
+          }
         }
       });
     }, [focusNode]);
@@ -56,21 +74,16 @@ class _KeywordSearchView extends HookWidget {
           child: GestureDetector(
             // ListViewタップ時TextFieldのフォーカスを外しKeyboardを非表示にする
             onTap: () => FocusScope.of(context).unfocus(),
-            child: _ScrollListView(),
+            child: _scrollListView(offset),
           ),
         ),
       ],
     );
   }
-}
 
-class _ScrollListView extends HookWidget {
-  static const _threshold = 0.8;
-
-  @override
-  Widget build(BuildContext context) {
-    final offset = useState(0);
+  Widget _scrollListView(ValueNotifier<int> offset) {
     // キーワード検索画面はページネーションを行う為、直接listStateを参照
+    final context = useContext();
     final items = useProvider(keywordSearchListState).state;
     return useProvider(keywordSearchListReducer).maybeWhen(
       error: (error, _) {
@@ -112,9 +125,10 @@ class _ScrollListView extends HookWidget {
           },
           child: items.isNotEmpty
               ? ListView.builder(
+                  key: ObjectKey(items[0]),
                   itemCount: items.length,
                   itemBuilder: (BuildContext _context, int index) {
-                    return _buildRow(context, items[index]);
+                    return _buildRow(items[index]);
                   },
                 )
               : _emptyListView(),
@@ -123,7 +137,7 @@ class _ScrollListView extends HookWidget {
     );
   }
 
-  Widget _buildRow(BuildContext context, KeywordSearchEntity entity) {
+  Widget _buildRow(KeywordSearchEntity entity) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       child: Column(

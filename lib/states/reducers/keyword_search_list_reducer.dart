@@ -21,8 +21,10 @@ final keywordSearchRepositoryProvider =
   ),
 );
 
+// 検索Queryを保持するState。画面間を跨いでも検索文字列は保持される
+final keywordSearchQueryState = StateProvider<String>((ref) => '');
+
 // 一覧State。reducer内で一覧の状態更新が実行される。画面をまたいで利用されるのでautoDisposeしない
-// stateはreducer以外からのアクセスを禁止する為private scope
 final keywordSearchListState =
     StateProvider<List<KeywordSearchEntity>>((ref) => []);
 
@@ -42,7 +44,7 @@ final keywordSearchListReducer =
       final currentList = ref.read(keywordSearchListState).state;
       // API経由で一覧配列を取得
       final repository = ref.read(keywordSearchRepositoryProvider);
-      final pagingList = await repository.fetchList(
+      final fetchList = await repository.fetchList(
         query: query,
         offset: offset,
         limit: limit,
@@ -50,9 +52,9 @@ final keywordSearchListReducer =
         longitude: longitude,
       );
       // DEBUG
-      pagingList.asMap().forEach((index, e) => print('$index:${e.name}'));
-      // 現在の配列にページングしたリストを追加
-      final newList = [...currentList, ...pagingList];
+      fetchList.asMap().forEach((index, e) => print('$index:${e.name}'));
+      // offsetが0以上の場合、現在の配列にページングしたリストを追加
+      final newList = offset > 0 ? [...currentList, ...fetchList] : fetchList;
       // リポジトリから取得した配列でlistStateの状態を更新
       ref.read(keywordSearchListState).state = newList;
       return newList;
