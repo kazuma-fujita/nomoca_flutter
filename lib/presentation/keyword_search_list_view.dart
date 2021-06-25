@@ -16,7 +16,50 @@ class KeywordSearchView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('病院を探す'),
       ),
-      body: _ScrollListView(),
+      body: _KeywordSearchView(),
+    );
+  }
+}
+
+class _KeywordSearchView extends HookWidget {
+  @override
+  Widget build(BuildContext context) {
+    final textController = useTextEditingController();
+    final focusNode = useFocusNode();
+    // focusイベントは複数走る為、同時に走るイベントは一度のみ実行するように制御
+    useEffect(() {
+      // TextFieldのfocus in/outをハンドリング
+      focusNode.addListener(() {
+        debugPrint("Focus Change : ${focusNode.hasFocus}");
+        // TextFieldのfocusが外れたらSearchKeywordStateの状態変更
+        if (!focusNode.hasFocus) {
+          // 検索文字列が同じ場合、API検索処理を走らせないこと
+          print('Search keyword[${textController.text}]');
+        }
+      });
+    }, [focusNode]);
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 32, 8),
+          child: TextField(
+            textInputAction: TextInputAction.search,
+            controller: textController,
+            focusNode: focusNode,
+            decoration: const InputDecoration(
+              icon: Icon(Icons.search),
+              hintText: '病院名',
+            ),
+          ),
+        ),
+        Expanded(
+          child: GestureDetector(
+            // ListViewタップ時TextFieldのフォーカスを外しKeyboardを非表示にする
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: _ScrollListView(),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -43,6 +86,8 @@ class _ScrollListView extends HookWidget {
         return NotificationListener<ScrollNotification>(
           // 画面スクロールをトリガーに onNotification callback がcallされる
           onNotification: (ScrollNotification scrollInfo) {
+            // ListViewスクロール時TextFieldのフォーカスを外しKeyboardを非表示にする
+            FocusScope.of(context).unfocus();
             // ListViewの高さに対する画面の表示割合
             final scrollProportion =
                 scrollInfo.metrics.pixels / scrollInfo.metrics.maxScrollExtent;
