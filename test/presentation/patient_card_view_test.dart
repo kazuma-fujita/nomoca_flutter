@@ -60,11 +60,13 @@ void main() {
       expect(find.byType(SvgPicture), findsNWidgets(2));
     });
 
-    testWidgets('Testing widget of error.', (WidgetTester tester) async {
-      await tester.pumpWidget(
-          setUpProviderScope(AsyncValue.error(Exception('Error message.'))));
-      expect(find.text('太郎'), findsNothing);
-      expect(find.byType(ErrorSnackBar), findsOneWidget);
+    group('Testing error of patient card view.', () {
+      testWidgets('Testing widget of error.', (WidgetTester tester) async {
+        await tester.pumpWidget(
+            setUpProviderScope(AsyncValue.error(Exception('Error message.'))));
+        expect(find.text('太郎'), findsNothing);
+        expect(find.byType(ErrorSnackBar), findsOneWidget);
+      });
     });
   });
 }

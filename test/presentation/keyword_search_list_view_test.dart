@@ -146,6 +146,67 @@ void main() {
         limit: anyNamed('limit'),
       ));
     });
+
+    testWidgets('Testing scroll of list.', (WidgetTester tester) async {
+      final results1 = List<KeywordSearchEntity>.generate(10, (index) {
+        final id = index + 1;
+        return KeywordSearchEntity(
+          id: id,
+          name: 'clinic$id',
+          address: 'address$id',
+          isFavorite: false,
+          buildingName: null,
+          images: null,
+        );
+      });
+      final results2 = List<KeywordSearchEntity>.generate(10, (index) {
+        final id = index + 11;
+        return KeywordSearchEntity(
+          id: id,
+          name: 'clinic$id',
+          address: 'address$id',
+          isFavorite: false,
+          buildingName: null,
+          images: null,
+        );
+      });
+      // 一覧APIレスポンスデータを設定
+      when(_listRepository.fetchList(
+        query: anyNamed('query'),
+        offset: anyNamed('offset'),
+        limit: anyNamed('limit'),
+      )).thenAnswer((_) async => results1);
+      // 一覧画面Widgetをレンダリング
+      await tester.pumpWidget(_setUpProviderScope());
+      await _verifyTheStatusBeforeAfterLoading(tester);
+      // 画面要素を確認
+      results1.asMap().forEach((index, entity) {
+        // 一度に8件まで表示確認
+        if (entity.id <= 8) {
+          expect(find.text('clinic${entity.id}'), findsOneWidget);
+        }
+      });
+      // 一覧APIレスポンスデータを設定
+      when(_listRepository.fetchList(
+        query: anyNamed('query'),
+        offset: anyNamed('offset'),
+        limit: anyNamed('limit'),
+      )).thenAnswer((_) async => results2);
+      // ListViewを下にスクロール
+      await tester.drag(find.byType(ListView), const Offset(0, -400));
+      await tester.pump();
+      // 初回ロード時のリスト未表示部分の表示確認
+      expect(find.text('clinic9'), findsOneWidget);
+      expect(find.text('clinic10'), findsOneWidget);
+      // clinic11以降の画面表示検証ができていない
+      // expect(find.text('clinic11'), findsOneWidget);
+      // Mock呼び出しを検証
+      verify(_listRepository.fetchList(
+        query: anyNamed('query'),
+        offset: anyNamed('offset'),
+        limit: anyNamed('limit'),
+      )).called(2);
+    });
   });
 
   group('Testing error of keyword search view.', () {
