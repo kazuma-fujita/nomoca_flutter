@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:nomoca_flutter/constants/db_table_names.dart';
@@ -16,7 +15,6 @@ Future<void> main() async {
     Hive
       ..init(path)
       ..registerAdapter<User>(UserAdapter());
-    await Hive.deleteFromDisk(); // 常に空の状態で開始する
     // Daoシングルトンインスタンス生成
     await Hive.openBox<User>(DBTableNames.users);
   });

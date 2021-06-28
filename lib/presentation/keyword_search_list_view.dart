@@ -6,6 +6,7 @@ import 'package:nomoca_flutter/constants/keyword_search_properties.dart';
 import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
 import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
+import 'components/atoms/animated_push_motion.dart';
 import 'components/molecules/error_snack_bar.dart';
 import 'components/molecules/image_slider.dart';
 
@@ -141,60 +142,63 @@ class _KeywordSearchView extends HookWidget {
   Widget _buildRow(KeywordSearchEntity entity) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          entity.images != null
-              ? Stack(
-                  children: <Widget>[
-                    // 画像スライダー
-                    ImageSlider(images: entity.images!),
-                    // お気に入りボタン位置
-                    Positioned(
-                      top: 24,
-                      right: 24,
-                      child: LikeButton(
-                        key: Key('like-${entity.id.toString()}'),
-                        isLiked: entity.isFavorite,
-                        onTap: (bool isLiked) async {
-                          // update API実行
-                          // await context
-                          //     .read(favoriteListViewModelProvider)
-                          //     .toggleIsFavorite(
-                          //     id: favorite.id, isFavorite: favorite.isFavorite);
-                          return !isLiked;
-                        },
+      // Widgetを押し込むpushアニメーションを付与
+      child: AnimatedPushMotion(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            entity.images != null
+                ? Stack(
+                    children: <Widget>[
+                      // 画像スライダー
+                      ImageSlider(images: entity.images!),
+                      // お気に入りボタン位置
+                      Positioned(
+                        top: 24,
+                        right: 24,
+                        child: LikeButton(
+                          key: Key('like-${entity.id.toString()}'),
+                          isLiked: entity.isFavorite,
+                          onTap: (bool isLiked) async {
+                            // update API実行
+                            // await context
+                            //     .read(favoriteListViewModelProvider)
+                            //     .toggleIsFavorite(
+                            //     id: favorite.id, isFavorite: favorite.isFavorite);
+                            return !isLiked;
+                          },
+                        ),
                       ),
+                    ],
+                  )
+                : Container(),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    entity.name,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                )
-              : Container(),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  entity.name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.bold,
                   ),
-                ),
-                Text(
-                  // ignore: lines_longer_than_80_chars
-                  '${entity.address}${entity.buildingName != null ? ' ${entity.buildingName}' : ''}',
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: Colors.black54,
+                  Text(
+                    // ignore: lines_longer_than_80_chars
+                    '${entity.address}${entity.buildingName != null ? ' ${entity.buildingName}' : ''}',
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: Colors.black54,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

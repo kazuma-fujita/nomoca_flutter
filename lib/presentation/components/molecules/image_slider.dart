@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:nomoca_flutter/presentation/components/atoms/parallax_card.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 
 class ImageSlider extends StatefulWidget {
@@ -14,47 +15,38 @@ class _ImageSliderState extends State<ImageSlider> {
 
   @override
   Widget build(BuildContext context) {
-    // 画像が1枚以上あればIndicator表示
-    return widget.images.length == 1
-        ? _buildImageSlider()
-        : Stack(
-            children: [
-              _buildImageSlider(),
-              _buildCircleIndicator(),
-            ],
-          );
+    return Stack(
+      children: [
+        ParallaxCard(
+          builder: _buildImageSlider,
+        ),
+        // 画像が1枚以上あればIndicator表示
+        if (widget.images.length > 1) _buildCircleIndicator(),
+      ],
+    );
   }
 
-  Widget _buildImageSlider() {
-    return Card(
-      // 角丸設定
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      // 画像が四角の角丸からはみ出さない設定
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      elevation: 4,
-      child: SizedBox(
-        // 画像表示領域の高さ
-        height: 240,
-        // 画像が1枚以上あればPageViewに無限スクロール設定
-        child: widget.images.length == 1
-            ? PageView.builder(
-                itemCount: widget.images.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    _buildImageView(context, widget.images[index]),
-              )
-            : PageView.builder(
-                controller: PageController(
-                    initialPage: initialPageCount(widget.images.length)),
-                itemBuilder: (BuildContext context, int index) =>
-                    _buildImageView(
-                        context, widget.images[index % widget.images.length]),
-                onPageChanged: (int index) {
-                  _currentPageNotifier.value = index % widget.images.length;
-                },
-              ),
-      ),
+  Widget _buildImageSlider(GlobalKey backgroundImageKey) {
+    return SizedBox(
+      key: backgroundImageKey,
+      // 画像表示領域の高さ
+      height: 240,
+      // 画像が1枚以上あればPageViewに無限スクロール設定
+      child: widget.images.length == 1
+          ? PageView.builder(
+              itemCount: widget.images.length,
+              itemBuilder: (BuildContext context, int index) =>
+                  _buildImageView(context, widget.images[index]),
+            )
+          : PageView.builder(
+              controller: PageController(
+                  initialPage: initialPageCount(widget.images.length)),
+              itemBuilder: (BuildContext context, int index) => _buildImageView(
+                  context, widget.images[index % widget.images.length]),
+              onPageChanged: (int index) {
+                _currentPageNotifier.value = index % widget.images.length;
+              },
+            ),
     );
   }
 

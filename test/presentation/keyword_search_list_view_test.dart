@@ -156,6 +156,9 @@ void main() {
       expect(find.text('渋谷区道玄坂2-23-14'), findsOneWidget);
       expect(find.text('タカデンタルクリニック'), findsOneWidget);
       expect(find.text('渋谷区恵比寿1-19-18 石渡ビル3F'), findsOneWidget);
+      // ListViewを下にスクロールして非表示部分を表示
+      await tester.drag(find.byType(ListView), const Offset(0, -400));
+      await tester.pump();
       expect(find.text('小笠原歯科'), findsOneWidget);
       expect(find.text('渋谷区道玄坂2-25-5 島田ビル4F'), findsOneWidget);
       expect(find.byType(ImageSlider), findsNWidgets(2));
