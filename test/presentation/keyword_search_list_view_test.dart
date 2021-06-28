@@ -70,11 +70,14 @@ void main() {
       query: anyNamed('query'),
       offset: anyNamed('offset'),
       limit: anyNamed('limit'),
+      latitude: anyNamed('latitude'),
+      longitude: anyNamed('longitude'),
     )).thenAnswer((_) async => results1);
     // 一覧画面Widgetをレンダリング
     await tester.pumpWidget(_setUpProviderScope());
     await _verifyTheStatusBeforeAfterLoading(tester);
     // 画面要素を確認
+    await tester.pump();
     results1.asMap().forEach((index, entity) {
       // 一度に7件まで表示確認
       if (entity.id < 8) {
@@ -88,8 +91,10 @@ void main() {
       // 一覧APIレスポンスデータを設定
       when(_listRepository.fetchList(
         query: anyNamed('query'),
-        offset: anyNamed('offset'),
+        offset: 0,
         limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
       )).thenAnswer((_) async => []);
       // 一覧画面Widgetをレンダリング
       await tester.pumpWidget(_setUpProviderScope());
@@ -99,8 +104,10 @@ void main() {
       // Mock呼び出しを検証
       verify(_listRepository.fetchList(
         query: anyNamed('query'),
-        offset: anyNamed('offset'),
+        offset: 0,
         limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
       ));
     });
 
@@ -145,12 +152,15 @@ void main() {
       // 一覧APIレスポンスデータを設定
       when(_listRepository.fetchList(
         query: anyNamed('query'),
-        offset: anyNamed('offset'),
+        offset: 0,
         limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
       )).thenAnswer((_) async => results);
       // 一覧画面Widgetをレンダリング
       await tester.pumpWidget(_setUpProviderScope());
       await _verifyTheStatusBeforeAfterLoading(tester);
+      await tester.pump();
       // 画面要素を確認
       expect(find.text('渋谷リーフクリニック'), findsOneWidget);
       expect(find.text('渋谷区道玄坂2-23-14'), findsOneWidget);
@@ -175,8 +185,10 @@ void main() {
       // Mock呼び出しを検証
       verify(_listRepository.fetchList(
         query: anyNamed('query'),
-        offset: anyNamed('offset'),
+        offset: 0,
         limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
       ));
     });
 
@@ -198,8 +210,10 @@ void main() {
       // ページング一覧APIレスポンスデータを設定
       when(_listRepository.fetchList(
         query: anyNamed('query'),
-        offset: anyNamed('offset'),
+        offset: 10,
         limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
       )).thenAnswer((_) async => results2);
       // ListViewを下にスクロール
       await tester.drag(find.byType(ListView), const Offset(0, -400));
@@ -219,9 +233,19 @@ void main() {
       // Mock呼び出しを検証
       verify(_listRepository.fetchList(
         query: anyNamed('query'),
-        offset: anyNamed('offset'),
+        offset: 0,
         limit: anyNamed('limit'),
-      )).called(2);
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
+      ));
+      // ページング時はoffset10でcallされる
+      verify(_listRepository.fetchList(
+        query: anyNamed('query'),
+        offset: 10,
+        limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
+      ));
     });
 
     testWidgets('Testing keyword search.', (WidgetTester tester) async {
@@ -241,9 +265,11 @@ void main() {
       });
       // 検索時の一覧APIレスポンスデータを設定
       when(_listRepository.fetchList(
-        query: anyNamed('query'),
-        offset: anyNamed('offset'),
+        query: 'dummy keyword',
+        offset: 0,
         limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
       )).thenAnswer((_) async => searchResults);
       // キーボード非表示を確認
       expect(tester.testTextInput.isVisible, isFalse);
@@ -268,6 +294,14 @@ void main() {
           expect(find.text('clinic${entity.id}'), findsOneWidget);
         }
       });
+      // Mock呼び出しを検証
+      verify(_listRepository.fetchList(
+        query: 'dummy keyword',
+        offset: 0,
+        limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
+      ));
       /*
       キーワード文字列を変更して再検索が実行されることを検証
        */
@@ -285,9 +319,11 @@ void main() {
       });
       // 検索時の一覧APIレスポンスデータを設定
       when(_listRepository.fetchList(
-        query: anyNamed('query'),
-        offset: anyNamed('offset'),
+        query: 'Re search',
+        offset: 0,
         limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
       )).thenAnswer((_) async => reSearchResults);
       // キーワード検索TextFieldをタップ
       await tester.tap(find.byType(TextField));
@@ -306,10 +342,12 @@ void main() {
       });
       // Mock呼び出しを検証
       verify(_listRepository.fetchList(
-        query: anyNamed('query'),
-        offset: anyNamed('offset'),
+        query: 'Re search',
+        offset: 0,
         limit: anyNamed('limit'),
-      )).called(3);
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
+      ));
       /*
       キーワード文字列が同じ場合、再検索が実行されないことを検証
        */
@@ -332,9 +370,11 @@ void main() {
       });
       // 再検索が実行されずMockが呼び出されないことを検証
       verifyNever(_listRepository.fetchList(
-        query: anyNamed('query'),
+        query: 'Re search',
         offset: anyNamed('offset'),
         limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
       ));
     });
   });
@@ -346,12 +386,14 @@ void main() {
         query: anyNamed('query'),
         offset: anyNamed('offset'),
         limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
       )).thenThrow(Exception('Error message.'));
       // 一覧画面Widgetをレンダリング
       await tester.pumpWidget(_setUpProviderScope());
       expect(find.text('病院を探す'), findsOneWidget);
       // Widgetがレンダリングし終わるまで待機
-      await tester.pump();
+      await tester.pumpAndSettle();
       // 空データ文言を確認
       expect(find.text('病院が見つかりません'), findsOneWidget);
       // Error widget表示確認
@@ -361,6 +403,8 @@ void main() {
         query: anyNamed('query'),
         offset: anyNamed('offset'),
         limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
       ));
     });
   });

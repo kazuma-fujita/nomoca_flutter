@@ -6,6 +6,7 @@ import 'package:like_button/like_button.dart';
 import 'package:nomoca_flutter/constants/keyword_search_properties.dart';
 import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
 import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
+import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
 import 'components/atoms/animated_push_motion.dart';
 import 'components/molecules/error_snack_bar.dart';
@@ -24,6 +25,7 @@ class KeywordSearchView extends StatelessWidget {
 }
 
 class _KeywordSearchView extends HookWidget {
+  // ページング閾値
   static const _threshold = 0.8;
   // 初期表示位置を渋谷駅に設定
   final Position _initialPosition = Position(
@@ -38,6 +40,7 @@ class _KeywordSearchView extends HookWidget {
     speedAccuracy: 0,
   );
 
+  // 現在位置座標を取得
   Future<void> _setCurrentLocation(ValueNotifier<Position> position) async {
     // 位置情報パーミッションが選択されていない場合は位置情報取得許可ダイアログを表示
     final currentPosition = await Geolocator.getCurrentPosition(
@@ -92,7 +95,7 @@ class _KeywordSearchView extends HookWidget {
         WidgetsBinding.instance!.addPostFrameCallback((_) {
           context.read(keywordSearchListActionDispatcher).state =
               KeywordSearchListAction.fetchList(
-            query: context.read(keywordSearchQueryState).state,
+            query: textController.text,
             offset: offset.value,
             limit: KeywordSearchProperties.limit,
             latitude: position.value.latitude,
@@ -196,7 +199,7 @@ class _KeywordSearchView extends HookWidget {
                   key: ObjectKey(items[0]),
                   itemCount: items.length,
                   itemBuilder: (BuildContext _context, int index) {
-                    return _buildRow(items[index]);
+                    return _buildRow(items[index], context);
                   },
                 )
               : _emptyListView(),
@@ -205,7 +208,7 @@ class _KeywordSearchView extends HookWidget {
     );
   }
 
-  Widget _buildRow(KeywordSearchEntity entity) {
+  Widget _buildRow(KeywordSearchEntity entity, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       // Widgetを押し込むpushアニメーションを付与
@@ -228,10 +231,17 @@ class _KeywordSearchView extends HookWidget {
                           isLiked: entity.isFavorite,
                           onTap: (bool isLiked) async {
                             // update API実行
-                            // await context
-                            //     .read(favoriteListViewModelProvider)
-                            //     .toggleIsFavorite(
-                            //     id: favorite.id, isFavorite: favorite.isFavorite);
+                            context
+                                .read(updateFavoriteProvider(entity.id))
+                                .maybeWhen(
+                                  error: (error, _) {
+                                    // SnackBar表示
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(error.toString())));
+                                  },
+                                  orElse: () {},
+                                );
                             return !isLiked;
                           },
                         ),
