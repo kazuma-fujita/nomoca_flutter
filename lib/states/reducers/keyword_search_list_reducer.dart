@@ -31,48 +31,51 @@ final keywordSearchListState =
 // ActionStateを更新してreducerを再実行する
 final keywordSearchListActionDispatcher =
     StateProvider.autoDispose<KeywordSearchListAction>(
+  (ref) => const KeywordSearchListAction.none(),
   // 画面初期表示する一覧のoffset/limitをfetchList Actionに設定
-  (ref) => const KeywordSearchListAction.fetchList(
-      query: '', offset: 0, limit: KeywordSearchProperties.limit),
+  // (ref) => const KeywordSearchListAction.fetchList(
+  //     query: '', offset: 0, limit: KeywordSearchProperties.limit),
 );
 
 final keywordSearchListReducer =
     FutureProvider.autoDispose<List<KeywordSearchEntity>>((ref) async {
   return ref.watch(keywordSearchListActionDispatcher).state.when(
-    fetchList: (query, offset, limit, latitude, longitude) async {
-      // 現在の配列を取得
-      final currentList = ref.read(keywordSearchListState).state;
-      // API経由で一覧配列を取得
-      final repository = ref.read(keywordSearchRepositoryProvider);
-      final fetchList = await repository.fetchList(
-        query: query,
-        offset: offset,
-        limit: limit,
-        latitude: latitude,
-        longitude: longitude,
+        fetchList: (query, offset, limit, latitude, longitude) async {
+          // 現在の配列を取得
+          final currentList = ref.read(keywordSearchListState).state;
+          // API経由で一覧配列を取得
+          final repository = ref.read(keywordSearchRepositoryProvider);
+          final fetchList = await repository.fetchList(
+            query: query,
+            offset: offset,
+            limit: limit,
+            latitude: latitude,
+            longitude: longitude,
+          );
+          // DEBUG
+          fetchList.asMap().forEach((index, e) => print('$index:${e.name}'));
+          // offsetが0以上の場合、現在の配列にページングしたリストを追加
+          final newList =
+              offset > 0 ? [...currentList, ...fetchList] : fetchList;
+          // リポジトリから取得した配列でlistStateの状態を更新
+          ref.read(keywordSearchListState).state = newList;
+          return newList;
+        },
+        toggleFavorite: (institutionId) {
+          // 一覧を既読状態に変更
+          final currentList = ref.read(keywordSearchListState).state;
+          final newList = currentList
+              .map((entity) => entity.id == institutionId
+                  ? entity.copyWith(isFavorite: !entity.isFavorite)
+                  : entity)
+              .toList();
+          // 一覧のWidgetがBuildし終わるまで待機
+          SchedulerBinding.instance!.addPostFrameCallback((_) {
+            // 要素を追加した配列でlistStateProviderの状態を更新
+            ref.read(keywordSearchListState).state = newList;
+          });
+          return newList;
+        },
+        none: () => [],
       );
-      // DEBUG
-      fetchList.asMap().forEach((index, e) => print('$index:${e.name}'));
-      // offsetが0以上の場合、現在の配列にページングしたリストを追加
-      final newList = offset > 0 ? [...currentList, ...fetchList] : fetchList;
-      // リポジトリから取得した配列でlistStateの状態を更新
-      ref.read(keywordSearchListState).state = newList;
-      return newList;
-    },
-    toggleFavorite: (institutionId) {
-      // 一覧を既読状態に変更
-      final currentList = ref.read(keywordSearchListState).state;
-      final newList = currentList
-          .map((entity) => entity.id == institutionId
-              ? entity.copyWith(isFavorite: !entity.isFavorite)
-              : entity)
-          .toList();
-      // 一覧のWidgetがBuildし終わるまで待機
-      SchedulerBinding.instance!.addPostFrameCallback((_) {
-        // 要素を追加した配列でlistStateProviderの状態を更新
-        ref.read(keywordSearchListState).state = newList;
-      });
-      return newList;
-    },
-  );
 });

@@ -46,5 +46,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocationAlwaysUsageDescription</key>
+    <string>現在地付近の病院を探す為に位置情報を取得します</string>
 </dict>
 </plist>

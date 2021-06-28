@@ -14,4 +14,5 @@ class KeywordSearchListAction with _$KeywordSearchListAction {
   }) = FetchList;
   const factory KeywordSearchListAction.toggleFavorite(int institutionId) =
       ToggleFavorite;
+  const factory KeywordSearchListAction.none() = None;
 }

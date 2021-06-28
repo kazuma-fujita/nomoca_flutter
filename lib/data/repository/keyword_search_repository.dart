@@ -43,6 +43,9 @@ class KeywordSearchRepositoryImpl extends KeywordSearchRepository {
         longitude: longitude,
       );
 
+      print(
+          'KeywordSearch query: $query offset: $offset limit: $limit lat: $latitude long: $longitude');
+
       final decodedJson = json.decode(responseBody) as List<dynamic>;
       // Conversion json to entity.
       final list = decodedJson
@@ -94,7 +97,8 @@ class FakeKeywordSearchRepositoryImpl extends KeywordSearchRepository {
     if (end > list.length) {
       end = list.length;
     }
-    print('FakeKeywordSearch offset: $offset limit: $limit end: $end');
+    print(
+        'FakeKeywordSearch query: $query offset: $offset limit: $limit end: $end lat: $latitude long: $longitude');
     return Future.delayed(const Duration(seconds: 2), () {
       return list.sublist(offset, end);
     });

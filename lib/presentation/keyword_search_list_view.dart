@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:like_button/like_button.dart';
 import 'package:nomoca_flutter/constants/keyword_search_properties.dart';
@@ -24,6 +25,36 @@ class KeywordSearchView extends StatelessWidget {
 
 class _KeywordSearchView extends HookWidget {
   static const _threshold = 0.8;
+  // 初期表示位置を渋谷駅に設定
+  final Position _initialPosition = Position(
+    latitude: 35.658034,
+    longitude: 139.701636,
+    timestamp: DateTime.now(),
+    altitude: 0,
+    accuracy: 0,
+    heading: 0,
+    floor: null,
+    speed: 0,
+    speedAccuracy: 0,
+  );
+
+  Future<void> _setCurrentLocation(ValueNotifier<Position> position) async {
+    // 位置情報パーミッションが選択されていない場合は位置情報取得許可ダイアログを表示
+    final currentPosition = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.lowest,
+    );
+    const decimalPoint = 3;
+    // 過去の座標と最新の座標の小数点第三位で切り捨てた値を判定
+    if ((position.value.latitude).toStringAsFixed(decimalPoint) !=
+            (currentPosition.latitude).toStringAsFixed(decimalPoint) &&
+        (position.value.longitude).toStringAsFixed(decimalPoint) !=
+            (currentPosition.longitude).toStringAsFixed(decimalPoint)) {
+      print(
+          'current lat:${currentPosition.latitude} long: ${currentPosition.longitude}');
+      // 現在地座標のstateを更新する
+      position.value = currentPosition;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +62,46 @@ class _KeywordSearchView extends HookWidget {
         text: context.read(keywordSearchQueryState).state);
     final focusNode = useFocusNode();
     final offset = useState(0);
+    final position = useState<Position>(_initialPosition);
+    // 現在位置情報取得
+    _setCurrentLocation(position);
+    // 初回表示 or 位置情報取得時一覧取得。緯度経度取得毎にuseEffect内が実行される
+    useEffect(() {
+      print(
+          'useEffect lat:${position.value.latitude} long: ${position.value.longitude}');
+      // 全Widgetのbuild後にAPI経由で一覧取得
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        context.read(keywordSearchListActionDispatcher).state =
+            KeywordSearchListAction.fetchList(
+          query: textController.text,
+          offset: 0,
+          limit: KeywordSearchProperties.limit,
+          latitude: position.value.latitude,
+          longitude: position.value.longitude,
+        );
+      });
+    }, [position.value]);
+
+    // ページング時一覧取得。offset変更毎にuseEffect内が実行される
+    useEffect(() {
+      // offsetが0以上の場合ページング一覧取得実行
+      if (offset.value > 0) {
+        print(
+            'useEffect offset: ${offset.value} limit: ${KeywordSearchProperties.limit}');
+        // 全Widgetのbuild後にAPI経由で一覧取得
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          context.read(keywordSearchListActionDispatcher).state =
+              KeywordSearchListAction.fetchList(
+            query: context.read(keywordSearchQueryState).state,
+            offset: offset.value,
+            limit: KeywordSearchProperties.limit,
+            latitude: position.value.latitude,
+            longitude: position.value.longitude,
+          );
+        });
+      }
+    }, [offset.value]);
+
     // focusイベントは常に複数走る為、useEffectで同時に走るイベントは一度のみ実行するように制御
     useEffect(() {
       // TextFieldのfocus in/outをハンドリング
@@ -53,11 +124,14 @@ class _KeywordSearchView extends HookWidget {
               query: textController.text,
               offset: 0,
               limit: KeywordSearchProperties.limit,
+              latitude: position.value.latitude,
+              longitude: position.value.longitude,
             );
           }
         }
       });
     }, [focusNode]);
+
     return Column(
       children: [
         Padding(
@@ -76,14 +150,15 @@ class _KeywordSearchView extends HookWidget {
           child: GestureDetector(
             // ListViewタップ時TextFieldのフォーカスを外しKeyboardを非表示にする
             onTap: () => FocusScope.of(context).unfocus(),
-            child: _scrollListView(offset),
+            child: _scrollListView(offset, position),
           ),
         ),
       ],
     );
   }
 
-  Widget _scrollListView(ValueNotifier<int> offset) {
+  Widget _scrollListView(
+      ValueNotifier<int> offset, ValueNotifier<Position> position) {
     // キーワード検索画面はページネーションを行う為、直接listStateを参照
     final context = useContext();
     final items = useProvider(keywordSearchListState).state;
@@ -113,15 +188,6 @@ class _KeywordSearchView extends HookWidget {
             if (scrollProportion > _threshold && items.length == nextOffset) {
               // オフセット値の更新
               offset.value = nextOffset;
-              print(
-                  'offset: ${offset.value} limit: ${KeywordSearchProperties.limit}');
-              // API経由でページングリストの取得
-              context.read(keywordSearchListActionDispatcher).state =
-                  KeywordSearchListAction.fetchList(
-                query: '',
-                offset: offset.value,
-                limit: KeywordSearchProperties.limit,
-              );
             }
             return false;
           },

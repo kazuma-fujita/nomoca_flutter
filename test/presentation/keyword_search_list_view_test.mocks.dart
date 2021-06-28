@@ -10,8 +10,6 @@ import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart'
     as _i4;
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart'
     as _i2;
-import 'package:nomoca_flutter/data/repository/update_favorite_repository.dart'
-    as _i6;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: comment_references
@@ -46,26 +44,6 @@ class MockKeywordSearchRepository extends _i1.Mock
               returnValue: Future<List<_i4.KeywordSearchEntity>>.value(
                   <_i4.KeywordSearchEntity>[]))
           as _i3.Future<List<_i4.KeywordSearchEntity>>);
-  @override
-  String getAuthenticationToken(_i5.User? user) =>
-      (super.noSuchMethod(Invocation.method(#getAuthenticationToken, [user]),
-          returnValue: '') as String);
-}
-
-/// A class which mocks [UpdateFavoriteRepository].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockUpdateFavoriteRepository extends _i1.Mock
-    implements _i6.UpdateFavoriteRepository {
-  MockUpdateFavoriteRepository() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i3.Future<void> updateFavorite({int? institutionId}) => (super.noSuchMethod(
-      Invocation.method(#updateFavorite, [], {#institutionId: institutionId}),
-      returnValue: Future<void>.value(),
-      returnValueForMissingStub: Future.value()) as _i3.Future<void>);
   @override
   String getAuthenticationToken(_i5.User? user) =>
       (super.noSuchMethod(Invocation.method(#getAuthenticationToken, [user]),

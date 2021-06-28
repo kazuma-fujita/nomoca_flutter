@@ -36,6 +36,10 @@ class _$KeywordSearchListActionTearOff {
       institutionId,
     );
   }
+
+  None none() {
+    return const None();
+  }
 }
 
 /// @nodoc
@@ -49,6 +53,7 @@ mixin _$KeywordSearchListAction {
             double? latitude, double? longitude)
         fetchList,
     required TResult Function(int institutionId) toggleFavorite,
+    required TResult Function() none,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -57,6 +62,7 @@ mixin _$KeywordSearchListAction {
             double? longitude)?
         fetchList,
     TResult Function(int institutionId)? toggleFavorite,
+    TResult Function()? none,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -64,12 +70,14 @@ mixin _$KeywordSearchListAction {
   TResult map<TResult extends Object?>({
     required TResult Function(FetchList value) fetchList,
     required TResult Function(ToggleFavorite value) toggleFavorite,
+    required TResult Function(None value) none,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(FetchList value)? fetchList,
     TResult Function(ToggleFavorite value)? toggleFavorite,
+    TResult Function(None value)? none,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -224,6 +232,7 @@ class _$FetchList with DiagnosticableTreeMixin implements FetchList {
             double? latitude, double? longitude)
         fetchList,
     required TResult Function(int institutionId) toggleFavorite,
+    required TResult Function() none,
   }) {
     return fetchList(query, offset, limit, latitude, longitude);
   }
@@ -235,6 +244,7 @@ class _$FetchList with DiagnosticableTreeMixin implements FetchList {
             double? longitude)?
         fetchList,
     TResult Function(int institutionId)? toggleFavorite,
+    TResult Function()? none,
     required TResult orElse(),
   }) {
     if (fetchList != null) {
@@ -248,6 +258,7 @@ class _$FetchList with DiagnosticableTreeMixin implements FetchList {
   TResult map<TResult extends Object?>({
     required TResult Function(FetchList value) fetchList,
     required TResult Function(ToggleFavorite value) toggleFavorite,
+    required TResult Function(None value) none,
   }) {
     return fetchList(this);
   }
@@ -257,6 +268,7 @@ class _$FetchList with DiagnosticableTreeMixin implements FetchList {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(FetchList value)? fetchList,
     TResult Function(ToggleFavorite value)? toggleFavorite,
+    TResult Function(None value)? none,
     required TResult orElse(),
   }) {
     if (fetchList != null) {
@@ -363,6 +375,7 @@ class _$ToggleFavorite with DiagnosticableTreeMixin implements ToggleFavorite {
             double? latitude, double? longitude)
         fetchList,
     required TResult Function(int institutionId) toggleFavorite,
+    required TResult Function() none,
   }) {
     return toggleFavorite(institutionId);
   }
@@ -374,6 +387,7 @@ class _$ToggleFavorite with DiagnosticableTreeMixin implements ToggleFavorite {
             double? longitude)?
         fetchList,
     TResult Function(int institutionId)? toggleFavorite,
+    TResult Function()? none,
     required TResult orElse(),
   }) {
     if (toggleFavorite != null) {
@@ -387,6 +401,7 @@ class _$ToggleFavorite with DiagnosticableTreeMixin implements ToggleFavorite {
   TResult map<TResult extends Object?>({
     required TResult Function(FetchList value) fetchList,
     required TResult Function(ToggleFavorite value) toggleFavorite,
+    required TResult Function(None value) none,
   }) {
     return toggleFavorite(this);
   }
@@ -396,6 +411,7 @@ class _$ToggleFavorite with DiagnosticableTreeMixin implements ToggleFavorite {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(FetchList value)? fetchList,
     TResult Function(ToggleFavorite value)? toggleFavorite,
+    TResult Function(None value)? none,
     required TResult orElse(),
   }) {
     if (toggleFavorite != null) {
@@ -412,4 +428,103 @@ abstract class ToggleFavorite implements KeywordSearchListAction {
   @JsonKey(ignore: true)
   $ToggleFavoriteCopyWith<ToggleFavorite> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $NoneCopyWith<$Res> {
+  factory $NoneCopyWith(None value, $Res Function(None) then) =
+      _$NoneCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class _$NoneCopyWithImpl<$Res>
+    extends _$KeywordSearchListActionCopyWithImpl<$Res>
+    implements $NoneCopyWith<$Res> {
+  _$NoneCopyWithImpl(None _value, $Res Function(None) _then)
+      : super(_value, (v) => _then(v as None));
+
+  @override
+  None get _value => super._value as None;
+}
+
+/// @nodoc
+
+class _$None with DiagnosticableTreeMixin implements None {
+  const _$None();
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'KeywordSearchListAction.none()';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'KeywordSearchListAction.none'));
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) || (other is None);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String query, int offset, int limit,
+            double? latitude, double? longitude)
+        fetchList,
+    required TResult Function(int institutionId) toggleFavorite,
+    required TResult Function() none,
+  }) {
+    return none();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String query, int offset, int limit, double? latitude,
+            double? longitude)?
+        fetchList,
+    TResult Function(int institutionId)? toggleFavorite,
+    TResult Function()? none,
+    required TResult orElse(),
+  }) {
+    if (none != null) {
+      return none();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FetchList value) fetchList,
+    required TResult Function(ToggleFavorite value) toggleFavorite,
+    required TResult Function(None value) none,
+  }) {
+    return none(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FetchList value)? fetchList,
+    TResult Function(ToggleFavorite value)? toggleFavorite,
+    TResult Function(None value)? none,
+    required TResult orElse(),
+  }) {
+    if (none != null) {
+      return none(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class None implements KeywordSearchListAction {
+  const factory None() = _$None;
 }
