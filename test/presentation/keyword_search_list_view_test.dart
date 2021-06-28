@@ -53,6 +53,36 @@ void main() {
     // expect(find.byType(CircularProgressIndicator), findsNothing);
   }
 
+  Future<void> _testingFirstListOfView(WidgetTester tester) async {
+    final results1 = List<KeywordSearchEntity>.generate(10, (index) {
+      final id = index + 1;
+      return KeywordSearchEntity(
+        id: id,
+        name: 'clinic$id',
+        address: 'address$id',
+        isFavorite: false,
+        buildingName: null,
+        images: null,
+      );
+    });
+    // 一覧APIレスポンスデータを設定
+    when(_listRepository.fetchList(
+      query: anyNamed('query'),
+      offset: anyNamed('offset'),
+      limit: anyNamed('limit'),
+    )).thenAnswer((_) async => results1);
+    // 一覧画面Widgetをレンダリング
+    await tester.pumpWidget(_setUpProviderScope());
+    await _verifyTheStatusBeforeAfterLoading(tester);
+    // 画面要素を確認
+    results1.asMap().forEach((index, entity) {
+      // 一度に7件まで表示確認
+      if (entity.id < 8) {
+        expect(find.text('clinic${entity.id}'), findsOneWidget);
+      }
+    });
+  }
+
   group('Testing keyword search view.', () {
     testWidgets('Testing empty data view.', (WidgetTester tester) async {
       // 一覧APIレスポンスデータを設定
@@ -148,17 +178,9 @@ void main() {
     });
 
     testWidgets('Testing scroll of list.', (WidgetTester tester) async {
-      final results1 = List<KeywordSearchEntity>.generate(10, (index) {
-        final id = index + 1;
-        return KeywordSearchEntity(
-          id: id,
-          name: 'clinic$id',
-          address: 'address$id',
-          isFavorite: false,
-          buildingName: null,
-          images: null,
-        );
-      });
+      // 初期表示ListViewをテスト
+      await _testingFirstListOfView(tester);
+      // ページング時のAPIレスポンスデータ
       final results2 = List<KeywordSearchEntity>.generate(10, (index) {
         final id = index + 11;
         return KeywordSearchEntity(
@@ -170,23 +192,7 @@ void main() {
           images: null,
         );
       });
-      // 一覧APIレスポンスデータを設定
-      when(_listRepository.fetchList(
-        query: anyNamed('query'),
-        offset: anyNamed('offset'),
-        limit: anyNamed('limit'),
-      )).thenAnswer((_) async => results1);
-      // 一覧画面Widgetをレンダリング
-      await tester.pumpWidget(_setUpProviderScope());
-      await _verifyTheStatusBeforeAfterLoading(tester);
-      // 画面要素を確認
-      results1.asMap().forEach((index, entity) {
-        // 一度に8件まで表示確認
-        if (entity.id <= 8) {
-          expect(find.text('clinic${entity.id}'), findsOneWidget);
-        }
-      });
-      // 一覧APIレスポンスデータを設定
+      // ページング一覧APIレスポンスデータを設定
       when(_listRepository.fetchList(
         query: anyNamed('query'),
         offset: anyNamed('offset'),
@@ -194,18 +200,139 @@ void main() {
       )).thenAnswer((_) async => results2);
       // ListViewを下にスクロール
       await tester.drag(find.byType(ListView), const Offset(0, -400));
-      await tester.pump();
+      await tester.pumpAndSettle();
       // 初回ロード時のリスト未表示部分の表示確認
       expect(find.text('clinic9'), findsOneWidget);
       expect(find.text('clinic10'), findsOneWidget);
-      // clinic11以降の画面表示検証ができていない
-      // expect(find.text('clinic11'), findsOneWidget);
+      // ListViewを下にスクロール
+      await tester.drag(find.byType(ListView), const Offset(0, -500));
+      await tester.pumpAndSettle();
+      results2.asMap().forEach((index, entity) {
+        // clinic11〜17まで表示確認
+        if (entity.id <= 17) {
+          expect(find.text('clinic${entity.id}'), findsOneWidget);
+        }
+      });
       // Mock呼び出しを検証
       verify(_listRepository.fetchList(
         query: anyNamed('query'),
         offset: anyNamed('offset'),
         limit: anyNamed('limit'),
       )).called(2);
+    });
+
+    testWidgets('Testing keyword search.', (WidgetTester tester) async {
+      // 初期表示ListViewをテスト
+      await _testingFirstListOfView(tester);
+      // 検索時のAPIレスポンスデータ
+      final searchResults = List<KeywordSearchEntity>.generate(10, (index) {
+        final id = index + 11;
+        return KeywordSearchEntity(
+          id: id,
+          name: 'clinic$id',
+          address: 'address$id',
+          isFavorite: false,
+          buildingName: null,
+          images: null,
+        );
+      });
+      // 検索時の一覧APIレスポンスデータを設定
+      when(_listRepository.fetchList(
+        query: anyNamed('query'),
+        offset: anyNamed('offset'),
+        limit: anyNamed('limit'),
+      )).thenAnswer((_) async => searchResults);
+      // キーボード非表示を確認
+      expect(tester.testTextInput.isVisible, isFalse);
+      // キーワード検索TextFieldをタップ
+      await tester.tap(find.byType(TextField));
+      // キーボード表示を確認
+      expect(tester.testTextInput.isVisible, isTrue);
+      // キーワード検索TextFieldに文字入力
+      tester.testTextInput.enterText('dummy keyword');
+      // キーボード非表示
+      tester.testTextInput.hide();
+      // キーボード非表示を確認
+      expect(tester.testTextInput.isVisible, isFalse);
+      // 仮想キーボードの接続を閉じてTextFieldからフォーカスを外す
+      tester.testTextInput.closeConnection();
+      // TextFieldのフォーカスが外れてキーワード検索実行完了まで処理を待機
+      await tester.pumpAndSettle();
+      // 検索実行後のListView画面要素を確認
+      searchResults.asMap().forEach((index, entity) {
+        // clinic11〜17まで表示確認
+        if (entity.id <= 17) {
+          expect(find.text('clinic${entity.id}'), findsOneWidget);
+        }
+      });
+      /*
+      キーワード文字列を変更して再検索が実行されることを検証
+       */
+      // 再検索時のAPIレスポンスデータ
+      final reSearchResults = List<KeywordSearchEntity>.generate(10, (index) {
+        final id = index + 21;
+        return KeywordSearchEntity(
+          id: id,
+          name: 'clinic$id',
+          address: 'address$id',
+          isFavorite: false,
+          buildingName: null,
+          images: null,
+        );
+      });
+      // 検索時の一覧APIレスポンスデータを設定
+      when(_listRepository.fetchList(
+        query: anyNamed('query'),
+        offset: anyNamed('offset'),
+        limit: anyNamed('limit'),
+      )).thenAnswer((_) async => reSearchResults);
+      // キーワード検索TextFieldをタップ
+      await tester.tap(find.byType(TextField));
+      // キーワード検索TextFieldに文字入力。前回と別の文字列を設定すると再検索が実行される
+      tester.testTextInput.enterText('Re search');
+      // 仮想キーボードの接続を閉じてTextFieldからフォーカスを外す
+      tester.testTextInput.closeConnection();
+      // TextFieldのフォーカスが外れてキーワード検索実行完了まで処理を待機
+      await tester.pumpAndSettle();
+      // 検索実行後のListView画面要素を確認
+      reSearchResults.asMap().forEach((index, entity) {
+        // clinic21〜27まで表示確認
+        if (entity.id <= 27) {
+          expect(find.text('clinic${entity.id}'), findsOneWidget);
+        }
+      });
+      // Mock呼び出しを検証
+      verify(_listRepository.fetchList(
+        query: anyNamed('query'),
+        offset: anyNamed('offset'),
+        limit: anyNamed('limit'),
+      )).called(3);
+      /*
+      キーワード文字列が同じ場合、再検索が実行されないことを検証
+       */
+      // Mock呼び出し回数をリセット
+      clearInteractions(_listRepository);
+      // キーワード検索TextFieldをタップ
+      await tester.tap(find.byType(TextField));
+      // キーワード検索TextFieldに文字入力。前回と同じ検索文字列は再検索が実行されない
+      tester.testTextInput.enterText('Re search');
+      // 仮想キーボードの接続を閉じてTextFieldからフォーカスを外す
+      tester.testTextInput.closeConnection();
+      // TextFieldのフォーカスが外れてキーワード検索実行完了まで処理を待機
+      await tester.pumpAndSettle();
+      // 検索実行後のListView画面要素を確認
+      reSearchResults.asMap().forEach((index, entity) {
+        // clinic21〜27まで表示確認
+        if (entity.id <= 27) {
+          expect(find.text('clinic${entity.id}'), findsOneWidget);
+        }
+      });
+      // 再検索が実行されずMockが呼び出されないことを検証
+      verifyNever(_listRepository.fetchList(
+        query: anyNamed('query'),
+        offset: anyNamed('offset'),
+        limit: anyNamed('limit'),
+      ));
     });
   });
 

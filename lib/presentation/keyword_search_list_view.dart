@@ -40,6 +40,7 @@ class _KeywordSearchView extends HookWidget {
           // 検索文字列が前回と同じ場合、API検索処理を走らせない
           final pastQuery = context.read(keywordSearchQueryState).state;
           if (textController.text != pastQuery) {
+            // 検索処理開始
             print('Search keyword[${textController.text}]');
             // offset初期化
             offset.value = 0;

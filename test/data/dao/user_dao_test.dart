@@ -16,6 +16,7 @@ Future<void> main() async {
     Hive
       ..init(path)
       ..registerAdapter<User>(UserAdapter());
+    await Hive.deleteFromDisk(); // 常に空の状態で開始する
     // Daoシングルトンインスタンス生成
     await Hive.openBox<User>(DBTableNames.users);
   });
