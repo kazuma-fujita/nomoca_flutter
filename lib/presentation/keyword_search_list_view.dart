@@ -229,20 +229,10 @@ class _KeywordSearchView extends HookWidget {
                         child: LikeButton(
                           key: Key('like-${entity.id.toString()}'),
                           isLiked: entity.isFavorite,
-                          onTap: (bool isLiked) async {
+                          onTap: (bool isLike) async {
                             // update API実行
-                            context
-                                .read(updateFavoriteProvider(entity.id))
-                                .maybeWhen(
-                                  error: (error, _) {
-                                    // SnackBar表示
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(error.toString())));
-                                  },
-                                  orElse: () {},
-                                );
-                            return !isLiked;
+                            await _updateFavorite(isLike, entity.id, context);
+                            return !isLike;
                           },
                         ),
                       ),
@@ -277,6 +267,31 @@ class _KeywordSearchView extends HookWidget {
         ),
       ),
     );
+  }
+
+  Future<bool> _updateFavorite(
+      bool isLike, int institutionId, BuildContext context) async {
+    return await context.read(updateFavoriteProvider(institutionId)).maybeWhen(
+          data: (_) async {
+            // TODO: このデータブロックに処理が入らないので調査
+            // お気に入り登録時SnackBar表示
+            if (!isLike) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('お気に入り登録しました')));
+            }
+            // お気に入りボタン反転処理
+            return !isLike;
+          },
+          error: (error, _) {
+            // SnackBar表示
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(error.toString())));
+            // error時お気に入りボタンは変更しない
+            return isLike;
+          },
+          // ローディング中はお気に入りボタン反転処理
+          orElse: () => !isLike,
+        );
   }
 
   Widget _emptyListView() {

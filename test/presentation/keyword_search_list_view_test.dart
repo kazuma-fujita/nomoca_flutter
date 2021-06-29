@@ -8,18 +8,22 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
+import 'package:nomoca_flutter/data/repository/update_favorite_repository.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/image_slider.dart';
 import 'package:nomoca_flutter/presentation/keyword_search_list_view.dart';
+import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
 
 import 'keyword_search_list_view_test.mocks.dart';
 
 @GenerateMocks([
   KeywordSearchRepository,
+  UpdateFavoriteRepository,
 ])
 void main() {
   final _listRepository = MockKeywordSearchRepository();
+  final _updateFavoriteRepository = MockUpdateFavoriteRepository();
 
   // Widget testはHTTP 通信が 400 - Bad Request になる仕様
   // Image.network() で画像の取得が失敗する為、400 errorになる仕組みを無効化
@@ -27,6 +31,7 @@ void main() {
 
   tearDown(() {
     reset(_listRepository);
+    reset(_updateFavoriteRepository);
   });
 
   ProviderScope _setUpProviderScope() {
@@ -34,6 +39,9 @@ void main() {
       overrides: [
         // 一覧画面の初期状態を設定
         keywordSearchRepositoryProvider.overrideWithValue(_listRepository),
+        // お気に入りボタンタップ時のAPIレスポンスを設定
+        updateFavoriteRepositoryProvider
+            .overrideWithValue(_updateFavoriteRepository),
       ],
       child: MaterialApp(
         home: KeywordSearchView(),
@@ -80,9 +88,8 @@ void main() {
     await tester.pump();
     results1.asMap().forEach((index, entity) {
       // 一度に7件まで表示確認
-      if (entity.id < 8) {
-        expect(find.text('clinic${entity.id}'), findsOneWidget);
-      }
+      expect(find.text('clinic${entity.id}'),
+          entity.id < 8 ? findsOneWidget : findsNothing);
     });
   }
 
@@ -226,9 +233,8 @@ void main() {
       await tester.pumpAndSettle();
       results2.asMap().forEach((index, entity) {
         // clinic11〜17まで表示確認
-        if (entity.id <= 17) {
-          expect(find.text('clinic${entity.id}'), findsOneWidget);
-        }
+        expect(find.text('clinic${entity.id}'),
+            entity.id <= 17 ? findsOneWidget : findsNothing);
       });
       // Mock呼び出しを検証
       verify(_listRepository.fetchList(
@@ -290,9 +296,8 @@ void main() {
       // 検索実行後のListView画面要素を確認
       searchResults.asMap().forEach((index, entity) {
         // clinic11〜17まで表示確認
-        if (entity.id <= 17) {
-          expect(find.text('clinic${entity.id}'), findsOneWidget);
-        }
+        expect(find.text('clinic${entity.id}'),
+            entity.id <= 17 ? findsOneWidget : findsNothing);
       });
       // Mock呼び出しを検証
       verify(_listRepository.fetchList(
@@ -336,9 +341,8 @@ void main() {
       // 検索実行後のListView画面要素を確認
       reSearchResults.asMap().forEach((index, entity) {
         // clinic21〜27まで表示確認
-        if (entity.id <= 27) {
-          expect(find.text('clinic${entity.id}'), findsOneWidget);
-        }
+        expect(find.text('clinic${entity.id}'),
+            entity.id <= 27 ? findsOneWidget : findsNothing);
       });
       // Mock呼び出しを検証
       verify(_listRepository.fetchList(
@@ -364,9 +368,8 @@ void main() {
       // 検索実行後のListView画面要素を確認
       reSearchResults.asMap().forEach((index, entity) {
         // clinic21〜27まで表示確認
-        if (entity.id <= 27) {
-          expect(find.text('clinic${entity.id}'), findsOneWidget);
-        }
+        expect(find.text('clinic${entity.id}'),
+            entity.id <= 27 ? findsOneWidget : findsNothing);
       });
       // 再検索が実行されずMockが呼び出されないことを検証
       verifyNever(_listRepository.fetchList(
@@ -376,6 +379,66 @@ void main() {
         latitude: anyNamed('latitude'),
         longitude: anyNamed('longitude'),
       ));
+    });
+
+    testWidgets('Testing update of favorite button.',
+        (WidgetTester tester) async {
+      const contentsBaseUrl = 'https://contents.nomoca.com';
+      final results = [
+        const KeywordSearchEntity(
+          id: 120,
+          name: 'タカデンタルクリニック',
+          address: '渋谷区恵比寿1-19-18',
+          isFavorite: false,
+          buildingName: '石渡ビル3F',
+          images: [
+            '$contentsBaseUrl/institutions/120/image1/2ac467ca7fec709b12ae312efd83dea9.jpg',
+            '$contentsBaseUrl/institutions/120/image2/ed8e976d057a014575cee7730d120717.jpg',
+            '$contentsBaseUrl/institutions/120/image4/e907cf5540089bcdb1787a2d979e6a7b.jpg',
+          ],
+        ),
+      ];
+      // 一覧APIレスポンスデータを設定
+      when(_listRepository.fetchList(
+        query: anyNamed('query'),
+        offset: 0,
+        limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
+      )).thenAnswer((_) async => results);
+      // お気に入りボタン更新APIレスポンスデータ設定
+      when(_updateFavoriteRepository.updateFavorite(
+              institutionId: anyNamed('institutionId')))
+          .thenAnswer((_) => Future.value());
+      // 一覧画面Widgetをレンダリング
+      await tester.pumpWidget(_setUpProviderScope());
+      await _verifyTheStatusBeforeAfterLoading(tester);
+      await tester.pump();
+      // 画面要素を確認
+      expect(find.text('タカデンタルクリニック'), findsOneWidget);
+      expect(find.text('渋谷区恵比寿1-19-18 石渡ビル3F'), findsOneWidget);
+      expect(find.byType(ImageSlider), findsOneWidget);
+      expect(find.byType(LikeButton), findsOneWidget);
+      // LikeButtonチェック KeyはinstitutionId
+      final likeButtonFinder = find.byKey(const Key('like-120'));
+      final likeButton = tester.firstWidget(likeButtonFinder) as LikeButton;
+      expect(likeButtonFinder, findsOneWidget);
+      expect(likeButton.isLiked, false);
+      // LikeButtonタップ
+      await tester.tap(likeButtonFinder);
+      await tester.pump();
+      // TODO: お気に入りボタンが点灯したことが検証できないので調査
+      // expect(likeButton.isLiked, true);
+      // Mock呼び出しを検証
+      verify(_listRepository.fetchList(
+        query: anyNamed('query'),
+        offset: 0,
+        limit: anyNamed('limit'),
+        latitude: anyNamed('latitude'),
+        longitude: anyNamed('longitude'),
+      ));
+      verify(_updateFavoriteRepository.updateFavorite(
+          institutionId: anyNamed('institutionId')));
     });
   });
 

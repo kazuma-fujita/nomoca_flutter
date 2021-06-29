@@ -21,6 +21,7 @@ import 'package:nomoca_flutter/presentation/notification_detail_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/sign_up/sign_up_view_model.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
+import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/notification_list_reducer.dart';
@@ -99,8 +100,11 @@ Future<void> main() async {
         // ),
         keywordSearchRepositoryProvider
             .overrideWithValue(FakeKeywordSearchRepositoryImpl()),
-        // keywordSearchListReducer
-        //     .overrideWithValue(AsyncValue.error(Exception('Error message.'))),
+        updateFavoriteProvider
+            .overrideWithProvider((ref, param) => Future.value()),
+        // updateFavoriteProvider.overrideWithProvider(
+        //   (ref, param) => throw Exception('Error message.'),
+        // ),
         fetchNotificationListRepositoryProvider
             .overrideWithValue(FakeFetchNotificationListRepositoryImpl()),
         updateReadPostProvider
