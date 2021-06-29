@@ -52,28 +52,29 @@ class KeywordSearchRepositoryImpl extends KeywordSearchRepository {
           .map((dynamic itemJson) =>
               KeywordSearchEntity.fromJson(itemJson as Map<String, dynamic>))
           .toList();
-      return list
-          .map(
-            (entity) => entity.copyWith(
-              buildingName: entity.buildingName ?? '',
-              image1: entity.image1 != null
-                  ? '${NomocaUrls.contentsBaseUrl}/${entity.image1}'
-                  : null,
-              image2: entity.image2 != null
-                  ? '${NomocaUrls.contentsBaseUrl}/${entity.image2}'
-                  : null,
-              image3: entity.image3 != null
-                  ? '${NomocaUrls.contentsBaseUrl}/${entity.image3}'
-                  : null,
-              image4: entity.image4 != null
-                  ? '${NomocaUrls.contentsBaseUrl}/${entity.image4}'
-                  : null,
-              image5: entity.image5 != null
-                  ? '${NomocaUrls.contentsBaseUrl}/${entity.image5}'
-                  : null,
-            ),
-          )
-          .toList();
+
+      return list.map((entity) {
+        final images = <String>[];
+        if (entity.image1 != null) {
+          images.add('${NomocaUrls.contentsBaseUrl}/${entity.image1}');
+        }
+        if (entity.image2 != null) {
+          images.add('${NomocaUrls.contentsBaseUrl}/${entity.image2}');
+        }
+        if (entity.image3 != null) {
+          images.add('${NomocaUrls.contentsBaseUrl}/${entity.image3}');
+        }
+        if (entity.image4 != null) {
+          images.add('${NomocaUrls.contentsBaseUrl}/${entity.image4}');
+        }
+        if (entity.image5 != null) {
+          images.add('${NomocaUrls.contentsBaseUrl}/${entity.image5}');
+        }
+        return entity.copyWith(
+          buildingName: entity.buildingName ?? '',
+          images: images,
+        );
+      }).toList();
     } on Exception catch (error) {
       throw Exception(error);
     }
