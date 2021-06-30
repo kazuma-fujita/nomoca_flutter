@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:like_button/like_button.dart';
 import 'package:nomoca_flutter/constants/keyword_search_properties.dart';
+import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
 import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
@@ -213,11 +214,16 @@ class _KeywordSearchView extends HookWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       // Widgetを押し込むpushアニメーションを付与
       child: AnimatedPushMotion(
+        onTap: () async {
+          // 詳細画面へ遷移
+          await Navigator.pushNamed(context, RouteNames.institution,
+              arguments: entity.id);
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            entity.images != null
+            entity.images != null && entity.images!.isNotEmpty
                 ? Stack(
                     children: <Widget>[
                       // 画像スライダー

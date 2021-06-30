@@ -14,13 +14,16 @@ import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_notification_list_repository.dart';
+import 'package:nomoca_flutter/data/repository/get_institution_repository.dart';
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
+import 'package:nomoca_flutter/presentation/institution_view.dart';
 import 'package:nomoca_flutter/presentation/keyword_search_list_view.dart';
 import 'package:nomoca_flutter/presentation/notification_detail_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/sign_up/sign_up_view_model.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
+import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
@@ -98,6 +101,8 @@ Future<void> main() async {
         // createFamilyUserProvider.overrideWithProvider(
         //   (ref, param) => Future<void>.value(),
         // ),
+        getInstitutionRepositoryProvider
+            .overrideWithValue(FakeGetInstitutionRepositoryImpl()),
         keywordSearchRepositoryProvider
             .overrideWithValue(FakeKeywordSearchRepositoryImpl()),
         updateFavoriteProvider
@@ -130,10 +135,11 @@ class MyApp extends StatelessWidget {
       title: 'Nomoca application',
       theme: ThemeData(primaryColor: Colors.white),
       routes: <String, WidgetBuilder>{
+        RouteNames.institution: (_) => InstitutionView(),
         RouteNames.upsertUser: (_) => UpsertUserView(),
         RouteNames.notificationDetail: (_) => NotificationDetailView(),
       },
-      home: KeywordSearchView(),
+      home: InstitutionView(),
       builder: EasyLoading.init(),
     );
   }
