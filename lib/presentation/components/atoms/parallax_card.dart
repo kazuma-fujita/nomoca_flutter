@@ -6,11 +6,9 @@ class ParallaxCard extends StatelessWidget {
   ParallaxCard({
     Key? key,
     required this.builder,
-    this.isGradient = false,
   }) : super(key: key);
 
   final Widget Function(GlobalKey) builder;
-  final bool isGradient;
   final GlobalKey _backgroundImageKey = GlobalKey();
 
   @override
@@ -22,7 +20,6 @@ class ParallaxCard extends StatelessWidget {
         child: Stack(
           children: [
             _buildParallaxBackground(context),
-            if (isGradient) _buildGradient(),
           ],
         ),
       ),
@@ -43,20 +40,20 @@ class ParallaxCard extends StatelessWidget {
     );
   }
 
-  Widget _buildGradient() {
-    return Positioned.fill(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: const [0.6, 0.95],
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _buildGradient() {
+  //   return Positioned.fill(
+  //     child: DecoratedBox(
+  //       decoration: BoxDecoration(
+  //         gradient: LinearGradient(
+  //           colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+  //           begin: Alignment.topCenter,
+  //           end: Alignment.bottomCenter,
+  //           stops: const [0.6, 0.95],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
 
 class ParallaxFlowDelegate extends FlowDelegate {

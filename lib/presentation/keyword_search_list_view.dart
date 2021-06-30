@@ -6,12 +6,12 @@ import 'package:like_button/like_button.dart';
 import 'package:nomoca_flutter/constants/keyword_search_properties.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
+import 'package:nomoca_flutter/presentation/components/molecules/images_slider.dart';
 import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
 import 'components/atoms/animated_push_motion.dart';
 import 'components/molecules/error_snack_bar.dart';
-import 'components/molecules/image_slider.dart';
 
 class KeywordSearchView extends StatelessWidget {
   @override
@@ -227,7 +227,7 @@ class _KeywordSearchView extends HookWidget {
                 ? Stack(
                     children: <Widget>[
                       // 画像スライダー
-                      ImageSlider(images: entity.images!),
+                      ImagesSlider(images: entity.images!, isParallax: true),
                       // お気に入りボタン位置
                       Positioned(
                         top: 24,

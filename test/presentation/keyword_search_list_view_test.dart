@@ -10,7 +10,7 @@ import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
 import 'package:nomoca_flutter/data/repository/update_favorite_repository.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
-import 'package:nomoca_flutter/presentation/components/molecules/image_slider.dart';
+import 'package:nomoca_flutter/presentation/components/molecules/images_slider.dart';
 import 'package:nomoca_flutter/presentation/keyword_search_list_view.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
@@ -178,7 +178,7 @@ void main() {
       await tester.pump();
       expect(find.text('小笠原歯科'), findsOneWidget);
       expect(find.text('渋谷区道玄坂2-25-5 島田ビル4F'), findsOneWidget);
-      expect(find.byType(ImageSlider), findsNWidgets(2));
+      expect(find.byType(ImagesSlider), findsNWidgets(2));
       expect(find.byType(LikeButton), findsNWidgets(2));
       // LikeButtonチェック KeyはinstitutionId
       final likeButton1Finder = find.byKey(const Key('like-120'));
@@ -417,7 +417,7 @@ void main() {
       // 画面要素を確認
       expect(find.text('タカデンタルクリニック'), findsOneWidget);
       expect(find.text('渋谷区恵比寿1-19-18 石渡ビル3F'), findsOneWidget);
-      expect(find.byType(ImageSlider), findsOneWidget);
+      expect(find.byType(ImagesSlider), findsOneWidget);
       expect(find.byType(LikeButton), findsOneWidget);
       // LikeButtonチェック KeyはinstitutionId
       final likeButtonFinder = find.byKey(const Key('like-120'));

@@ -139,7 +139,7 @@ class MyApp extends StatelessWidget {
         RouteNames.upsertUser: (_) => UpsertUserView(),
         RouteNames.notificationDetail: (_) => NotificationDetailView(),
       },
-      home: InstitutionView(),
+      home: KeywordSearchView(),
       builder: EasyLoading.init(),
     );
   }

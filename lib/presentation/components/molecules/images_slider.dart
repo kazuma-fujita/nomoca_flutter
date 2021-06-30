@@ -3,35 +3,62 @@ import 'package:flutter/material.dart';
 import 'package:nomoca_flutter/presentation/components/atoms/parallax_card.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 
-class ImageSlider extends StatefulWidget {
-  const ImageSlider({required this.images});
+class ImagesSlider extends StatefulWidget {
+  const ImagesSlider({required this.images, this.isParallax = false});
+
   final List<String> images;
+  final bool isParallax;
+
   @override
-  _ImageSliderState createState() => _ImageSliderState();
+  _ImagesSliderState createState() => _ImagesSliderState();
 }
 
-class _ImageSliderState extends State<ImageSlider> {
+class _ImagesSliderState extends State<ImagesSlider> {
   final _currentPageNotifier = ValueNotifier<int>(0);
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        ParallaxCard(
-          builder: _buildImageSlider,
-        ),
+        widget.isParallax
+            ? ParallaxCard(
+                builder: _buildParallaxImageSlider,
+              )
+            : _buildImagesSlider(),
         // 画像が1枚以上あればIndicator表示
         if (widget.images.length > 1) _buildCircleIndicator(),
       ],
     );
   }
 
-  Widget _buildImageSlider(GlobalKey backgroundImageKey) {
+  Widget _buildParallaxImageSlider(GlobalKey backgroundImageKey) {
     return SizedBox(
       key: backgroundImageKey,
       // 画像表示領域の高さ
       height: 240,
-      // 画像が1枚以上あればPageViewに無限スクロール設定
+      child: _buildImagesSlider(),
+    );
+  }
+
+  Widget _buildImagesSlider() {
+    final _pageController = PageController();
+    // PageViewスクロール時の背景にグラデーションのエフェクトをかける
+    return AnimatedBuilder(
+      animation: _pageController,
+      builder: (context, child) {
+        // グラデーションエフェクト
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: const [0.6, 0.95],
+            ),
+          ),
+          child: child,
+        );
+      },
       child: widget.images.length == 1
           ? PageView.builder(
               itemCount: widget.images.length,
@@ -40,7 +67,8 @@ class _ImageSliderState extends State<ImageSlider> {
             )
           : PageView.builder(
               controller: PageController(
-                  initialPage: initialPageCount(widget.images.length)),
+                initialPage: initialPageCount(widget.images.length),
+              ),
               itemBuilder: (BuildContext context, int index) => _buildImageView(
                   context, widget.images[index % widget.images.length]),
               onPageChanged: (int index) {

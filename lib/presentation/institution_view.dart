@@ -8,7 +8,7 @@ import 'package:nomoca_flutter/presentation/asset_image_path.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 
-import 'components/molecules/image_slider.dart';
+import 'components/molecules/images_slider.dart';
 
 class InstitutionView extends HookWidget with AssetImagePath {
   final body1 = '''
@@ -43,15 +43,21 @@ Keyboard shortcuts, scroll wheel, and right-click accelerate tasks when availabl
                   elevation: 0,
                   stretch: true,
                   flexibleSpace: _flexibleSpaceBar(entity, context),
-                  expandedHeight: 360,
+                  expandedHeight:
+                      entity.images != null && entity.images!.isNotEmpty
+                          ? 320
+                          : 240,
                   backgroundColor: Colors.white,
-                  // actions: <Widget>[
-                  //   IconButton(
-                  //     icon: const Icon(Icons.favorite),
-                  //     color: Colors.pink,
-                  //     onPressed: () {},
-                  //   ),
-                  // ],
+                  actions: <Widget>[
+                    IconButton(
+                      icon: const Icon(Icons.favorite),
+                      color: Colors.pink,
+                      onPressed: () async {
+                        await _updateFavorite(
+                            entity.isFavorite, entity.id, context);
+                      },
+                    ),
+                  ],
                 ),
                 SliverList(
                   delegate: _sliverChildListDelegate(),
@@ -73,57 +79,28 @@ Keyboard shortcuts, scroll wheel, and right-click accelerate tasks when availabl
         StretchMode.blurBackground,
         StretchMode.fadeTitle,
       ],
-      title: Text(
-        entity.name,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
+      // title: Text(
+      //   entity.name,
+      //   maxLines: 1,
+      //   overflow: TextOverflow.ellipsis,
+      //   style: const TextStyle(
+      //     fontWeight: FontWeight.bold,
+      //     color: Colors.white,
+      //   ),
+      // ),
       centerTitle: true,
       background: Stack(
+        // StackFit.expandで画像を下にスワイプした時に画像が拡大する
         fit: StackFit.expand,
-        children: [
+        children: <Widget>[
           entity.images != null && entity.images!.isNotEmpty
-              ? Stack(
-                  children: <Widget>[
-                    // 画像スライダー
-                    ImageSlider(images: entity.images!),
-                    // お気に入りボタン位置
-                    Positioned(
-                      top: 24,
-                      right: 24,
-                      child: LikeButton(
-                        key: Key('like-${entity.id.toString()}'),
-                        isLiked: entity.isFavorite,
-                        onTap: (bool isLike) async {
-                          // update API実行
-                          await _updateFavorite(isLike, entity.id, context);
-                          return !isLike;
-                        },
-                      ),
-                    ),
-                  ],
-                )
+              // 施設画像スライダー
+              ? ImagesSlider(images: entity.images!)
+              // 施設画像が無ければデフォルト画像表示
               : Image(
                   fit: BoxFit.cover,
-                  image: AssetImage(
-                    getRandomInstitutionImagePath(),
-                  )),
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment(0, 0.5),
-                // end: Alignment(0, 0),
-                colors: <Color>[
-                  Color(0x60000000),
-                  Color(0x00000000),
-                ],
-              ),
-            ),
-          ),
+                  image: AssetImage(getRandomInstitutionImagePath()),
+                ),
         ],
       ),
     );
