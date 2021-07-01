@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:like_button/like_button.dart';
 import 'package:nomoca_flutter/data/entity/remote/institution_entity.dart';
 import 'package:nomoca_flutter/presentation/asset_image_path.dart';
+import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 
@@ -39,15 +39,20 @@ Keyboard shortcuts, scroll wheel, and right-click accelerate tasks when availabl
               physics: const BouncingScrollPhysics(),
               slivers: <Widget>[
                 SliverAppBar(
-                  // pinned: true, AppBarを固定表示する
+                  // AppBarのelevation
                   elevation: 0,
+                  // AppBarの背景色
+                  backgroundColor: Colors.white,
+                  // AppBarの画像を下に引き伸ばせるようにする
                   stretch: true,
-                  flexibleSpace: _flexibleSpaceBar(entity, context),
+                  // AppBarを固定表示する
+                  pinned: true,
+                  // AppBarの画像表示部分の高さ
                   expandedHeight:
                       entity.images != null && entity.images!.isNotEmpty
                           ? 320
                           : 240,
-                  backgroundColor: Colors.white,
+                  // AppBarにお気に入りボタンを設置
                   actions: <Widget>[
                     IconButton(
                       icon: const Icon(Icons.favorite),
@@ -58,9 +63,10 @@ Keyboard shortcuts, scroll wheel, and right-click accelerate tasks when availabl
                       },
                     ),
                   ],
+                  flexibleSpace: _flexibleSpaceBar(entity, context),
                 ),
                 SliverList(
-                  delegate: _sliverChildListDelegate(),
+                  delegate: _sliverChildListDelegate(entity),
                 )
               ],
             ),
@@ -68,7 +74,14 @@ Keyboard shortcuts, scroll wheel, and right-click accelerate tasks when availabl
         );
       },
       loading: () => Container(),
-      error: (error, _) => Container(),
+      error: (error, _) {
+        return ErrorSnackBar(
+          errorMessage: error.toString(),
+          callback: () =>
+              context.refresh(getInstitutionProvider(institutionId!)),
+          // backScreenWidget: _emptyListView(),
+        );
+      },
     );
   }
 
@@ -79,16 +92,6 @@ Keyboard shortcuts, scroll wheel, and right-click accelerate tasks when availabl
         StretchMode.blurBackground,
         StretchMode.fadeTitle,
       ],
-      // title: Text(
-      //   entity.name,
-      //   maxLines: 1,
-      //   overflow: TextOverflow.ellipsis,
-      //   style: const TextStyle(
-      //     fontWeight: FontWeight.bold,
-      //     color: Colors.white,
-      //   ),
-      // ),
-      centerTitle: true,
       background: Stack(
         // StackFit.expandで画像を下にスワイプした時に画像が拡大する
         fit: StackFit.expand,
@@ -106,7 +109,7 @@ Keyboard shortcuts, scroll wheel, and right-click accelerate tasks when availabl
     );
   }
 
-  SliverChildListDelegate _sliverChildListDelegate() {
+  SliverChildListDelegate _sliverChildListDelegate(InstitutionEntity entity) {
     return SliverChildListDelegate(
       <Widget>[
         Container(
@@ -115,37 +118,53 @@ Keyboard shortcuts, scroll wheel, and right-click accelerate tasks when availabl
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const Text(
-                'Today, we’re pleased to announce the release of Flutter 2',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              Text(
-                body1,
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(
-                height: 36,
-              ),
-              const Text(
-                'Adapting to screen size & input devices',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              Text(
-                body2,
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(
-                height: 36,
-              ),
+              _nameAndCategoryBlock(entity.name, entity.category),
+              if (entity.feature != null)
+                _detailBlock('こだわり・特徴', entity.feature!),
+              if (entity.businessHour != null)
+                _detailBlock('診療時間', entity.businessHour!),
+              if (entity.businessHoliday != null)
+                _detailBlock('休診日', entity.businessHoliday!),
+              if (entity.access != null) _detailBlock('アクセス', entity.access!),
+              if (entity.title1 != null && entity.body1 != null)
+                _detailBlock(entity.title1!, entity.body1!),
+              if (entity.title2 != null && entity.body2 != null)
+                _detailBlock(entity.title2!, entity.body2!),
+              if (entity.title3 != null && entity.body3 != null)
+                _detailBlock(entity.title3!, entity.body3!),
             ],
           ),
         )
+      ],
+    );
+  }
+
+  Widget _nameAndCategoryBlock(String subject, String description) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(subject,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+        Text(description, style: const TextStyle(fontSize: 12)),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+
+  Widget _detailBlock(String subject, String description) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        const Divider(),
+        const SizedBox(height: 24),
+        Text(subject,
+            style: const TextStyle(fontSize: 21, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 16),
+        Text(description, style: const TextStyle(fontSize: 14)),
+        const SizedBox(height: 24),
       ],
     );
   }
