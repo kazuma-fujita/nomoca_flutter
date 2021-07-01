@@ -60,6 +60,40 @@ void main() {
     // expect(find.byType(CircularProgressIndicator), findsNothing);
   }
 
+  void _givenMinElementData() {
+    const result = InstitutionEntity(
+      id: 92506,
+      name: 'テストデンタルクリニック',
+      type: 'dentistry',
+      category: '歯科 / 小児歯科 / 矯正歯科',
+      feature: null,
+      businessHour: null,
+      businessHoliday: null,
+      address: '杉並区堀ノ内2-6-21',
+      buildingName: null,
+      access: null,
+      title1: '院長挨拶',
+      body1: null,
+      title2: '診療方針',
+      body2: null,
+      title3: '所属学会・研究会',
+      body3: null,
+      phoneNumber: '0120-811-009',
+      webSiteUrl: null,
+      reserveUrl: null,
+      isPhoneButtonHidden: true,
+      medicalDocumentUrl: null,
+      longitude: 139.7241604,
+      latitude: 35.6363211,
+      isFavorite: false,
+      images: [],
+    );
+    // 一覧APIレスポンスデータを設定
+    when(_listRepository.getInstitution(
+      institutionId: anyNamed('institutionId'),
+    )).thenAnswer((_) async => result);
+  }
+
   group('Testing institution view.', () {
     testWidgets('Testing display of full element.',
         (WidgetTester tester) async {
@@ -149,38 +183,9 @@ void main() {
     });
 
     testWidgets('Testing display of min element.', (WidgetTester tester) async {
-      const result = InstitutionEntity(
-        id: 92506,
-        name: 'テストデンタルクリニック',
-        type: 'dentistry',
-        category: '歯科 / 小児歯科 / 矯正歯科',
-        feature: null,
-        businessHour: null,
-        businessHoliday: null,
-        address: '杉並区堀ノ内2-6-21',
-        buildingName: null,
-        access: null,
-        title1: '院長挨拶',
-        body1: null,
-        title2: '診療方針',
-        body2: null,
-        title3: '所属学会・研究会',
-        body3: null,
-        phoneNumber: '0120-811-009',
-        webSiteUrl: null,
-        reserveUrl: null,
-        isPhoneButtonHidden: true,
-        medicalDocumentUrl: null,
-        longitude: 139.7241604,
-        latitude: 35.6363211,
-        isFavorite: false,
-        images: [],
-      );
-      // 一覧APIレスポンスデータを設定
-      when(_listRepository.getInstitution(
-        institutionId: anyNamed('institutionId'),
-      )).thenAnswer((_) async => result);
-      // 一覧画面Widgetをレンダリング
+      // Mockデータを用意
+      _givenMinElementData();
+      // 画面Widgetをレンダリング
       await tester.pumpWidget(_setUpProviderScope());
       await _verifyTheStatusBeforeAfterLoading(tester);
       await tester.pump();
@@ -199,63 +204,41 @@ void main() {
       // likeButtonが消灯していることを確認
       final likeButtonFinder = find.byType(IconButton);
       final likeButton = tester.firstWidget(likeButtonFinder) as IconButton;
-      // expect(likeButton.color, Colors.pink);
+      expect(likeButton.color, Colors.grey);
       // Mock呼び出しを検証
       verify(_listRepository.getInstitution(
         institutionId: anyNamed('institutionId'),
       ));
     });
-    // testWidgets('Testing update of favorite button.',
-    //     (WidgetTester tester) async {
-    //   const contentsBaseUrl = 'https://contents.nomoca.com';
-    //   final results = [
-    //     const KeywordSearchEntity(
-    //       id: 120,
-    //       name: 'タカデンタルクリニック',
-    //       address: '渋谷区恵比寿1-19-18',
-    //       isFavorite: false,
-    //       buildingName: '石渡ビル3F',
-    //       images: [
-    //         '$contentsBaseUrl/institutions/120/image1/2ac467ca7fec709b12ae312efd83dea9.jpg',
-    //         '$contentsBaseUrl/institutions/120/image2/ed8e976d057a014575cee7730d120717.jpg',
-    //         '$contentsBaseUrl/institutions/120/image4/e907cf5540089bcdb1787a2d979e6a7b.jpg',
-    //       ],
-    //     ),
-    //   ];
-    //   // 一覧APIレスポンスデータを設定
-    //   when(_listRepository.getInstitution(
-    //     institutionId: anyNamed('institutionId'),
-    //   )).thenAnswer((_) async => results);
-    //   // お気に入りボタン更新APIレスポンスデータ設定
-    //   when(_updateFavoriteRepository.updateFavorite(
-    //           institutionId: anyNamed('institutionId')))
-    //       .thenAnswer((_) => Future.value());
-    //   // 一覧画面Widgetをレンダリング
-    //   await tester.pumpWidget(_setUpProviderScope());
-    //   await _verifyTheStatusBeforeAfterLoading(tester);
-    //   await tester.pump();
-    //   // 画面要素を確認
-    //   expect(find.text('タカデンタルクリニック'), findsOneWidget);
-    //   expect(find.text('渋谷区恵比寿1-19-18 石渡ビル3F'), findsOneWidget);
-    //   expect(find.byType(ImagesSlider), findsOneWidget);
-    //   expect(find.byType(LikeButton), findsOneWidget);
-    //   // LikeButtonチェック KeyはinstitutionId
-    //   final likeButtonFinder = find.byKey(const Key('like-120'));
-    //   final likeButton = tester.firstWidget(likeButtonFinder) as LikeButton;
-    //   expect(likeButtonFinder, findsOneWidget);
-    //   expect(likeButton.isLiked, false);
-    //   // LikeButtonタップ
-    //   await tester.tap(likeButtonFinder);
-    //   await tester.pump();
-    //   // TODO: お気に入りボタンが点灯したことが検証できないので調査
-    //   // expect(likeButton.isLiked, true);
-    //   // Mock呼び出しを検証
-    //   verify(_listRepository.getInstitution(
-    //     institutionId: anyNamed('institutionId'),
-    //   ));
-    //   verify(_updateFavoriteRepository.updateFavorite(
-    //       institutionId: anyNamed('institutionId')));
-    // });
+
+    testWidgets('Testing update of favorite button.',
+        (WidgetTester tester) async {
+      // Mockデータを用意
+      _givenMinElementData();
+      // お気に入りボタン更新APIレスポンスデータ設定
+      when(_updateFavoriteRepository.updateFavorite(
+              institutionId: anyNamed('institutionId')))
+          .thenAnswer((_) => Future.value());
+      // 一覧画面Widgetをレンダリング
+      await tester.pumpWidget(_setUpProviderScope());
+      await _verifyTheStatusBeforeAfterLoading(tester);
+      await tester.pump();
+      // likeButtonが消灯していることを確認
+      final likeButtonFinder = find.byType(IconButton);
+      final likeButton = tester.firstWidget(likeButtonFinder) as IconButton;
+      expect(likeButton.color, Colors.grey);
+      // likeButtonタップ
+      await tester.tap(likeButtonFinder);
+      await tester.pump();
+      // likeButtonが点灯することを確認
+      expect(likeButton.color, Colors.pink);
+      // Mock呼び出しを検証
+      verify(_listRepository.getInstitution(
+        institutionId: anyNamed('institutionId'),
+      ));
+      verify(_updateFavoriteRepository.updateFavorite(
+          institutionId: anyNamed('institutionId')));
+    });
   });
 
   group('Testing error of institution view.', () {

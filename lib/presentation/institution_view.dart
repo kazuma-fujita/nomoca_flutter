@@ -7,31 +7,19 @@ import 'package:nomoca_flutter/presentation/asset_image_path.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
-
 import 'components/molecules/images_slider.dart';
 
 class InstitutionView extends HookWidget with AssetImagePath {
-  final body1 = '''
-Today, we’re pleased to announce the release of Flutter 2. 
-It’s been a little more than two years since the Flutter 1.0 release, but in that short time, we’ve closed 24,541 issues and merged 17,039 PRs from 765 contributors.
-Just since the Flutter 1.22 release in September, we’ve closed 5807 issues and merged 4091 PRs from 298 contributors.
-Special thanks go out to our volunteer contributors who generously give their spare time to improve the Flutter project.
-The top volunteer contributors for the Flutter 2 release were xu-baolin with 46 PRs, a14n with 32 PRs that focused on bringing Flutter to null safety, and hamdikahloun with 20 PRs that improved a number of the Flutter plugins.
-But it’s not just coders that contribute to the Flutter project; a great set of volunteer PR reviewers were also responsible for reviewing 1525 PRs, including hamdikahloun (again!), CareF and YazeedAlKhalaf (who’s only 16!). Flutter is truly a community effort and we couldn’t have gotten to version 2 without the issue raisers, PR contributors, and code reviewers. This release is for all of you.
-  ''';
-
-  final body2 = '''
-Adapting to screen size & input devices
-User interface controls adapt their density, hit areas,
-and presentation based on screen size and whether the user is using touch or mouse/keyboard.
-Keyboard shortcuts, scroll wheel, and right-click accelerate tasks when available.''';
-
   @override
   Widget build(BuildContext context) {
+    // お気に入りボタンの状態管理
+    final isLike = useState(false);
     var institutionId = ModalRoute.of(context)!.settings.arguments as int?;
     institutionId = 99999;
     return useProvider(getInstitutionProvider(institutionId)).when(
       data: (entity) {
+        // お気に入り状態初期値設定
+        // isLike.value = entity.isFavorite;
         return Hero(
           tag: 'card-$institutionId',
           child: Scaffold(
@@ -56,10 +44,11 @@ Keyboard shortcuts, scroll wheel, and right-click accelerate tasks when availabl
                   actions: <Widget>[
                     IconButton(
                       icon: const Icon(Icons.favorite),
-                      color: Colors.pink,
+                      color: isLike.value ? Colors.pink : Colors.grey,
                       onPressed: () async {
-                        await _updateFavorite(
-                            entity.isFavorite, entity.id, context);
+                        final toggleLike = !isLike.value;
+                        await _updateFavorite(toggleLike, entity.id, context);
+                        isLike.value = toggleLike;
                       },
                     ),
                   ],

@@ -89,7 +89,7 @@ class FakeGetInstitutionRepositoryImpl extends GetInstitutionRepository {
           'https://medicaldoc.jp/recommend/nishiogikubo-st-haisha/',
       longitude: 139.7241604,
       latitude: 35.6363211,
-      isFavorite: false,
+      isFavorite: true,
       images: [
         '$contentsBaseUrl/institutions/100027/image1/e907cf5540089bcdb1787a2d979e6a7b.jpg',
         '$contentsBaseUrl/institutions/100027/image4/8191a0e68a83a305c1f5c007b3ae1225.jpg',
