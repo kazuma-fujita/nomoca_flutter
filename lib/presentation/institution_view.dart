@@ -105,7 +105,8 @@ class InstitutionView extends HookWidget with AssetImagePath {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              _nameAndCategoryBlock(entity.name, entity.category),
+              _nameAndCategoryBlock(
+                  entity.name, entity.category, entity.phoneNumber),
               if (entity.feature != null)
                 _detailBlock('こだわり・特徴', entity.feature!),
               if (entity.businessHour != null)
@@ -127,7 +128,8 @@ class InstitutionView extends HookWidget with AssetImagePath {
     );
   }
 
-  Widget _nameAndCategoryBlock(String subject, String description) {
+  Widget _nameAndCategoryBlock(
+      String subject, String description, String phoneNumber) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,8 +138,25 @@ class InstitutionView extends HookWidget with AssetImagePath {
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         const SizedBox(height: 16),
         Text(description, style: const TextStyle(fontSize: 12)),
+        const SizedBox(height: 16),
+        _phoneView(phoneNumber),
         const SizedBox(height: 24),
       ],
+    );
+  }
+
+  Widget _phoneView(String phoneNumber) {
+    return OutlinedButton.icon(
+      label: const Text('電話をかける'),
+      icon: const Icon(Icons.phone),
+      style: OutlinedButton.styleFrom(
+        primary: Colors.black,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        side: const BorderSide(),
+      ),
+      onPressed: () => _launchURL('tel:$phoneNumber'),
     );
   }
 
