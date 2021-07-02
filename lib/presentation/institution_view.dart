@@ -11,6 +11,7 @@ import 'package:nomoca_flutter/presentation/components/atoms/parallax_card.dart'
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'components/molecules/images_slider.dart';
 
 class InstitutionView extends HookWidget with AssetImagePath {
@@ -163,7 +164,12 @@ class InstitutionView extends HookWidget with AssetImagePath {
       children: [
         const Divider(),
         const SizedBox(height: 24),
-        _buildStaticMap(entity.longitude, entity.latitude),
+        GestureDetector(
+          // GoogleMapApp起動
+          onTap: () => _launchGoogleApp(
+              latitude: entity.latitude, longitude: entity.longitude),
+          child: _buildStaticMap(entity.longitude, entity.latitude),
+        ),
         const SizedBox(height: 8),
         Text(
           entity.buildingName != null
@@ -171,10 +177,40 @@ class InstitutionView extends HookWidget with AssetImagePath {
               : entity.address,
           style: const TextStyle(fontSize: 12),
         ),
+        const SizedBox(height: 16),
+        GestureDetector(
+          // GoogleMapApp起動
+          onTap: () => _launchGoogleApp(
+              latitude: entity.latitude,
+              longitude: entity.longitude,
+              isRoute: true),
+          child: Row(
+            children: const [
+              Icon(Icons.map),
+              Text('行き方を調べる'),
+              Icon(Icons.arrow_forward_ios),
+            ],
+          ),
+        ),
         const SizedBox(height: 24),
       ],
     );
   }
+
+  Future<void> _launchGoogleApp(
+          {required double latitude,
+          required double longitude,
+          bool isRoute = false}) async =>
+      _launchURL(
+          'https://maps.apple.com/?${isRoute ? 'daddr' : 'q'}=$latitude,$longitude');
+
+  Future<void> _launchURL(String url) async => await canLaunch(url)
+      ? await launch(
+          url,
+          forceSafariVC: false,
+          forceWebView: false,
+        )
+      : throw Exception('Could not launch $url');
 
   Widget _buildStaticMap(double longitude, double latitude) {
     const baseMapURL = 'https://maps.googleapis.com/maps/api/staticmap';
