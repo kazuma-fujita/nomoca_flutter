@@ -188,6 +188,7 @@ class InstitutionView extends HookWidget with AssetImagePath {
     final imageUrl = '$baseMapURL?$mapCenter&$mapZoom'
         '&$mapMarkers&$mapSize&$scale&$language&$apiKey';
     return ParallaxCard(
+      key: const Key('google-static-map'),
       builder: (GlobalKey _backgroundImageKey) => SizedBox(
         key: _backgroundImageKey,
         height: 240,

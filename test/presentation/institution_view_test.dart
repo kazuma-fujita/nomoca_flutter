@@ -155,6 +155,8 @@ void main() {
           findsOneWidget);
       expect(find.text('休診日'), findsOneWidget);
       expect(find.text('木曜、日曜、祝日'), findsOneWidget);
+      expect(find.byKey(const Key('google-static-map')), findsOneWidget);
+      expect(find.text('杉並区堀ノ内2-6-21 パークハイム杉並C棟1F'), findsOneWidget);
       expect(find.text('アクセス'), findsOneWidget);
       expect(
           find.text(
@@ -193,6 +195,8 @@ void main() {
       // 画面要素を確認
       expect(find.text('テストデンタルクリニック'), findsOneWidget);
       expect(find.text('歯科 / 小児歯科 / 矯正歯科'), findsOneWidget);
+      expect(find.byKey(const Key('google-static-map')), findsOneWidget);
+      expect(find.text('杉並区堀ノ内2-6-21'), findsOneWidget);
       expect(find.text('こだわり・特徴'), findsNothing);
       expect(find.text('診療時間'), findsNothing);
       expect(find.text('休診日'), findsNothing);
