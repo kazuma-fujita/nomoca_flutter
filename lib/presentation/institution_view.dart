@@ -1,10 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:like_button/like_button.dart';
+import 'package:nomoca_flutter/constants/google_api_properties.dart';
 import 'package:nomoca_flutter/data/entity/remote/institution_entity.dart';
 import 'package:nomoca_flutter/presentation/asset_image_path.dart';
+import 'package:nomoca_flutter/presentation/components/atoms/parallax_card.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
@@ -108,6 +111,7 @@ class InstitutionView extends HookWidget with AssetImagePath {
                 _detailBlock('診療時間', entity.businessHour!),
               if (entity.businessHoliday != null)
                 _detailBlock('休診日', entity.businessHoliday!),
+              _buildStaticMapView(entity),
               if (entity.access != null) _detailBlock('アクセス', entity.access!),
               if (entity.title1 != null && entity.body1 != null)
                 _detailBlock(entity.title1!, entity.body1!),
@@ -149,6 +153,54 @@ class InstitutionView extends HookWidget with AssetImagePath {
         Text(description, style: const TextStyle(fontSize: 14)),
         const SizedBox(height: 24),
       ],
+    );
+  }
+
+  Widget _buildStaticMapView(InstitutionEntity entity) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Divider(),
+        const SizedBox(height: 24),
+        _buildStaticMap(entity.longitude, entity.latitude),
+        const SizedBox(height: 8),
+        Text(
+          entity.buildingName != null
+              ? '${entity.address} ${entity.buildingName}'
+              : entity.address,
+          style: const TextStyle(fontSize: 12),
+        ),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+
+  Widget _buildStaticMap(double longitude, double latitude) {
+    const baseMapURL = 'https://maps.googleapis.com/maps/api/staticmap';
+    const mapZoom = 'zoom=18';
+    const mapSize = 'size=720x640';
+    const scale = 'scale=2';
+    const language = 'language=ja';
+    final mapCenter = 'center=$latitude,$longitude';
+    final mapMarkers = 'markers=$latitude,$longitude';
+    const apiKey = 'key=${GoogleApiProperties.apiKey}';
+    final imageUrl = '$baseMapURL?$mapCenter&$mapZoom'
+        '&$mapMarkers&$mapSize&$scale&$language&$apiKey';
+    return ParallaxCard(
+      builder: (GlobalKey _backgroundImageKey) => SizedBox(
+        key: _backgroundImageKey,
+        height: 240,
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          progressIndicatorBuilder: (context, url, downloadProgress) => Center(
+              child:
+                  CircularProgressIndicator(value: downloadProgress.progress)),
+          errorWidget: (context, url, dynamic error) =>
+              const Center(child: Icon(Icons.error)),
+          fit: BoxFit.cover,
+        ),
+      ),
     );
   }
 
