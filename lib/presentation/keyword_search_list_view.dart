@@ -233,12 +233,11 @@ class _KeywordSearchView extends HookWidget {
                         top: 24,
                         right: 24,
                         child: LikeButton(
-                          key: Key('like-${entity.id.toString()}'),
+                          key: Key('like-${entity.id}'),
                           isLiked: entity.isFavorite,
                           onTap: (bool isLike) async {
                             // update API実行
-                            await _updateFavorite(isLike, entity.id, context);
-                            return !isLike;
+                            return _updateFavorite(isLike, entity.id, context);
                           },
                         ),
                       ),

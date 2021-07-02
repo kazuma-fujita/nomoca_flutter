@@ -14,48 +14,45 @@ class InstitutionView extends HookWidget with AssetImagePath {
   @override
   Widget build(BuildContext context) {
     var institutionId = ModalRoute.of(context)!.settings.arguments as int?;
-    institutionId = 99999;
+    institutionId = 90093;
     return useProvider(getInstitutionProvider(institutionId)).when(
       data: (entity) {
-        return Hero(
-          tag: 'card-$institutionId',
-          child: Scaffold(
-            body: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: <Widget>[
-                SliverAppBar(
-                  // AppBarのelevation
-                  elevation: 0,
-                  // AppBarの背景色
-                  backgroundColor: Colors.white,
-                  // AppBarの画像を下に引き伸ばせるようにする
-                  stretch: true,
-                  // AppBarを固定表示する
-                  pinned: true,
-                  // AppBarの画像表示部分の高さ
-                  expandedHeight:
-                      entity.images != null && entity.images!.isNotEmpty
-                          ? 320
-                          : 240,
-                  // AppBarにお気に入りボタンを設置
-                  actions: <Widget>[
-                    LikeButton(
-                      key: Key('like-${entity.id.toString()}'),
-                      isLiked: entity.isFavorite,
-                      onTap: (bool isLike) async {
-                        // update API実行
-                        return _updateFavorite(isLike, entity.id, context);
-                        // return !isLike;
-                      },
-                    ),
-                  ],
-                  flexibleSpace: _flexibleSpaceBar(entity, context),
-                ),
-                SliverList(
-                  delegate: _sliverChildListDelegate(entity),
-                )
-              ],
-            ),
+        return Scaffold(
+          body: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: <Widget>[
+              SliverAppBar(
+                // AppBarのelevation
+                elevation: 0,
+                // AppBarの背景色
+                backgroundColor: Colors.white,
+                // AppBarの画像を下に引き伸ばせるようにする
+                stretch: true,
+                // AppBarを固定表示する
+                pinned: true,
+                // AppBarの画像表示部分の高さ
+                expandedHeight:
+                    entity.images != null && entity.images!.isNotEmpty
+                        ? 320
+                        : 240,
+                // AppBarにお気に入りボタンを設置
+                actions: <Widget>[
+                  LikeButton(
+                    key: Key('like-${entity.id}'),
+                    isLiked: entity.isFavorite,
+                    onTap: (bool isLike) async {
+                      // update API実行
+                      return _updateFavorite(isLike, entity.id, context);
+                      // return !isLike;
+                    },
+                  ),
+                ],
+                flexibleSpace: _flexibleSpaceBar(entity, context),
+              ),
+              SliverList(
+                delegate: _sliverChildListDelegate(entity),
+              )
+            ],
           ),
         );
       },
