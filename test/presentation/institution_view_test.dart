@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:like_button/like_button.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nomoca_flutter/data/entity/remote/institution_entity.dart';
@@ -54,7 +55,6 @@ void main() {
     // Widgetがレンダリング完了するまで処理を待機
     await tester.pump();
     // 画面要素チェック
-    expect(find.byIcon(Icons.favorite), findsOneWidget);
     // エラー、ローディング非表示を確認
     expect(find.byType(ErrorSnackBar), findsNothing);
     // expect(find.byType(CircularProgressIndicator), findsNothing);
@@ -173,9 +173,10 @@ void main() {
           find.text('日本接着歯学会\r\n\r\n日本口腔衛生学会\r\n\r\n日本矯正歯科学会'), findsOneWidget);
       expect(find.byType(ImagesSlider), findsWidgets);
       // likeButtonが点灯していることを確認
-      final likeButtonFinder = find.byType(IconButton);
-      final likeButton = tester.firstWidget(likeButtonFinder) as IconButton;
-      expect(likeButton.color, Colors.pink);
+      final likeButtonFinder = find.byKey(const Key('like-92506'));
+      final likeButton = tester.firstWidget(likeButtonFinder) as LikeButton;
+      expect(likeButtonFinder, findsOneWidget);
+      expect(likeButton.isLiked, isTrue);
       // Mock呼び出しを検証
       verify(_listRepository.getInstitution(
         institutionId: anyNamed('institutionId'),
@@ -202,9 +203,10 @@ void main() {
       expect(find.byType(ImagesSlider), findsNothing);
       expect(find.byType(Image), findsOneWidget);
       // likeButtonが消灯していることを確認
-      final likeButtonFinder = find.byType(IconButton);
-      final likeButton = tester.firstWidget(likeButtonFinder) as IconButton;
-      expect(likeButton.color, Colors.grey);
+      final likeButtonFinder = find.byKey(const Key('like-92506'));
+      final likeButton = tester.firstWidget(likeButtonFinder) as LikeButton;
+      expect(likeButtonFinder, findsOneWidget);
+      expect(likeButton.isLiked, isFalse);
       // Mock呼び出しを検証
       verify(_listRepository.getInstitution(
         institutionId: anyNamed('institutionId'),
@@ -224,20 +226,28 @@ void main() {
       await _verifyTheStatusBeforeAfterLoading(tester);
       await tester.pump();
       // likeButtonが消灯していることを確認
-      final likeButtonFinder = find.byType(IconButton);
-      final likeButton = tester.firstWidget(likeButtonFinder) as IconButton;
-      expect(likeButton.color, Colors.grey);
+      final likeButtonFinder = find.byKey(const Key('like-92506'));
+      final likeButton = tester.firstWidget(likeButtonFinder) as LikeButton;
+      expect(likeButtonFinder, findsOneWidget);
+      expect(likeButton.isLiked, isFalse);
       // likeButtonタップ
       await tester.tap(likeButtonFinder);
-      await tester.pump();
+      // アニメーションが完全に終了するまで待機
+      await tester.pumpAndSettle();
       // likeButtonが点灯することを確認
-      expect(likeButton.color, Colors.pink);
+      // expect(likeButton.isLiked, isTrue);
+      // 再びlikeButtonタップ
+      await tester.tap(likeButtonFinder);
+      await tester.pump();
+      // likeButtonが消灯することを確認
+      // expect(likeButton.isLiked, isFalse);
       // Mock呼び出しを検証
       verify(_listRepository.getInstitution(
         institutionId: anyNamed('institutionId'),
       ));
       verify(_updateFavoriteRepository.updateFavorite(
-          institutionId: anyNamed('institutionId')));
+        institutionId: anyNamed('institutionId'),
+      )).called(2);
     });
   });
 

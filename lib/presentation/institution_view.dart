@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:like_button/like_button.dart';
 import 'package:nomoca_flutter/data/entity/remote/institution_entity.dart';
 import 'package:nomoca_flutter/presentation/asset_image_path.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
@@ -12,14 +13,10 @@ import 'components/molecules/images_slider.dart';
 class InstitutionView extends HookWidget with AssetImagePath {
   @override
   Widget build(BuildContext context) {
-    // お気に入りボタンの状態管理
-    final isLike = useState(false);
     var institutionId = ModalRoute.of(context)!.settings.arguments as int?;
     institutionId = 99999;
     return useProvider(getInstitutionProvider(institutionId)).when(
       data: (entity) {
-        // お気に入り状態初期値設定
-        // isLike.value = entity.isFavorite;
         return Hero(
           tag: 'card-$institutionId',
           child: Scaffold(
@@ -42,13 +39,13 @@ class InstitutionView extends HookWidget with AssetImagePath {
                           : 240,
                   // AppBarにお気に入りボタンを設置
                   actions: <Widget>[
-                    IconButton(
-                      icon: const Icon(Icons.favorite),
-                      color: isLike.value ? Colors.pink : Colors.grey,
-                      onPressed: () async {
-                        final toggleLike = !isLike.value;
-                        await _updateFavorite(toggleLike, entity.id, context);
-                        isLike.value = toggleLike;
+                    LikeButton(
+                      key: Key('like-${entity.id.toString()}'),
+                      isLiked: entity.isFavorite,
+                      onTap: (bool isLike) async {
+                        // update API実行
+                        return _updateFavorite(isLike, entity.id, context);
+                        // return !isLike;
                       },
                     ),
                   ],
