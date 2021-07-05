@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:like_button/like_button.dart';
 import 'package:nomoca_flutter/constants/asset_paths.dart';
@@ -13,6 +12,7 @@ import 'package:nomoca_flutter/presentation/components/atoms/parallax_card.dart'
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'components/molecules/images_slider.dart';
 
@@ -77,13 +77,14 @@ class InstitutionView extends HookWidget with AssetImagePath {
           ),
         );
       },
-      loading: () => Container(),
+      loading: () => Scaffold(
+        body: _shimmerView(),
+      ),
       error: (error, _) {
         return ErrorSnackBar(
           errorMessage: error.toString(),
           callback: () =>
               context.refresh(getInstitutionProvider(institutionId!)),
-          // backScreenWidget: _emptyListView(),
         );
       },
     );
@@ -335,5 +336,68 @@ class InstitutionView extends HookWidget with AssetImagePath {
           // ローディング中はお気に入りボタン反転処理
           orElse: () => !isLike,
         );
+  }
+
+  Widget _shimmerView() {
+    return Shimmer(
+      duration: const Duration(milliseconds: 1500),
+      child: Column(
+        children: [
+          Container(
+            height: 320,
+            color: Colors.grey[300],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              children: [
+                Container(
+                  height: 24,
+                  color: Colors.grey[300],
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 16, 64, 24),
+                  child: Container(
+                    height: 12,
+                    color: Colors.grey[300],
+                  ),
+                ),
+                _shimmerViewDetail(),
+                _shimmerViewDetail(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _shimmerViewDetail() {
+    return Column(
+      children: [
+        const Divider(),
+        const SizedBox(height: 24),
+        Container(
+          height: 21,
+          color: Colors.grey[300],
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 16, 64, 24),
+          child: Column(
+            children: [
+              Container(
+                height: 14,
+                color: Colors.grey[300],
+              ),
+              const SizedBox(height: 8),
+              Container(
+                height: 14,
+                color: Colors.grey[300],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
