@@ -145,7 +145,8 @@ void main() {
       await tester.pump();
       // 画面要素を確認
       expect(find.byType(ImagesSlider), findsWidgets);
-      expect(find.byType(Image), findsNWidgets(2));
+      // 施設、Map、MDoc画像
+      expect(find.byType(Image), findsNWidgets(3));
       expect(find.text('テストデンタルクリニック'), findsOneWidget);
       expect(find.text('歯科 / 小児歯科 / 矯正歯科'), findsOneWidget);
       expect(find.text('こだわり・特徴'), findsOneWidget);
@@ -190,6 +191,17 @@ void main() {
       expect(find.text('ウェブサイトを見る'), findsOneWidget);
       expect(find.text('診療予約をする'), findsOneWidget);
       expect(find.text('電話で問い合わせをする'), findsOneWidget);
+      // MDocButton表示確認
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      final medicalDocButton = find.byWidgetPredicate((widget) {
+        if (widget is Image && widget.image is AssetImage) {
+          final assetImage = widget.image as AssetImage;
+          return assetImage.assetName ==
+              'assets/images/icon/ic_btn_medical_document.png';
+        }
+        return false;
+      });
+      expect(medicalDocButton, findsOneWidget);
       // likeButtonが点灯していることを確認
       final likeButtonFinder = find.byKey(const Key('like-92506'));
       final likeButton = tester.firstWidget(likeButtonFinder) as LikeButton;
@@ -236,6 +248,7 @@ void main() {
       expect(find.text('ウェブサイトを見る'), findsNothing);
       expect(find.text('診療予約をする'), findsNothing);
       expect(find.text('電話で問い合わせをする'), findsNothing);
+      expect(find.byType(FloatingActionButton), findsNothing);
       // likeButtonが消灯していることを確認
       final likeButtonFinder = find.byKey(const Key('like-92506'));
       final likeButton = tester.firstWidget(likeButtonFinder) as LikeButton;

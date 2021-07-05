@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:like_button/like_button.dart';
+import 'package:nomoca_flutter/constants/asset_paths.dart';
 import 'package:nomoca_flutter/constants/google_api_properties.dart';
 import 'package:nomoca_flutter/data/entity/remote/institution_entity.dart';
 import 'package:nomoca_flutter/presentation/asset_image_path.dart';
@@ -22,6 +24,21 @@ class InstitutionView extends HookWidget with AssetImagePath {
     return useProvider(getInstitutionProvider(institutionId)).when(
       data: (entity) {
         return Scaffold(
+          floatingActionButton: entity.medicalDocumentUrl != null
+              ? SizedBox(
+                  width: 168,
+                  height: 60,
+                  child: FloatingActionButton(
+                    onPressed: () => _launchURL(entity.medicalDocumentUrl!),
+                    backgroundColor: Colors.white,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    child: Image.asset(
+                      '${AssetPaths.iconImagePath}/ic_btn_medical_document.png',
+                    ),
+                  ),
+                )
+              : Container(),
           body: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: <Widget>[
@@ -133,11 +150,17 @@ class InstitutionView extends HookWidget with AssetImagePath {
                   trailingIcon: Icons.calendar_today,
                 ),
               if (!entity.isPhoneButtonHidden)
-                // _phoneButtonBlock(entity.phoneNumber),
                 _launchApplicationBlock(
                   launchUrl: 'tel:${entity.phoneNumber}',
                   title: '電話で問い合わせをする',
                   trailingIcon: Icons.phone,
+                ),
+              if (entity.medicalDocumentUrl != null)
+                Column(
+                  children: const [
+                    Divider(),
+                    SizedBox(height: 60),
+                  ],
                 ),
             ],
           ),
