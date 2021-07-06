@@ -341,35 +341,37 @@ class InstitutionView extends HookWidget with AssetImagePath {
   }
 
   Widget _shimmerView() {
-    return Shimmer(
-      duration: const Duration(milliseconds: 1500),
-      child: Column(
-        children: [
-          Container(
-            height: 320,
-            color: Colors.grey[300],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
-                Container(
-                  height: 24,
-                  color: Colors.grey[300],
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 16, 64, 24),
-                  child: Container(
-                    height: 12,
+    return SingleChildScrollView(
+      child: Shimmer(
+        duration: const Duration(milliseconds: 1500),
+        child: Column(
+          children: [
+            Container(
+              height: 320,
+              color: Colors.grey[300],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  Container(
+                    height: 24,
                     color: Colors.grey[300],
                   ),
-                ),
-                _shimmerViewDetail(),
-                _shimmerViewDetail(),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 16, 64, 24),
+                    child: Container(
+                      height: 12,
+                      color: Colors.grey[300],
+                    ),
+                  ),
+                  _shimmerViewDetail(),
+                  _shimmerViewDetail(),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
