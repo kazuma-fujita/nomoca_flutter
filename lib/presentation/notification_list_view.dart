@@ -21,13 +21,15 @@ class NotificationListView extends HookWidget with AssetImagePath {
       ),
       body: asyncValue.when(
         data: (entities) => entities.isNotEmpty
-            ? ListView.builder(
-                key: UniqueKey(),
-                padding: const EdgeInsets.all(16),
-                itemCount: entities.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return _listItem(entities[index], context);
-                },
+            ? Scrollbar(
+                child: ListView.builder(
+                  key: UniqueKey(),
+                  padding: const EdgeInsets.all(16),
+                  itemCount: entities.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _listItem(entities[index], context);
+                  },
+                ),
               )
             : _emptyListView(),
         loading: () => const Center(child: CircularProgressIndicator()),

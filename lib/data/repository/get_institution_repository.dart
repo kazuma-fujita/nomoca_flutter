@@ -127,7 +127,7 @@ class FakeGetInstitutionRepositoryImpl extends GetInstitutionRepository {
   );
 
   @override
-  Future<InstitutionEntity> getInstitution({required int institutionId}) async {
-    return Future.delayed(const Duration(seconds: 3), () => minEntity);
-  }
+  Future<InstitutionEntity> getInstitution(
+          {required int institutionId}) async =>
+      Future.delayed(const Duration(seconds: 3), () => fullEntity);
 }

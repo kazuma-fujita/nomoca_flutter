@@ -196,12 +196,14 @@ class _KeywordSearchView extends HookWidget {
             return false;
           },
           child: items.isNotEmpty
-              ? ListView.builder(
-                  key: ObjectKey(items[0]),
-                  itemCount: items.length,
-                  itemBuilder: (BuildContext _context, int index) {
-                    return _buildRow(items[index], context);
-                  },
+              ? Scrollbar(
+                  child: ListView.builder(
+                    key: ObjectKey(items[0]),
+                    itemCount: items.length,
+                    itemBuilder: (BuildContext _context, int index) {
+                      return _buildRow(items[index], context);
+                    },
+                  ),
                 )
               : _emptyListView(),
         );
