@@ -5,4 +5,6 @@ class NomocaApiEndpoints {
   static const familyUsers = '$users/families';
   static const notifications = '$users/notifies';
   static const favorites = '$users/favorites';
+  static const reserves = '$users/reserves';
+  static const localIds = '$users/local_ids';
 }
