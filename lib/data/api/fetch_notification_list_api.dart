@@ -17,7 +17,7 @@ class FetchNotificationListApiImpl implements FetchNotificationListApi {
   @override
   Future<String> call({required String authenticationToken}) async {
     final response = await apiClient.get(
-      NomocaApiEndpoints.notification,
+      '${NomocaApiEndpoints.notifications}/',
       headers: NomocaApiProperties.authenticationTokenHeader(
           authenticationToken: authenticationToken),
     );

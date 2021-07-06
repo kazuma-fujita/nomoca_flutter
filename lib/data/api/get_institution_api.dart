@@ -21,7 +21,7 @@ class GetInstitutionApiImpl implements GetInstitutionApi {
     required int institutionId,
   }) async {
     final response = await apiClient.get(
-      '${NomocaApiEndpoints.institution}/$institutionId/',
+      '${NomocaApiEndpoints.institutions}/$institutionId/',
       headers: NomocaApiProperties.authenticationTokenHeader(
           authenticationToken: authenticationToken),
     );

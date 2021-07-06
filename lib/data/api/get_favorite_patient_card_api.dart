@@ -1,35 +1,31 @@
-import 'dart:convert';
-
 import 'package:nomoca_flutter/constants/nomoca_api_endpoints.dart';
 import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 import 'package:nomoca_flutter/data/api/api_client.dart';
 
 // ignore: one_member_abstracts
-abstract class CreateFamilyUserApi {
+abstract class GetFavoritePatientCardApi {
   Future<String> call({
     required String authenticationToken,
-    required String nickname,
+    required int userId,
+    required int institutionId,
   });
 }
 
-class CreateFamilyUserApiImpl implements CreateFamilyUserApi {
-  CreateFamilyUserApiImpl({required this.apiClient});
+class GetFavoritePatientCardApiImpl implements GetFavoritePatientCardApi {
+  GetFavoritePatientCardApiImpl({required this.apiClient});
 
   final ApiClient apiClient;
 
   @override
   Future<String> call({
     required String authenticationToken,
-    required String nickname,
+    required int userId,
+    required int institutionId,
   }) async {
-    final body = {
-      'name': nickname,
-    };
-    final response = await apiClient.post(
-      '${NomocaApiEndpoints.familyUsers}/',
+    final response = await apiClient.get(
+      '${NomocaApiEndpoints.favorites}/end_users/$userId/institutions/$institutionId/',
       headers: NomocaApiProperties.authenticationTokenHeader(
           authenticationToken: authenticationToken),
-      body: jsonEncode(body),
     );
     return response;
   }

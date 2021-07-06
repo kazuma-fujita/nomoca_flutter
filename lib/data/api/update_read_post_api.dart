@@ -23,7 +23,7 @@ class UpdateReadPostApiImpl implements UpdateReadPostApi {
     required int notificationId,
   }) async {
     final response = await apiClient.put(
-      '${NomocaApiEndpoints.notification}/read/$notificationId/',
+      '${NomocaApiEndpoints.notifications}/read/$notificationId/',
       headers: NomocaApiProperties.authenticationTokenHeader(
           authenticationToken: authenticationToken),
     );

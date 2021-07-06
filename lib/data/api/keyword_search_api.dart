@@ -33,7 +33,7 @@ class KeywordSearchApiImpl implements KeywordSearchApi {
       getQuery += '&lat=$latitude&lng=$longitude';
     }
     final response = await apiClient.get(
-      '${NomocaApiEndpoints.institution}/search/?$getQuery',
+      '${NomocaApiEndpoints.institutions}/search/?$getQuery',
       headers: NomocaApiProperties.authenticationTokenHeader(
           authenticationToken: authenticationToken),
     );

@@ -23,7 +23,7 @@ class UpdateFavoriteApiImpl implements UpdateFavoriteApi {
     required int institutionId,
   }) async {
     final response = await apiClient.put(
-      '${NomocaApiEndpoints.favorite}/end_users/$userId/institutions/$institutionId/',
+      '${NomocaApiEndpoints.favorites}/end_users/$userId/institutions/$institutionId/',
       headers: NomocaApiProperties.authenticationTokenHeader(
           authenticationToken: authenticationToken),
     );

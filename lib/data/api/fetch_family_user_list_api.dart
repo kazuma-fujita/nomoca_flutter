@@ -17,7 +17,7 @@ class FetchFamilyUserListApiImpl implements FetchFamilyUserListApi {
   @override
   Future<String> call({required String authenticationToken}) async {
     final response = await apiClient.get(
-      NomocaApiEndpoints.familyUser,
+      '${NomocaApiEndpoints.familyUsers}/',
       headers: NomocaApiProperties.authenticationTokenHeader(
           authenticationToken: authenticationToken),
     );

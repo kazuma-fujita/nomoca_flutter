@@ -28,7 +28,7 @@ class UpdateFamilyUserApiImpl implements UpdateFamilyUserApi {
       'name': nickname,
     };
     final response = await apiClient.put(
-      '${NomocaApiEndpoints.familyUser}/$familyUserId/',
+      '${NomocaApiEndpoints.familyUsers}/$familyUserId/',
       headers: NomocaApiProperties.authenticationTokenHeader(
           authenticationToken: authenticationToken),
       body: jsonEncode(body),

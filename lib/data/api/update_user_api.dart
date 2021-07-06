@@ -28,7 +28,7 @@ class UpdateUserApiImpl implements UpdateUserApi {
       'name': nickname,
     };
     final response = await apiClient.put(
-      '${NomocaApiEndpoints.user}/$userId/',
+      '${NomocaApiEndpoints.users}/$userId/',
       headers: NomocaApiProperties.authenticationTokenHeader(
           authenticationToken: authenticationToken),
       body: jsonEncode(body),

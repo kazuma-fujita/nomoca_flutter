@@ -23,7 +23,7 @@ class DeleteFamilyUserApiImpl implements DeleteFamilyUserApi {
     required int familyUserId,
   }) async {
     final response = await apiClient.delete(
-      '${NomocaApiEndpoints.familyUser}/$familyUserId/',
+      '${NomocaApiEndpoints.familyUsers}/$familyUserId/',
       headers: NomocaApiProperties.authenticationTokenHeader(
           authenticationToken: authenticationToken),
     );

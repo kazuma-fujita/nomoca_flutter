@@ -1,7 +1,8 @@
 class NomocaApiEndpoints {
-  static const user = '/users/';
-  static const institution = '/users/institutions/';
-  static const familyUser = '/users/families/';
-  static const notification = '/users/notifies/';
-  static const favorite = '/users/favorites/';
+  static const users = '/users';
+  static const patientCards = '$users/cards';
+  static const institutions = '$users/institutions';
+  static const familyUsers = '$users/families';
+  static const notifications = '$users/notifies';
+  static const favorites = '$users/favorites';
 }
