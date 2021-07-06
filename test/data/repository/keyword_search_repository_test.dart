@@ -55,8 +55,8 @@ void main() {
               .having((entity) => entity.image2, 'image2',
                   'institutions/test/image2/2.jpg')
               .having((entity) => entity.image3, 'image3', null)
-              .having((entity) => entity.image3, 'image4', null)
-              .having((entity) => entity.image3, 'image5', null)
+              .having((entity) => entity.image4, 'image4', null)
+              .having((entity) => entity.image5, 'image5', null)
               .having((entity) => entity.isFavorite, 'isFavorite', false)
               .having(
             (entity) => entity.images,

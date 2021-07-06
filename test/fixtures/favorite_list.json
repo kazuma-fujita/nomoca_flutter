@@ -1,0 +1,24 @@
+[
+  {
+    "institution_id": 92506,
+    "type": "clinic",
+    "name": "渋谷リーフクリニック",
+    "image1": null,
+    "image2": null,
+    "image3": null,
+    "image4": null,
+    "image5": null,
+    "end_user_ids": [199, 200, 201]
+  },
+  {
+    "institution_id": 90093,
+    "type": "dentistry",
+    "name": "小笠原歯科医院",
+    "image1": "institutions/100027/image1/e907cf5540089bcdb1787a2d979e6a7b.jpg",
+    "image2": "institutions/100027/image4/8191a0e68a83a305c1f5c007b3ae1225.jpg",
+    "image3": "institutions/100027/image5/149e69d2d9726d61c98a05329e57bea6.jpg",
+    "image4": "institutions/100620/image5/f6d2d5248c0e35a9b094ed1c0d092102.jpg",
+    "image5": "institutions/102125/image3/bccffca6b7d7b44e951a0d80d6ab6586.jpg",
+    "end_user_ids": [199, 200, 201]
+  }
+]
