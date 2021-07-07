@@ -10,8 +10,10 @@ import 'package:nomoca_flutter/data/entity/remote/institution_entity.dart';
 import 'package:nomoca_flutter/presentation/asset_image_path.dart';
 import 'package:nomoca_flutter/presentation/components/atoms/parallax_card.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
+import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
+import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'components/molecules/images_slider.dart';
@@ -319,12 +321,14 @@ class InstitutionView extends HookWidget with AssetImagePath {
       bool isLike, int institutionId, BuildContext context) async {
     return await context.read(updateFavoriteProvider(institutionId)).maybeWhen(
           data: (_) async {
-            // TODO: このデータブロックに処理が入らないので調査
             // お気に入り登録時SnackBar表示
             if (!isLike) {
               ScaffoldMessenger.of(context)
                   .showSnackBar(const SnackBar(content: Text('お気に入り登録しました')));
             }
+            // キーワード検索画面のお気に入りボタン更新
+            context.read(keywordSearchListActionDispatcher).state =
+                KeywordSearchListAction.toggleFavorite(institutionId);
             // お気に入りボタン反転処理
             return !isLike;
           },

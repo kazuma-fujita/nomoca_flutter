@@ -1,6 +1,5 @@
 import 'package:flutter/scheduler.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nomoca_flutter/constants/keyword_search_properties.dart';
 import 'package:nomoca_flutter/data/api/keyword_search_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
@@ -32,9 +31,6 @@ final keywordSearchListState =
 final keywordSearchListActionDispatcher =
     StateProvider.autoDispose<KeywordSearchListAction>(
   (ref) => const KeywordSearchListAction.none(),
-  // 画面初期表示する一覧のoffset/limitをfetchList Actionに設定
-  // (ref) => const KeywordSearchListAction.fetchList(
-  //     query: '', offset: 0, limit: KeywordSearchProperties.limit),
 );
 
 final keywordSearchListReducer =
