@@ -10,9 +10,9 @@ import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar
 import 'package:nomoca_flutter/presentation/components/molecules/images_slider.dart';
 import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
-import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/favorite_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import 'asset_image_path.dart';
 
@@ -23,7 +23,7 @@ class FavoriteListView extends HookWidget with AssetImagePath {
       appBar: AppBar(
         title: const Text('かかりつけ'),
       ),
-      body: useProvider(favoriteListListReducer).when(
+      body: useProvider(favoriteListReducer).when(
         data: (entities) => entities.isNotEmpty
             ? Scrollbar(
                 child: ListView.builder(
@@ -36,10 +36,10 @@ class FavoriteListView extends HookWidget with AssetImagePath {
                 ),
               )
             : _emptyListView(),
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: _shimmerView,
         error: (error, _) => ErrorSnackBar(
           errorMessage: error.toString(),
-          callback: () => context.refresh(familyUserListReducer),
+          callback: () => context.refresh(favoriteListReducer),
         ),
       ),
     );
@@ -129,6 +129,7 @@ class FavoriteListView extends HookWidget with AssetImagePath {
       height: 280,
       child: PageView.builder(
         controller: PageController(viewportFraction: 0.85),
+        itemCount: entity.userIds.length,
         itemBuilder: (context, horizontalIndex) => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Card(
@@ -140,11 +141,20 @@ class FavoriteListView extends HookWidget with AssetImagePath {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
+              padding: const EdgeInsets.fromLTRB(48, 0, 48, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('診察券'),
+                  const Center(
+                    child: Text(
+                      '診察券',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
                   TextField(
                     controller: TextEditingController(text: null),
                     decoration: const InputDecoration(
@@ -161,26 +171,22 @@ class FavoriteListView extends HookWidget with AssetImagePath {
                     ),
                     // style: const TextStyle(fontSize: 14),
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        '前回受付',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black45,
-                        ),
-                      ),
-                      SizedBox(width: 16),
-                      Text(
-                        '----/--/--  --:--',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black45,
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 8),
+                  const Text(
+                    '前回受付',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black45,
+                    ),
                   ),
+                  const Text(
+                    '----/--/--  --:--',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black45,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                 ],
               ),
             ),
@@ -237,6 +243,32 @@ class FavoriteListView extends HookWidget with AssetImagePath {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _shimmerView() {
+    return SingleChildScrollView(
+      child: Shimmer(
+        duration: const Duration(milliseconds: 1500),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              Container(
+                height: 240,
+                color: Colors.grey[300],
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 16, 64, 16),
+                child: Container(
+                  height: 24,
+                  color: Colors.grey[300],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

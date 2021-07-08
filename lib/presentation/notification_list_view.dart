@@ -35,7 +35,7 @@ class NotificationListView extends HookWidget with AssetImagePath {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => ErrorSnackBar(
           errorMessage: error.toString(),
-          callback: () => context.refresh(familyUserListReducer),
+          callback: () => context.refresh(notificationListReducer),
         ),
       ),
     );
