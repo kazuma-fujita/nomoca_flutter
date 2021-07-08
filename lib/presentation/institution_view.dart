@@ -10,9 +10,11 @@ import 'package:nomoca_flutter/data/entity/remote/institution_entity.dart';
 import 'package:nomoca_flutter/presentation/asset_image_path.dart';
 import 'package:nomoca_flutter/presentation/components/atoms/parallax_card.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
+import 'package:nomoca_flutter/states/actions/favorite_list_action.dart';
 import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
+import 'package:nomoca_flutter/states/reducers/favorite_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -329,6 +331,9 @@ class InstitutionView extends HookWidget with AssetImagePath {
             // キーワード検索画面のお気に入りボタン更新
             context.read(keywordSearchListActionDispatcher).state =
                 KeywordSearchListAction.toggleFavorite(institutionId);
+            // お気に入り画面データ再取得
+            context.read(favoriteListActionDispatcher).state =
+                const FavoriteListAction.fetchList();
             // お気に入りボタン反転処理
             return !isLike;
           },
@@ -350,6 +355,7 @@ class InstitutionView extends HookWidget with AssetImagePath {
         duration: const Duration(milliseconds: 1500),
         child: Column(
           children: [
+            // 施設画像ShimmerBlock
             Container(
               height: 320,
               color: Colors.grey[300],
@@ -358,19 +364,9 @@ class InstitutionView extends HookWidget with AssetImagePath {
               padding: const EdgeInsets.all(24),
               child: Column(
                 children: [
-                  Container(
-                    height: 24,
-                    color: Colors.grey[300],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 16, 64, 24),
-                    child: Container(
-                      height: 12,
-                      color: Colors.grey[300],
-                    ),
-                  ),
-                  _shimmerViewDetail(),
-                  _shimmerViewDetail(),
+                  _shimmerViewNameAndCategoryBlock(),
+                  _shimmerViewDetailBlock(),
+                  _shimmerViewDetailBlock(),
                 ],
               ),
             ),
@@ -380,7 +376,25 @@ class InstitutionView extends HookWidget with AssetImagePath {
     );
   }
 
-  Widget _shimmerViewDetail() {
+  Widget _shimmerViewNameAndCategoryBlock() {
+    return Column(
+      children: [
+        Container(
+          height: 24,
+          color: Colors.grey[300],
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 16, 64, 24),
+          child: Container(
+            height: 12,
+            color: Colors.grey[300],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _shimmerViewDetailBlock() {
     return Column(
       children: [
         const Divider(),

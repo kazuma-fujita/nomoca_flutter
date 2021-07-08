@@ -64,7 +64,7 @@ class FetchFavoriteListRepositoryImpl extends FetchFavoriteListRepository {
 class FakeFetchFavoriteListRepositoryImpl extends FetchFavoriteListRepository {
   FakeFetchFavoriteListRepositoryImpl();
 
-  static const contentsBaseUrl = 'https://contents-debug.nomoca.com';
+  static const contentsBaseUrl = 'https://contents.nomoca.com';
   final entities = [
     const FavoriteEntity(
       institutionId: 92506,

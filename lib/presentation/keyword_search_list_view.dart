@@ -7,8 +7,10 @@ import 'package:nomoca_flutter/constants/keyword_search_properties.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/images_slider.dart';
+import 'package:nomoca_flutter/states/actions/favorite_list_action.dart';
 import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
+import 'package:nomoca_flutter/states/reducers/favorite_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
 import 'components/atoms/animated_push_motion.dart';
 import 'components/molecules/error_snack_bar.dart';
@@ -280,12 +282,14 @@ class _KeywordSearchView extends HookWidget {
       bool isLike, int institutionId, BuildContext context) async {
     return await context.read(updateFavoriteProvider(institutionId)).maybeWhen(
           data: (_) async {
-            // TODO: このデータブロックに処理が入らないので調査
             // お気に入り登録時SnackBar表示
             if (!isLike) {
               ScaffoldMessenger.of(context)
                   .showSnackBar(const SnackBar(content: Text('お気に入り登録しました')));
             }
+            // お気に入り画面データ取得
+            context.read(favoriteListActionDispatcher).state =
+                const FavoriteListAction.fetchList();
             // お気に入りボタン反転処理
             return !isLike;
           },

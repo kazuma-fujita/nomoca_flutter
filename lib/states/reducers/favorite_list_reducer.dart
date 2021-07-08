@@ -20,7 +20,7 @@ final fetchFavoriteListRepositoryProvider =
 );
 
 // 一覧State。reducer内で一覧の状態更新が実行される。画面をまたいで利用されるのでautoDisposeしない
-final favoriteListListState = StateProvider<List<FavoriteEntity>>((ref) => []);
+final _favoriteListListState = StateProvider<List<FavoriteEntity>>((ref) => []);
 
 // ActionStateを更新してreducerを再実行する
 final favoriteListActionDispatcher =
@@ -38,7 +38,7 @@ final favoriteListListReducer =
       // DEBUG
       fetchList.asMap().forEach((index, e) => print('$index:${e.name}'));
       // リポジトリから取得した配列でlistStateの状態を更新
-      ref.read(favoriteListListState).state = fetchList;
+      ref.read(_favoriteListListState).state = fetchList;
       return fetchList;
     },
   );
