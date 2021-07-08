@@ -142,53 +142,67 @@ class FavoriteListView extends HookWidget with AssetImagePath {
             ),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(48, 0, 48, 0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Center(
-                    child: Text(
-                      '診察券',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black87,
-                      ),
+              child: context
+                  .read(getFavoritePatientCardProvider(
+                    {
+                      'userId': entity.userIds[horizontalIndex],
+                      'institutionId': entity.institutionId
+                    },
+                  ))
+                  .when(
+                    data: (patientCard) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Center(
+                            child: Text(
+                              '診察券',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                          TextField(
+                            controller: TextEditingController(text: null),
+                            decoration: const InputDecoration(
+                              hintText: '診察券番号を入力してください',
+                              labelText: '診察券番号',
+                            ),
+                          ),
+                          TextField(
+                            controller: TextEditingController(text: ''),
+                            decoration: const InputDecoration(
+                              hintText: '次回予約日時メモを入力してください',
+                              labelText: '次回予約日時メモ',
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            '前回受付',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black45,
+                            ),
+                          ),
+                          const Text(
+                            '----/--/--  --:--',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black45,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                      );
+                    },
+                    loading: _patientCardShimmerView,
+                    error: (error, _) => ErrorSnackBar(
+                      errorMessage: error.toString(),
+                      callback: () => context.refresh(favoriteListReducer),
                     ),
                   ),
-                  TextField(
-                    controller: TextEditingController(text: null),
-                    decoration: const InputDecoration(
-                      hintText: '診察券番号を入力してください',
-                      labelText: '診察券番号',
-                    ),
-                    // style: const TextStyle(fontSize: 14),
-                  ),
-                  TextField(
-                    controller: TextEditingController(text: ''),
-                    decoration: const InputDecoration(
-                      hintText: '次回予約日時メモを入力してください',
-                      labelText: '次回予約日時メモ',
-                    ),
-                    // style: const TextStyle(fontSize: 14),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    '前回受付',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.black45,
-                    ),
-                  ),
-                  const Text(
-                    '----/--/--  --:--',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.black45,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                ],
-              ),
             ),
           ),
         ),
@@ -252,11 +266,11 @@ class FavoriteListView extends HookWidget with AssetImagePath {
       child: Shimmer(
         duration: const Duration(milliseconds: 1500),
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(48),
           child: Column(
             children: [
               Container(
-                height: 240,
+                height: 210,
                 color: Colors.grey[300],
               ),
               Padding(
@@ -266,9 +280,70 @@ class FavoriteListView extends HookWidget with AssetImagePath {
                   color: Colors.grey[300],
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+                child: Container(
+                  height: 280,
+                  color: Colors.grey[300],
+                ),
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _patientCardShimmerView() {
+    return Shimmer(
+      duration: const Duration(milliseconds: 1500),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 24, right: 24),
+              child: Container(
+                height: 20,
+                color: Colors.grey[300],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 88),
+            child: Container(
+              height: 16,
+              color: Colors.grey[300],
+            ),
+          ),
+          Container(
+            height: 32,
+            color: Colors.grey[300],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 72),
+            child: Container(
+              height: 16,
+              color: Colors.grey[300],
+            ),
+          ),
+          Container(
+            height: 32,
+            color: Colors.grey[300],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 96),
+            child: Container(
+              height: 16,
+              color: Colors.grey[300],
+            ),
+          ),
+          Container(
+            height: 24,
+            color: Colors.grey[300],
+          ),
+        ],
       ),
     );
   }

@@ -90,5 +90,5 @@ class FakeFetchFavoriteListRepositoryImpl extends FetchFavoriteListRepository {
 
   @override
   Future<List<FavoriteEntity>> fetchList() async =>
-      Future.delayed(const Duration(seconds: 5), () => entities);
+      Future.delayed(const Duration(seconds: 0), () => entities);
 }

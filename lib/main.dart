@@ -15,6 +15,7 @@ import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_favorite_list_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_notification_list_repository.dart';
+import 'package:nomoca_flutter/data/repository/get_favorite_patient_card_repository.dart';
 import 'package:nomoca_flutter/data/repository/get_institution_repository.dart';
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
@@ -107,6 +108,8 @@ Future<void> main() async {
             .overrideWithValue(FakeGetInstitutionRepositoryImpl()),
         fetchFavoriteListRepositoryProvider
             .overrideWithValue(FakeFetchFavoriteListRepositoryImpl()),
+        getFavoritePatientCardRepositoryProvider
+            .overrideWithValue(FakeGetFavoritePatientCardRepositoryImpl()),
         keywordSearchRepositoryProvider
             .overrideWithValue(FakeKeywordSearchRepositoryImpl()),
         updateFavoriteProvider
