@@ -63,5 +63,6 @@ class FakeGetFavoritePatientCardRepositoryImpl
     required int userId,
     required int institutionId,
   }) async =>
-      Future.delayed(const Duration(seconds: 0), () => entity);
+      entity;
+  // Future.delayed(const Duration(seconds: 0), () => entity);
 }

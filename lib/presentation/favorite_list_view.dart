@@ -27,7 +27,7 @@ class FavoriteListView extends HookWidget with AssetImagePath {
         data: (entities) => entities.isNotEmpty
             ? Scrollbar(
                 child: ListView.builder(
-                  key: UniqueKey(),
+                  key: ObjectKey(entities[0]),
                   padding: const EdgeInsets.all(16),
                   itemCount: entities.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -133,6 +133,7 @@ class FavoriteListView extends HookWidget with AssetImagePath {
         itemBuilder: (context, horizontalIndex) => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Card(
+            key: Key(entity.userIds[horizontalIndex].toString()),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
               side: const BorderSide(
@@ -142,67 +143,75 @@ class FavoriteListView extends HookWidget with AssetImagePath {
             ),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(48, 0, 48, 0),
-              child: context
-                  .read(getFavoritePatientCardProvider(
-                    {
-                      'userId': entity.userIds[horizontalIndex],
-                      'institutionId': entity.institutionId
-                    },
-                  ))
-                  .when(
-                    data: (patientCard) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Center(
-                            child: Text(
-                              '診察券',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.black87,
+              child: Consumer(
+                builder: (context, watch, child) {
+                  return context
+                      .read(getFavoritePatientCardProvider(
+                        {
+                          'userId': entity.userIds[horizontalIndex],
+                          'institutionId': entity.institutionId
+                        },
+                      ))
+                      .when(
+                        data: (patientCard) {
+                          print(patientCard);
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Center(
+                                child: Text(
+                                  '診察券',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black87,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          TextField(
-                            controller: TextEditingController(text: null),
-                            decoration: const InputDecoration(
-                              hintText: '診察券番号を入力してください',
-                              labelText: '診察券番号',
-                            ),
-                          ),
-                          TextField(
-                            controller: TextEditingController(text: ''),
-                            decoration: const InputDecoration(
-                              hintText: '次回予約日時メモを入力してください',
-                              labelText: '次回予約日時メモ',
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            '前回受付',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black45,
-                            ),
-                          ),
-                          const Text(
-                            '----/--/--  --:--',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black45,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                        ],
+                              TextField(
+                                controller: TextEditingController(text: null),
+                                decoration: const InputDecoration(
+                                  hintText: '診察券番号を入力してください',
+                                  labelText: '診察券番号',
+                                ),
+                              ),
+                              TextField(
+                                controller: TextEditingController(text: ''),
+                                decoration: const InputDecoration(
+                                  hintText: '次回予約日時メモを入力してください',
+                                  labelText: '次回予約日時メモ',
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              const Text(
+                                '前回受付',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                              const Text(
+                                '----/--/--  --:--',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                            ],
+                          );
+                        },
+                        loading: () {
+                          print('now loading');
+                          return _patientCardShimmerView();
+                        },
+                        error: (error, _) => ErrorSnackBar(
+                          errorMessage: error.toString(),
+                          callback: () => context.refresh(favoriteListReducer),
+                        ),
                       );
-                    },
-                    loading: _patientCardShimmerView,
-                    error: (error, _) => ErrorSnackBar(
-                      errorMessage: error.toString(),
-                      callback: () => context.refresh(favoriteListReducer),
-                    ),
-                  ),
+                },
+              ),
             ),
           ),
         ),
