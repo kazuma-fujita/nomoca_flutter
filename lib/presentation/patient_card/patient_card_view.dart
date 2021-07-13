@@ -115,15 +115,11 @@ class _PatientCardView extends HookWidget {
           ],
         );
       },
-      loading: () {
-        return Container();
-      },
-      error: (error, _) {
-        return ErrorSnackBar(
-          errorMessage: error.toString(),
-          callback: () => context.refresh(patientCardState),
-        );
-      },
+      loading: () => const CircularProgressIndicator(),
+      error: (error, _) => ErrorSnackBar(
+        errorMessage: error.toString(),
+        callback: () => context.refresh(patientCardState),
+      ),
     );
   }
 }

@@ -23,7 +23,10 @@ import 'package:nomoca_flutter/presentation/favorite_list_view.dart';
 import 'package:nomoca_flutter/presentation/institution_view.dart';
 import 'package:nomoca_flutter/presentation/notification_detail_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
+import 'package:nomoca_flutter/presentation/sign_in_view.dart';
+import 'package:nomoca_flutter/presentation/sign_up/sign_up_view.dart';
 import 'package:nomoca_flutter/presentation/sign_up/sign_up_view_model.dart';
+import 'package:nomoca_flutter/presentation/top_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
@@ -142,11 +145,13 @@ class MyApp extends StatelessWidget {
       title: 'Nomoca application',
       theme: ThemeData(primaryColor: Colors.white),
       routes: <String, WidgetBuilder>{
+        RouteNames.signUp: (_) => SignUpView(),
+        RouteNames.signIn: (_) => SignInView(),
         RouteNames.institution: (_) => InstitutionView(),
         RouteNames.upsertUser: (_) => UpsertUserView(),
         RouteNames.notificationDetail: (_) => NotificationDetailView(),
       },
-      home: FavoriteListView(),
+      home: TopView(),
       builder: EasyLoading.init(),
     );
   }

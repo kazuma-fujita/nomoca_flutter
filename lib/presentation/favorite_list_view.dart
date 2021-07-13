@@ -143,75 +143,7 @@ class FavoriteListView extends HookWidget with AssetImagePath {
             ),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(48, 0, 48, 0),
-              child: Consumer(
-                builder: (context, watch, child) {
-                  return context
-                      .read(getFavoritePatientCardProvider(
-                        {
-                          'userId': entity.userIds[horizontalIndex],
-                          'institutionId': entity.institutionId
-                        },
-                      ))
-                      .when(
-                        data: (patientCard) {
-                          print(patientCard);
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Center(
-                                child: Text(
-                                  '診察券',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                              ),
-                              TextField(
-                                controller: TextEditingController(text: null),
-                                decoration: const InputDecoration(
-                                  hintText: '診察券番号を入力してください',
-                                  labelText: '診察券番号',
-                                ),
-                              ),
-                              TextField(
-                                controller: TextEditingController(text: ''),
-                                decoration: const InputDecoration(
-                                  hintText: '次回予約日時メモを入力してください',
-                                  labelText: '次回予約日時メモ',
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              const Text(
-                                '前回受付',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.black45,
-                                ),
-                              ),
-                              const Text(
-                                '----/--/--  --:--',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black45,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                            ],
-                          );
-                        },
-                        loading: () {
-                          print('now loading');
-                          return _patientCardShimmerView();
-                        },
-                        error: (error, _) => ErrorSnackBar(
-                          errorMessage: error.toString(),
-                          callback: () => context.refresh(favoriteListReducer),
-                        ),
-                      );
-                },
-              ),
+              child: _HorizontalItemView(entity, horizontalIndex),
             ),
           ),
         ),
@@ -301,6 +233,84 @@ class FavoriteListView extends HookWidget with AssetImagePath {
         ),
       ),
     );
+  }
+}
+
+class _HorizontalItemView extends HookWidget {
+  const _HorizontalItemView(this.entity, this.horizontalIndex);
+
+  final FavoriteEntity entity;
+  final int horizontalIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return context
+        .read(
+          getFavoritePatientCardProvider(
+            {
+              'userId': entity.userIds[horizontalIndex],
+              'institutionId': entity.institutionId
+            },
+          ),
+        )
+        .when(
+          data: (patientCard) {
+            print(patientCard);
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Center(
+                  child: Text(
+                    '診察券',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                TextField(
+                  controller: TextEditingController(text: null),
+                  decoration: const InputDecoration(
+                    hintText: '診察券番号を入力してください',
+                    labelText: '診察券番号',
+                  ),
+                ),
+                TextField(
+                  controller: TextEditingController(text: ''),
+                  decoration: const InputDecoration(
+                    hintText: '次回予約日時メモを入力してください',
+                    labelText: '次回予約日時メモ',
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  '前回受付',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black45,
+                  ),
+                ),
+                const Text(
+                  '----/--/--  --:--',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black45,
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+            );
+          },
+          loading: () {
+            print('now loading');
+            return _patientCardShimmerView();
+          },
+          error: (error, _) => ErrorSnackBar(
+            errorMessage: error.toString(),
+            callback: () => context.refresh(favoriteListReducer),
+          ),
+        );
   }
 
   Widget _patientCardShimmerView() {
