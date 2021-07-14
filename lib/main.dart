@@ -35,6 +35,7 @@ import 'package:nomoca_flutter/states/reducers/favorite_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/notification_list_reducer.dart';
 import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
+import 'package:nomoca_flutter/themes/theme_data.dart';
 
 import 'constants/db_table_names.dart';
 import 'data/entity/remote/patient_card_entity.dart';
@@ -144,9 +145,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Nomoca application',
       // Default theme
-      theme: ThemeData(primaryColor: Colors.white),
+      theme: lightThemeData,
       // Dark mode theme
-      darkTheme: ThemeData(),
+      darkTheme: darkThemeData,
       routes: <String, WidgetBuilder>{
         RouteNames.signUp: (_) => SignUpView(),
         RouteNames.signIn: (_) => SignInView(),

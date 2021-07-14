@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nomoca_flutter/constants/asset_paths.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
+import 'package:nomoca_flutter/presentation/components/atoms/outlined_white_button.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/logo.dart';
 
 class TopView extends StatelessWidget {
@@ -27,32 +28,18 @@ class TopView extends StatelessWidget {
                 const Spacer(),
                 const Logo(logoMarkHeight: 128, logoTypeHeight: 64),
                 const Spacer(),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    primary: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    side: const BorderSide(color: Colors.white),
-                  ),
+                OutlinedWhiteButton(
                   onPressed: () async {
                     await Navigator.pushNamed(context, RouteNames.signIn);
                   },
-                  child: const Text('ログイン'),
+                  label: 'ログイン',
                 ),
-                const SizedBox(height: 24),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    primary: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    side: const BorderSide(color: Colors.white),
-                  ),
+                const SizedBox(height: 32),
+                OutlinedWhiteButton(
                   onPressed: () async {
-                    await Navigator.pushNamed(context, RouteNames.signUp);
+                    await Navigator.pushNamed(context, RouteNames.signIn);
                   },
-                  child: const Text('新規登録'),
+                  label: '新規登録',
                 ),
                 const Spacer(),
               ],
