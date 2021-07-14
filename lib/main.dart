@@ -143,7 +143,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Nomoca application',
+      // Default theme
       theme: ThemeData(primaryColor: Colors.white),
+      // Dark mode theme
+      darkTheme: ThemeData(),
       routes: <String, WidgetBuilder>{
         RouteNames.signUp: (_) => SignUpView(),
         RouteNames.signIn: (_) => SignInView(),

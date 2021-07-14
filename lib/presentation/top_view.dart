@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:nomoca_flutter/constants/asset_paths.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
+import 'package:nomoca_flutter/themes/custom_color_scheme.dart';
 
 class TopView extends StatelessWidget {
   @override
@@ -31,7 +32,8 @@ class TopView extends StatelessWidget {
                     SvgPicture.asset(
                       '${AssetPaths.backgroundImagePath}/bg_patient_card_app_icon.svg',
                       height: 128,
-                      color: const Color(0xffAAE7FF),
+                      color:
+                          Theme.of(context).colorScheme.logoPrimaryColorLight,
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
@@ -41,7 +43,8 @@ class TopView extends StatelessWidget {
                           SvgPicture.asset(
                             '${AssetPaths.backgroundImagePath}/bg_patient_card_app_logo.svg',
                             height: 64,
-                            color: const Color(0xff3a9ed2),
+                            color:
+                                Theme.of(context).colorScheme.logoPrimaryColor,
                           ),
                         ],
                       ),
