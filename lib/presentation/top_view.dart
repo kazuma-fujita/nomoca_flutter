@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:nomoca_flutter/constants/asset_paths.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
-import 'package:nomoca_flutter/themes/custom_color_scheme.dart';
+import 'package:nomoca_flutter/presentation/components/molecules/logo.dart';
 
 class TopView extends StatelessWidget {
   @override
@@ -26,31 +25,7 @@ class TopView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Spacer(),
-                Stack(
-                  alignment: AlignmentDirectional.bottomStart,
-                  children: [
-                    SvgPicture.asset(
-                      '${AssetPaths.backgroundImagePath}/bg_patient_card_app_icon.svg',
-                      height: 128,
-                      color:
-                          Theme.of(context).colorScheme.logoPrimaryColorLight,
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            '${AssetPaths.backgroundImagePath}/bg_patient_card_app_logo.svg',
-                            height: 64,
-                            color:
-                                Theme.of(context).colorScheme.logoPrimaryColor,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                const Logo(logoMarkHeight: 128, logoTypeHeight: 64),
                 const Spacer(),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(

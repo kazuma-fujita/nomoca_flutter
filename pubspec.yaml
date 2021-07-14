@@ -66,6 +66,7 @@ flutter:
     - assets/images/background/
     - assets/images/icon/
     - assets/images/institutions/
+    - assets/images/logo/
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

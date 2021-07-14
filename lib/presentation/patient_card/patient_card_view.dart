@@ -9,7 +9,10 @@ import 'package:nomoca_flutter/data/api/patient_card_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 import 'package:nomoca_flutter/data/repository/patient_card_repository.dart';
 import 'package:nomoca_flutter/main.dart';
+import 'package:nomoca_flutter/presentation/components/atoms/logo_mark.dart';
+import 'package:nomoca_flutter/presentation/components/atoms/logo_type.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
+import 'package:nomoca_flutter/presentation/components/molecules/logo.dart';
 
 final patientCardApiProvider = Provider.autoDispose(
   (ref) => PatientCardApiImpl(
@@ -42,22 +45,14 @@ class PatientCardView extends HookWidget {
           title: Stack(
             alignment: AlignmentDirectional.bottomStart,
             children: [
-              SvgPicture.asset(
-                '${AssetPaths.backgroundImagePath}/bg_patient_card_app_icon.svg',
-                height: 96,
-                color: const Color(0xffAAE7FF),
-              ),
+              const LogoMark(height: 96),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      '${AssetPaths.backgroundImagePath}/bg_patient_card_app_logo.svg',
-                      height: 40,
-                      color: const Color(0xff3a9ed2),
-                    ),
-                    const Text(
+                  children: const [
+                    LogoType(height: 40),
+                    Text(
                       '診察券',
                       style: TextStyle(fontSize: 40, color: Colors.black54),
                     ),
