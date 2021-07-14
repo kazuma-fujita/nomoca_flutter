@@ -11,8 +11,8 @@ final _themeData = ThemeData(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      // outlinedButtonの最小幅, 高さ
-      minimumSize: const Size(88, 54),
+      // outlinedButtonの最小幅, 高さ。横幅は画面幅サイズとする。Viewで横幅調整
+      minimumSize: const Size(double.infinity, 54),
     ),
   ),
 );
