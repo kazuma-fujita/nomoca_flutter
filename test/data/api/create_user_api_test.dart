@@ -2,21 +2,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nomoca_flutter/data/api/api_client.dart';
-import 'package:nomoca_flutter/data/api/authentication_api.dart';
+import 'package:nomoca_flutter/data/api/create_user_api.dart';
 
-import 'authentication_api_test.mocks.dart';
+import 'create_user_api_test.mocks.dart';
 
 @GenerateMocks([ApiClient])
 void main() {
   final _apiClient = MockApiClient();
-  final _api = AuthenticationApiImpl(apiClient: _apiClient);
+  final _api = CreateUserApiImpl(apiClient: _apiClient);
 
   tearDown(() {
     reset(_apiClient);
   });
 
-  group('Testing the authentication API.', () {
-    test('Basic testing authentication API.', () async {
+  group('Testing the create user API.', () {
+    test('Basic testing create user API.', () async {
       // stub生成
       when(
         _apiClient.post(
@@ -28,7 +28,7 @@ void main() {
       // test対象実行
       await _api(
         mobilePhoneNumber: '09012345678',
-        authCode: 'dummy',
+        nickname: 'test-user',
       );
       // method呼び出し検証
       verify(
@@ -40,7 +40,7 @@ void main() {
       );
     });
 
-    test('Authentication API test using OS version.', () async {
+    test('Create user API test using OS version.', () async {
       // stub生成
       when(
         _apiClient.post(
@@ -52,7 +52,7 @@ void main() {
       // test対象実行
       await _api(
         mobilePhoneNumber: '09012345678',
-        authCode: 'dummy',
+        nickname: 'test-user',
         osVersion: '14.4.2',
       );
       // method呼び出し検証
@@ -65,7 +65,7 @@ void main() {
       );
     });
 
-    test('Authentication API test using device name.', () async {
+    test('Create user API test using device name.', () async {
       // stub生成
       when(
         _apiClient.post(
@@ -77,7 +77,7 @@ void main() {
       // test対象実行
       await _api(
         mobilePhoneNumber: '09012345678',
-        authCode: 'dummy',
+        nickname: 'test-user',
         deviceName: 'iPhone13,2',
       );
       // method呼び出し検証
@@ -91,9 +91,8 @@ void main() {
     });
   });
 
-  group('Testing the pattern of authentication api errors.', () {
-    test('Testing the pattern of authentication api exception error.',
-        () async {
+  group('Testing the pattern of create user api errors.', () {
+    test('Testing the pattern of create user api exception error.', () async {
       // Create the stub.
       when(
         _apiClient.post(
@@ -106,7 +105,7 @@ void main() {
       expect(
         () => _api(
           mobilePhoneNumber: '09012345678',
-          authCode: 'dummy',
+          nickname: 'test-user',
         ),
         throwsException,
       );

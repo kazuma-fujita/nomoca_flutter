@@ -1,67 +1,32 @@
 import 'package:nomoca_flutter/data/api/authentication_api.dart';
 
+// ignore: one_member_abstracts
 abstract class AuthenticationRepository {
-  Future<void> signIn({
+  Future<void> authentication({
     required String mobilePhoneNumber,
     required String authCode,
     String? osVersion,
     String? deviceName,
   });
-
-  Future<void> signUp({
-    required String mobilePhoneNumber,
-    required String nickname,
-    String? osVersion,
-    String? deviceName,
-  });
-
-  Future<void> sendShortMessage({
-    required String mobilePhoneNumber,
-  });
-
-  Future<void> signOut();
 }
 
-class AuthenticationRepositoryImpl implements AuthenticationRepository {
+class AuthenticationRepositoryImpl extends AuthenticationRepository {
   AuthenticationRepositoryImpl({required this.authenticationApi});
 
   final AuthenticationApi authenticationApi;
 
   @override
-  Future<void> signIn({
+  Future<void> authentication({
     required String mobilePhoneNumber,
     required String authCode,
     String? osVersion,
     String? deviceName,
-  }) {
-    // TODO: implement signIn
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> signUp({
-    required String mobilePhoneNumber,
-    required String nickname,
-    String? osVersion,
-    String? deviceName,
   }) async {
-    await authenticationApi.signUp(
+    await authenticationApi(
       mobilePhoneNumber: mobilePhoneNumber,
-      nickname: nickname,
+      authCode: authCode,
       osVersion: osVersion,
       deviceName: deviceName,
     );
-  }
-
-  @override
-  Future<void> sendShortMessage({required String mobilePhoneNumber}) {
-    // TODO: implement sendShortMessage
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> signOut() {
-    // TODO: implement signOut
-    throw UnimplementedError();
   }
 }

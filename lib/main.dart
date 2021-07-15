@@ -11,7 +11,7 @@ import 'package:nomoca_flutter/data/api/authentication_api.dart';
 import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
-import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
+import 'package:nomoca_flutter/data/repository/create_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_favorite_list_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_notification_list_repository.dart';
@@ -24,8 +24,6 @@ import 'package:nomoca_flutter/presentation/institution_view.dart';
 import 'package:nomoca_flutter/presentation/notification_detail_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/sign_in_view.dart';
-import 'package:nomoca_flutter/presentation/sign_up/sign_up_view.dart';
-import 'package:nomoca_flutter/presentation/sign_up/sign_up_view_model.dart';
 import 'package:nomoca_flutter/presentation/top_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
@@ -48,24 +46,6 @@ final apiClientProvider = Provider(
   (_) => ApiClientImpl(
     baseUrl:
         '${EnvironmentVariables.nomocaApiBaseUrl}/${NomocaApiProperties.apiVersion}',
-  ),
-);
-
-final authenticationApiProvider = Provider(
-  (ref) => AuthenticationApiImpl(
-    apiClient: ref.read(apiClientProvider),
-  ),
-);
-
-final authenticationRepositoryProvider = Provider(
-  (ref) => AuthenticationRepositoryImpl(
-    authenticationApi: ref.read(authenticationApiProvider),
-  ),
-);
-
-final signupViewModelProvider = StateNotifierProvider.autoDispose(
-  (ref) => SignUpViewModel(
-    authenticationRepository: ref.read(authenticationRepositoryProvider),
   ),
 );
 
@@ -150,7 +130,7 @@ class MyApp extends StatelessWidget {
       // Dark mode theme
       darkTheme: darkThemeData,
       routes: <String, WidgetBuilder>{
-        RouteNames.signUp: (_) => SignUpView(),
+        // RouteNames.signUp: (_) => SignUpView(),
         RouteNames.signIn: (_) => SignInView(),
         RouteNames.institution: (_) => InstitutionView(),
         RouteNames.upsertUser: (_) => UpsertUserView(),
