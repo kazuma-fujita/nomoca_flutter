@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nomoca_flutter/constants/asset_paths.dart';
+import 'package:nomoca_flutter/constants/nomoca_urls.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
+import 'package:nomoca_flutter/presentation/common/launch_url.dart';
 import 'package:nomoca_flutter/presentation/components/atoms/outlined_white_button.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/logo.dart';
 
@@ -41,7 +43,29 @@ class TopView extends StatelessWidget {
                   },
                   label: '新規登録',
                 ),
-                const Spacer(),
+                const SizedBox(height: 40),
+                Column(
+                  children: [
+                    const Text('続行することでNOMOCaの'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () => launchUrl(NomocaUrls.termsUrl),
+                          child: const Text('利用規約'),
+                        ),
+                        const Text('と'),
+                        TextButton(
+                          onPressed: () =>
+                              launchUrl(NomocaUrls.privacyPolicyUrl),
+                          child: const Text('プライバシーポリシー'),
+                        ),
+                      ],
+                    ),
+                    const Text('に同意したことになります。'),
+                  ],
+                ),
+                const SizedBox(height: 32),
               ],
             ),
           ),

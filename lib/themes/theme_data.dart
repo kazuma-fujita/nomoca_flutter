@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const _textTheme = TextTheme(
 // ボタン全般のフォントサイズ
-  button: TextStyle(fontSize: 16, color: Colors.black),
+  button: TextStyle(fontSize: 16),
 );
 
 final _outlinedButtonStyle = OutlinedButton.styleFrom(
@@ -36,25 +36,20 @@ final _darkOutlinedButtonTheme = OutlinedButtonThemeData(
   ),
 );
 
-// final lightThemeData = _themeData.copyWith(
-//   brightness: Brightness.light,
-//   // AppBarやTabBar、FloatingActionButtonなどアプリのメインとなるWidgetの背景色
-//   // primaryColor: Colors.white,
-//   // textTheme: _textTheme,
-//   // textTheme: const TextTheme(
-//   //   // AppBarのフォントカラー
-//   //   subtitle1: TextStyle(color: Colors.black),
-//   // ),
-// );
-
 final lightThemeData = ThemeData(
   brightness: Brightness.light,
+  // AppBarやTabBar、FloatingActionButtonなどアプリのメインとなるWidgetの背景色
+  primaryColor: Colors.white,
+  // AppBarのelevation無効
+  appBarTheme: const AppBarTheme(elevation: 0),
   textTheme: _textTheme,
   outlinedButtonTheme: _lightOutlinedButtonTheme,
 );
 
 final darkThemeData = ThemeData(
   brightness: Brightness.dark,
+  // AppBarのelevation無効
+  appBarTheme: const AppBarTheme(elevation: 0),
   textTheme: _textTheme,
   outlinedButtonTheme: _darkOutlinedButtonTheme,
 );

@@ -145,8 +145,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Nomoca application',
       // Default theme
-      theme: lightThemeData,
-      // theme: darkThemeData,
+      // theme: lightThemeData,
+      theme: darkThemeData,
       // Dark mode theme
       darkTheme: darkThemeData,
       routes: <String, WidgetBuilder>{
@@ -156,7 +156,7 @@ class MyApp extends StatelessWidget {
         RouteNames.upsertUser: (_) => UpsertUserView(),
         RouteNames.notificationDetail: (_) => NotificationDetailView(),
       },
-      home: SignInView(),
+      home: TopView(),
       builder: EasyLoading.init(),
     );
   }

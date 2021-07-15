@@ -8,6 +8,7 @@ import 'package:nomoca_flutter/constants/asset_paths.dart';
 import 'package:nomoca_flutter/constants/google_api_properties.dart';
 import 'package:nomoca_flutter/data/entity/remote/institution_entity.dart';
 import 'package:nomoca_flutter/presentation/asset_image_path.dart';
+import 'package:nomoca_flutter/presentation/common/launch_url.dart';
 import 'package:nomoca_flutter/presentation/components/atoms/parallax_card.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/states/actions/favorite_list_action.dart';
@@ -33,7 +34,7 @@ class InstitutionView extends HookWidget with AssetImagePath {
                   width: 168,
                   height: 60,
                   child: FloatingActionButton(
-                    onPressed: () => _launchURL(entity.medicalDocumentUrl!),
+                    onPressed: () => launchUrl(entity.medicalDocumentUrl!),
                     backgroundColor: Colors.white,
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8))),
@@ -146,19 +147,19 @@ class InstitutionView extends HookWidget with AssetImagePath {
                 _detailBlock(entity.title3!, entity.body3!),
               if (entity.webSiteUrl != null)
                 _launchApplicationBlock(
-                  launchUrl: entity.webSiteUrl!,
+                  url: entity.webSiteUrl!,
                   title: 'ウェブサイトを見る',
                   trailingIcon: Icons.web_outlined,
                 ),
               if (entity.reserveUrl != null)
                 _launchApplicationBlock(
-                  launchUrl: entity.reserveUrl!,
+                  url: entity.reserveUrl!,
                   title: '診療予約をする',
                   trailingIcon: Icons.calendar_today,
                 ),
               if (!entity.isPhoneButtonHidden)
                 _launchApplicationBlock(
-                  launchUrl: 'tel:${entity.phoneNumber}',
+                  url: 'tel:${entity.phoneNumber}',
                   title: '電話で問い合わせをする',
                   trailingIcon: Icons.phone,
                 ),
@@ -207,13 +208,13 @@ class InstitutionView extends HookWidget with AssetImagePath {
   }
 
   Widget _launchApplicationBlock({
-    required String launchUrl,
+    required String url,
     required String title,
     required IconData trailingIcon,
   }) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: () => _launchURL(launchUrl),
+      onTap: () => launchUrl(url),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -279,16 +280,8 @@ class InstitutionView extends HookWidget with AssetImagePath {
           {required double latitude,
           required double longitude,
           bool isRoute = false}) async =>
-      _launchURL(
+      launchUrl(
           'https://maps.apple.com/?${isRoute ? 'daddr' : 'q'}=$latitude,$longitude');
-
-  Future<void> _launchURL(String url) async => await canLaunch(url)
-      ? await launch(
-          url,
-          forceSafariVC: false,
-          forceWebView: false,
-        )
-      : throw Exception('Could not launch $url');
 
   Widget _buildStaticMap(double longitude, double latitude) {
     const baseMapURL = 'https://maps.googleapis.com/maps/api/staticmap';
