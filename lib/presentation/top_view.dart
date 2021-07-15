@@ -46,7 +46,10 @@ class TopView extends StatelessWidget {
                 const SizedBox(height: 40),
                 Column(
                   children: [
-                    const Text('続行することでNOMOCaの'),
+                    const Text(
+                      '続行することでNOMOCaの',
+                      style: TextStyle(color: Colors.white),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -54,7 +57,7 @@ class TopView extends StatelessWidget {
                           onPressed: () => launchUrl(NomocaUrls.termsUrl),
                           child: const Text('利用規約'),
                         ),
-                        const Text('と'),
+                        const Text('と', style: TextStyle(color: Colors.white)),
                         TextButton(
                           onPressed: () =>
                               launchUrl(NomocaUrls.privacyPolicyUrl),
@@ -62,7 +65,10 @@ class TopView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const Text('に同意したことになります。'),
+                    const Text(
+                      'に同意したことになります。',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 32),

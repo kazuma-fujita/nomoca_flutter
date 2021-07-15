@@ -145,8 +145,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Nomoca application',
       // Default theme
-      // theme: lightThemeData,
-      theme: darkThemeData,
+      theme: lightThemeData,
+      // theme: darkThemeData,
       // Dark mode theme
       darkTheme: darkThemeData,
       routes: <String, WidgetBuilder>{
