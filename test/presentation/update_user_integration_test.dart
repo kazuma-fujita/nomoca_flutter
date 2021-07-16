@@ -8,12 +8,12 @@ import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/patient_card_repository.dart';
 import 'package:nomoca_flutter/data/repository/update_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/user_management_repository.dart';
-import 'package:nomoca_flutter/presentation/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
 import 'package:nomoca_flutter/presentation/user_management_view.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
 import 'package:nomoca_flutter/states/providers/upsert_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
+
 import 'update_user_integration_test.mocks.dart';
 
 @GenerateMocks(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
@@ -16,7 +18,6 @@ class UpsertUserView extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as UpsertUserViewArguments?;
     return Scaffold(
       appBar: AppBar(
-        // title: Text('家族アカウント${user == null ? '作成' : '編集'}'),
         title: Text(args!.screenTitle()),
       ),
       body: _Form(),
@@ -24,22 +25,21 @@ class UpsertUserView extends StatelessWidget {
   }
 }
 
-// ignore: must_be_immutable
-class _Form extends ConsumerWidget {
+class _Form extends HookWidget {
   final _formKey = GlobalKey<FormState>();
-  String _nickname = '';
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
+  Widget build(BuildContext context) {
     // 一覧画面からuser情報を取得
     final args =
         ModalRoute.of(context)!.settings.arguments as UpsertUserViewArguments?;
     final user = args!.user;
-    final asyncValue = watch(user == null
-        ? createFamilyUserProvider(_nickname)
+    final nickname = useState('');
+    final asyncValue = useProvider(user == null
+        ? createFamilyUserProvider(nickname.value)
         : args.isFamilyUser
-            ? updateFamilyUserProvider(user.copyWith(nickname: _nickname))
-            : updateUserProvider(user.copyWith(nickname: _nickname)));
+            ? updateFamilyUserProvider(user.copyWith(nickname: nickname.value))
+            : updateUserProvider(user.copyWith(nickname: nickname.value)));
     return Form(
       key: _formKey,
       child: Container(
@@ -50,19 +50,17 @@ class _Form extends ConsumerWidget {
             TextFormField(
               initialValue: args.textFormFieldInitialValue(),
               maxLength: 20,
-              // maxLength以上入力不可
-              // maxLengthEnforced: true,
               decoration: const InputDecoration(
                 hintText: 'ニックネームを入力してください',
                 labelText: 'ニックネーム',
               ),
-              validator: (String? title) {
-                return title == null || title.isEmpty
+              validator: (String? input) {
+                return input == null || input.isEmpty
                     ? 'ニックネームを入力してください'
                     : null;
               },
-              onSaved: (String? title) {
-                _nickname = title!;
+              onSaved: (String? input) {
+                nickname.value = input!;
               },
             ),
             ElevatedButton(
