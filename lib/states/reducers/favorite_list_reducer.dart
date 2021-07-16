@@ -5,8 +5,9 @@ import 'package:nomoca_flutter/data/entity/remote/favorite_entity.dart';
 import 'package:nomoca_flutter/data/entity/remote/favorite_patient_card_entity.dart';
 import 'package:nomoca_flutter/data/repository/fetch_favorite_list_repository.dart';
 import 'package:nomoca_flutter/data/repository/get_favorite_patient_card_repository.dart';
-import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/states/actions/favorite_list_action.dart';
+import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
+import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
 
 final _fetchFavoriteListApiProvider = Provider.autoDispose(
   (ref) => FetchFavoriteListApiImpl(

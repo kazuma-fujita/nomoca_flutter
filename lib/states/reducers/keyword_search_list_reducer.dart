@@ -3,8 +3,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/api/keyword_search_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
-import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
+import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
+import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
 
 final _keywordSearchApiProvider = Provider.autoDispose(
   (ref) => KeywordSearchApiImpl(

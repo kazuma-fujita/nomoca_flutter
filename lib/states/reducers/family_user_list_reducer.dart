@@ -3,8 +3,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/api/fetch_family_user_list_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart';
-import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
+import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
+import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
 
 // Private scope
 final _fetchFamilyUserListApiProvider = Provider.autoDispose(

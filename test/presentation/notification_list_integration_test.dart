@@ -13,6 +13,7 @@ import 'package:nomoca_flutter/data/repository/update_read_post_repository.dart'
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/notification_detail_view.dart';
 import 'package:nomoca_flutter/presentation/notification_list_view.dart';
+import 'package:nomoca_flutter/states/providers/update_read_post_provider.dart';
 import 'package:nomoca_flutter/states/reducers/notification_list_reducer.dart';
 
 import 'notification_list_integration_test.mocks.dart';

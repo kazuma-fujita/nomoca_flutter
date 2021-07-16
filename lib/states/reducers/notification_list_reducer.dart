@@ -3,8 +3,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/api/fetch_notification_list_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
 import 'package:nomoca_flutter/data/repository/fetch_notification_list_repository.dart';
-import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/states/actions/notification_list_action.dart';
+import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
+import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
 
 final _fetchNotificationListApiProvider = Provider.autoDispose(
   (ref) => FetchNotificationListApiImpl(

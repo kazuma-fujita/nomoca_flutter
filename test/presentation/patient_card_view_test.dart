@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
+import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
 
 void main() {
   const contentsBaseUrl = 'https://contents-debug.nomoca.com';
@@ -18,7 +19,7 @@ void main() {
       AsyncValue<List<PatientCardEntity>> asyncValue) {
     return ProviderScope(
       overrides: [
-        patientCardState.overrideWithValue(asyncValue),
+        patientCardProvider.overrideWithValue(asyncValue),
       ],
       child: MaterialApp(home: PatientCardView()),
     );

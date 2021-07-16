@@ -1,36 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
-import 'package:nomoca_flutter/data/api/delete_family_user_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
-import 'package:nomoca_flutter/data/repository/delete_family_user_repository.dart';
-import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
+import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';
+import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
-
-final _deleteFamilyUserApiProvider = Provider.autoDispose(
-  (ref) => DeleteFamilyUserApiImpl(
-    apiClient: ref.read(apiClientProvider),
-  ),
-);
-
-final deleteFamilyUserRepositoryProvider =
-    Provider.autoDispose<DeleteFamilyUserRepository>(
-  (ref) => DeleteFamilyUserRepositoryImpl(
-    deleteFamilyUserApi: ref.read(_deleteFamilyUserApiProvider),
-    userDao: ref.read(userDaoProvider),
-  ),
-);
-
-final deleteFamilyUserProvider =
-    FutureProvider.autoDispose.family<void, int>((ref, familyUserId) async {
-  final repository = ref.read(deleteFamilyUserRepositoryProvider);
-  return repository.deleteUser(familyUserId: familyUserId);
-});
 
 class FamilyUserListView extends HookWidget {
   @override
@@ -193,8 +172,8 @@ class FamilyUserListView extends HookWidget {
           // 家族一覧画面の状態更新。dispatcherのstateを更新するとfamilyUserListReducerが再実行される
           context.read(familyUserActionDispatcher).state =
               FamilyUserAction.delete(user);
-          // 診察券画面の状態更新。patientCardStateではAPI経由で診察券情報を再取得する
-          await context.refresh(patientCardState);
+          // 診察券画面の状態更新。patientCardProviderではAPI経由で診察券情報を再取得する
+          await context.refresh(patientCardProvider);
           // 削除メッセージを表示
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text('${user.nickname}を削除しました')));

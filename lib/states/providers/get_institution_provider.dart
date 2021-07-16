@@ -2,7 +2,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/api/get_institution_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/institution_entity.dart';
 import 'package:nomoca_flutter/data/repository/get_institution_repository.dart';
-import 'package:nomoca_flutter/main.dart';
+import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
+import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
 
 final _getInstitutionApiProvider = Provider.autoDispose(
   (ref) => GetInstitutionApiImpl(

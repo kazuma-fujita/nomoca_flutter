@@ -1,32 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/all.dart';
-import 'package:nomoca_flutter/data/api/update_read_post_api.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
-import 'package:nomoca_flutter/data/repository/update_read_post_repository.dart';
-import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/asset_image_path.dart';
-
-final _updateReadPostApiProvider = Provider.autoDispose(
-  (ref) => UpdateReadPostApiImpl(
-    apiClient: ref.read(apiClientProvider),
-  ),
-);
-
-final updateReadPostRepositoryProvider =
-    Provider.autoDispose<UpdateReadPostRepository>(
-  (ref) => UpdateReadPostRepositoryImpl(
-    updateReadPostApi: ref.read(_updateReadPostApiProvider),
-    userDao: ref.read(userDaoProvider),
-  ),
-);
-
-final updateReadPostProvider = FutureProvider.autoDispose.family<void, int>(
-  (ref, notificationId) async {
-    final repository = ref.read(updateReadPostRepositoryProvider);
-    return repository.updateReadPost(notificationId: notificationId);
-  },
-);
+import 'package:nomoca_flutter/states/providers/update_read_post_provider.dart';
 
 class NotificationDetailView extends StatelessWidget with AssetImagePath {
   @override

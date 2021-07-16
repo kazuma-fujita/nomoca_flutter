@@ -3,20 +3,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
-import 'package:nomoca_flutter/data/repository/user_management_repository.dart';
 import 'package:nomoca_flutter/errors/authentication_error.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
-import '../main.dart';
-
-final userManagementRepositoryProvider =
-    Provider.autoDispose<UserManagementRepository>((ref) =>
-        UserManagementRepositoryImpl(userDao: ref.read(userDaoProvider)));
-
-final userManagementViewState =
-    FutureProvider.autoDispose<UserNicknameEntity>((ref) async {
-  final repository = ref.read(userManagementRepositoryProvider);
-  return repository.getUser();
-});
+import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
 
 @immutable
 class UserManagementViewData {
@@ -55,7 +44,7 @@ class UserManagementView extends HookWidget {
     final viewDataList = context.read(userManagementViewDataProvider);
     return Scaffold(
       // DBからUserEntity取得
-      body: useProvider(userManagementViewState).maybeWhen(
+      body: useProvider(userManagementProvider).maybeWhen(
         data: (user) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,

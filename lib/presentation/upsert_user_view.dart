@@ -1,78 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nomoca_flutter/data/api/create_family_user_api.dart';
-import 'package:nomoca_flutter/data/api/update_family_user_api.dart';
-import 'package:nomoca_flutter/data/api/update_user_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
-import 'package:nomoca_flutter/data/repository/create_family_user_repository.dart';
-import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart';
-import 'package:nomoca_flutter/data/repository/update_user_repository.dart';
-import 'package:nomoca_flutter/main.dart';
 import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
-import 'package:nomoca_flutter/presentation/user_management_view.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
+import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
+import 'package:nomoca_flutter/states/providers/upsert_user_provider.dart';
+import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
-
-final _createFamilyUserApiProvider = Provider(
-  (ref) => CreateFamilyUserApiImpl(
-    apiClient: ref.read(apiClientProvider),
-  ),
-);
-
-final _updateFamilyUserApiProvider = Provider(
-  (ref) => UpdateFamilyUserApiImpl(
-    apiClient: ref.read(apiClientProvider),
-  ),
-);
-
-final _updateUserApiProvider = Provider(
-  (ref) => UpdateUserApiImpl(
-    apiClient: ref.read(apiClientProvider),
-  ),
-);
-
-final createFamilyUserRepositoryProvider =
-    Provider.autoDispose<CreateFamilyUserRepository>(
-  (ref) => CreateFamilyUserRepositoryImpl(
-    createFamilyUserApi: ref.read(_createFamilyUserApiProvider),
-    userDao: ref.read(userDaoProvider),
-  ),
-);
-
-final updateFamilyUserRepositoryProvider =
-    Provider.autoDispose<UpdateFamilyUserRepository>(
-  (ref) => UpdateFamilyUserRepositoryImpl(
-    updateFamilyUserApi: ref.read(_updateFamilyUserApiProvider),
-    userDao: ref.read(userDaoProvider),
-  ),
-);
-
-final updateUserRepositoryProvider = Provider.autoDispose<UpdateUserRepository>(
-  (ref) => UpdateUserRepositoryImpl(
-    updateUserApi: ref.read(_updateUserApiProvider),
-    userDao: ref.read(userDaoProvider),
-  ),
-);
-
-final createFamilyUserProvider = FutureProvider.autoDispose
-    .family<UserNicknameEntity, String>((ref, nickname) async {
-  final repository = ref.read(createFamilyUserRepositoryProvider);
-  return repository.createUser(nickname: nickname);
-});
-
-final updateFamilyUserProvider = FutureProvider.autoDispose
-    .family<UserNicknameEntity, UserNicknameEntity>((ref, user) async {
-  final repository = ref.read(updateFamilyUserRepositoryProvider);
-  return repository.updateUser(familyUserId: user.id, nickname: user.nickname);
-});
-
-final updateUserProvider = FutureProvider.autoDispose
-    .family<UserNicknameEntity, UserNicknameEntity>((ref, user) async {
-  final repository = ref.read(updateUserRepositoryProvider);
-  return repository.updateUser(userId: user.id, nickname: user.nickname);
-});
 
 class UpsertUserView extends StatelessWidget {
   @override
@@ -157,10 +93,10 @@ class _Form extends ConsumerWidget {
                 : FamilyUserAction.update(entity);
           } else if (args.user != null) {
             // プロフィール画面のニックネーム更新。DBからニックネーム再取得
-            await context.refresh(userManagementViewState);
+            await context.refresh(userManagementProvider);
           }
-          // 診察券画面の状態更新。patientCardStateではAPI経由で診察券情報を再取得する
-          await context.refresh(patientCardState);
+          // 診察券画面の状態更新。patientCardProviderではAPI経由で診察券情報を再取得する
+          await context.refresh(patientCardProvider);
           // ローディング非表示
           await EasyLoading.dismiss();
           // 一覧画面へ遷移。引数に遷移後の表示メッセージを設定

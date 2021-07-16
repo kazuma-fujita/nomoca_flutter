@@ -13,8 +13,10 @@ import 'package:nomoca_flutter/data/repository/patient_card_repository.dart';
 import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
-import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
+import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';
+import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
+import 'package:nomoca_flutter/states/providers/upsert_user_provider.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
 import 'family_user_integration_test.mocks.dart';

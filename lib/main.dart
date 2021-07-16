@@ -26,8 +26,12 @@ import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart'
 import 'package:nomoca_flutter/presentation/sign_in_view.dart';
 import 'package:nomoca_flutter/presentation/top_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
+import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
+import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
+import 'package:nomoca_flutter/states/providers/update_read_post_provider.dart';
+import 'package:nomoca_flutter/states/providers/upsert_user_provider.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/favorite_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
@@ -37,17 +41,6 @@ import 'package:nomoca_flutter/themes/theme_data.dart';
 
 import 'constants/db_table_names.dart';
 import 'data/entity/remote/patient_card_entity.dart';
-
-final userDaoProvider = Provider(
-  (_) => UserDaoImpl(Hive.box<User>(DBTableNames.users)),
-);
-
-final apiClientProvider = Provider(
-  (_) => ApiClientImpl(
-    baseUrl:
-        '${EnvironmentVariables.nomocaApiBaseUrl}/${NomocaApiProperties.apiVersion}',
-  ),
-);
 
 Future<void> main() async {
   const contentsBaseUrl = 'https://contents-debug.nomoca.com';
@@ -59,7 +52,7 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [
-        patientCardState.overrideWithValue(
+        patientCardProvider.overrideWithValue(
           // AsyncValue.error(Exception('network error')),
           const AsyncData([
             PatientCardEntity(
