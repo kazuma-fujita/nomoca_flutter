@@ -18,6 +18,7 @@ import 'package:nomoca_flutter/data/repository/fetch_notification_list_repositor
 import 'package:nomoca_flutter/data/repository/get_favorite_patient_card_repository.dart';
 import 'package:nomoca_flutter/data/repository/get_institution_repository.dart';
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
+import 'package:nomoca_flutter/presentation/authentication_view.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/favorite_list_view.dart';
 import 'package:nomoca_flutter/presentation/institution_view.dart';
@@ -127,11 +128,13 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         // RouteNames.signUp: (_) => SignUpView(),
         RouteNames.signIn: (_) => SignInView(),
+        RouteNames.authentication: (_) => AuthenticationView(),
+        RouteNames.patientCard: (_) => PatientCardView(),
         RouteNames.institution: (_) => InstitutionView(),
         RouteNames.upsertUser: (_) => UpsertUserView(),
         RouteNames.notificationDetail: (_) => NotificationDetailView(),
       },
-      home: SignInView(),
+      home: AuthenticationView(),
       builder: EasyLoading.init(),
     );
   }

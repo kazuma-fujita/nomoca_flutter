@@ -77,7 +77,7 @@ class _Form extends HookWidget {
           // ローディング非表示
           await EasyLoading.dismiss();
           // 認証画面へ遷移
-          await Navigator.pushNamed(context, RouteNames.signIn,
+          await Navigator.pushNamed(context, RouteNames.authentication,
               arguments: mobilePhoneNumber);
         },
         loading: () async {
