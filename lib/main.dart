@@ -22,7 +22,7 @@ import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/favorite_list_view.dart';
 import 'package:nomoca_flutter/presentation/institution_view.dart';
 import 'package:nomoca_flutter/presentation/notification_detail_view.dart';
-import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
+import 'package:nomoca_flutter/presentation/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/sign_in_view.dart';
 import 'package:nomoca_flutter/presentation/top_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';

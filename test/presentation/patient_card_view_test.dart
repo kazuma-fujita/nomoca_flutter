@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
-import 'package:nomoca_flutter/presentation/patient_card/patient_card_view.dart';
+import 'package:nomoca_flutter/presentation/patient_card_view.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
 
 void main() {
