@@ -16,7 +16,8 @@ final sendShortMessageRepositoryProvider =
   ),
 );
 
-final getInstitutionProvider = FutureProvider.autoDispose.family<void, String>(
+final sendShortMessageProvider =
+    FutureProvider.autoDispose.family<void, String>(
   (ref, mobilePhoneNumber) async {
     return ref
         .read(sendShortMessageRepositoryProvider)

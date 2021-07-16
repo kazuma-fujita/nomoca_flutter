@@ -29,6 +29,7 @@ import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
 import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
+import 'package:nomoca_flutter/states/providers/send_short_message_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_read_post_provider.dart';
 import 'package:nomoca_flutter/states/providers/upsert_user_provider.dart';
@@ -52,8 +53,9 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [
+        sendShortMessageProvider.overrideWithProvider(
+            (ref, param) => throw Exception('Error message.')),
         patientCardProvider.overrideWithValue(
-          // AsyncValue.error(Exception('network error')),
           const AsyncData([
             PatientCardEntity(
               nickname: '太郎',
@@ -129,7 +131,7 @@ class MyApp extends StatelessWidget {
         RouteNames.upsertUser: (_) => UpsertUserView(),
         RouteNames.notificationDetail: (_) => NotificationDetailView(),
       },
-      home: TopView(),
+      home: SignInView(),
       builder: EasyLoading.init(),
     );
   }
