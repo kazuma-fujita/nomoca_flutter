@@ -54,8 +54,8 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [
-        sendShortMessageProvider.overrideWithProvider(
-            (ref, param) => throw Exception('Error message.')),
+        sendShortMessageProvider
+            .overrideWithProvider((ref, param) => Future.value()),
         patientCardProvider.overrideWithValue(
           const AsyncData([
             PatientCardEntity(

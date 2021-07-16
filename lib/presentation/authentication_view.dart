@@ -27,6 +27,7 @@ class _Form extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final authCode = useState('');
+    final isResendAuthCode = useState(false);
     var mobilePhoneNumber =
         ModalRoute.of(context)!.settings.arguments as String?;
     mobilePhoneNumber ??= '09011112222';
@@ -70,7 +71,11 @@ class _Form extends HookWidget {
         ),
         const SizedBox(height: 16),
         TextButton(
-          onPressed: () => _sendShortMessage(mobilePhoneNumber!, context),
+          // authCode送信API実行中はボタンdisabled
+          onPressed: isResendAuthCode.value
+              ? null
+              : () => _sendShortMessage(
+                  mobilePhoneNumber!, isResendAuthCode, context),
           child: const Text('新しいコードを送信'),
         ),
         const Spacer(),
@@ -117,20 +122,24 @@ class _Form extends HookWidget {
     }
   }
 
-  void _sendShortMessage(String mobilePhoneNumber, BuildContext context) {
+  void _sendShortMessage(
+    String mobilePhoneNumber,
+    ValueNotifier<bool> isResendAuthCode,
+    BuildContext context,
+  ) {
     // 確認コード再送信
     context.read(sendShortMessageProvider(mobilePhoneNumber)).when(
       data: (_) async {
-        // ローディング非表示
-        // await EasyLoading.dismiss();
+        // 再送信ボタンenabled
+        isResendAuthCode.value = false;
       },
       loading: () async {
-        // ローディング表示
-        // await EasyLoading.show();
+        // 再送信ボタンdisable
+        isResendAuthCode.value = true;
       },
       error: (error, _) {
-        // ローディング非表示
-        // EasyLoading.dismiss();
+        // 再送信ボタンenabled
+        isResendAuthCode.value = false;
         // SnackBar表示
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(error.toString())));
