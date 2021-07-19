@@ -1,110 +1,104 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
-import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
-import 'package:nomoca_flutter/data/repository/patient_card_repository.dart';
-import 'package:nomoca_flutter/data/repository/update_user_repository.dart';
-import 'package:nomoca_flutter/data/repository/user_management_repository.dart';
-import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
-import 'package:nomoca_flutter/presentation/user_management_view.dart';
-import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
-import 'package:nomoca_flutter/states/providers/upsert_user_provider.dart';
-import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
+import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart';
+import 'package:nomoca_flutter/presentation/authentication_view.dart';
+import 'package:nomoca_flutter/presentation/sign_in_view.dart';
+import 'package:nomoca_flutter/states/providers/send_short_message_provider.dart';
 
-import 'update_user_integration_test.mocks.dart';
+import 'sign_in_view_test.mocks.dart';
 
-@GenerateMocks(
-    [UserManagementRepository, UpdateUserRepository, PatientCardRepository])
+@GenerateMocks([SendShortMessageRepository])
 void main() {
-  late MockUserManagementRepository _userManagementRepository;
-  late MockUpdateUserRepository _updateUserRepository;
-  late MockPatientCardRepository _patientCardRepository;
+  final _repository = MockSendShortMessageRepository();
 
-  setUp(() {
-    _userManagementRepository = MockUserManagementRepository();
-    _updateUserRepository = MockUpdateUserRepository();
-    _patientCardRepository = MockPatientCardRepository();
+  tearDown(() {
+    reset(_repository);
   });
 
   ProviderScope setUpProviderScope() {
     return ProviderScope(
       overrides: [
-        // ニックネームをDBから取得
-        userManagementRepositoryProvider
-            .overrideWithValue(_userManagementRepository),
-        // ニックニーム更新APIを実行
-        updateUserRepositoryProvider.overrideWithValue(_updateUserRepository),
-        // ニックネーム変更時に診察券画面のデータ再取得実行
-        patientCardRepositoryProvider.overrideWithValue(_patientCardRepository),
+        // SMS送信APIを実行
+        sendShortMessageRepositoryProvider.overrideWithValue(_repository),
       ],
       child: MaterialApp(
         // 初期表示画面設定
-        home: UserManagementView(),
+        home: SignInView(),
         routes: <String, WidgetBuilder>{
           // 遷移先画面設定
-          RouteNames.upsertUser: (_) => UpsertUserView(),
+          RouteNames.authentication: (_) => AuthenticationView(),
         },
+        builder: EasyLoading.init(),
       ),
     );
   }
 
   void _verifyElementOfView() {
-    expect(find.text('家族アカウント管理'), findsOneWidget);
-    expect(find.text('診察券登録'), findsOneWidget);
-    expect(find.text('設定'), findsOneWidget);
-    expect(find.byType(ElevatedButton), findsOneWidget);
+    expect(find.text('ログイン'), findsOneWidget);
+    expect(find.byType(OutlinedButton), findsOneWidget);
   }
 
-  group('Testing integration of user management view and upsert user view.',
-      () {
-    testWidgets('Testing update of user nickname.',
+  group('Testing sign in view.', () {
+    testWidgets('Test for tapped of submit button of sending short message.',
         (WidgetTester tester) async {
-      // DBから取得するニックネームのStabデータ。Mockがcallされる回数分設定
-      final results = [
-        const UserNicknameEntity(id: 1234, nickname: '太郎'),
-        const UserNicknameEntity(id: 1234, nickname: '次郎'),
-      ];
-      // repository.getUser()はプロフィール画面表示、プロフィール更新時と2回callされる。
-      when(_userManagementRepository.getUser())
-          .thenAnswer((_) => results.removeAt(0));
-      // updateUser()はプロフィール更新APIを実行する。APIレスポンスの戻り値を設定。
-      when(_updateUserRepository.updateUser(
-              userId: anyNamed('userId'), nickname: anyNamed('nickname')))
-          .thenAnswer(
-              (_) async => const UserNicknameEntity(id: 1234, nickname: '次郎'));
-      // プロフィール更新後、診察券画面更新を行う。APIレスポンスの戻り値を設定。
-      when(_patientCardRepository.fetchList()).thenAnswer((_) async => []);
-      // プロフィール画面Widgetビルド
+      // APIレスポンスの戻り値を設定。
+      when(_repository.sendShortMessage(
+              mobilePhoneNumber: anyNamed('mobilePhoneNumber')))
+          .thenAnswer((_) => Future.value());
+      // View widgetビルド
       await tester.pumpWidget(setUpProviderScope());
-      // DBからニックネーム取得完了するまで処理を待機
-      await tester.pump();
-      // プロフィール画面表示要素チェック
+      // 画面表示要素チェック
       _verifyElementOfView();
-      expect(find.text('ようこそ太郎さん'), findsOneWidget);
-      // プロフィール編集ボタンタップ
-      await tester.tap(find.byType(ElevatedButton));
+      // TextFormFieldに文字入力
+      const verifyMobilePhoneNumber = '09012345678';
+      await tester.enterText(
+          find.byType(TextFormField), verifyMobilePhoneNumber);
+      // ボタンタップ
+      await tester.tap(find.byType(OutlinedButton));
       // 画面遷移後のWidgetがレンダリング完了するまで処理を待機
       await tester.pumpAndSettle();
       // 遷移後画面要素確認
-      expect(find.text('プロフィール編集'), findsOneWidget);
-      expect(find.byType(ElevatedButton), findsOneWidget);
-      expect(find.text('太郎'), findsOneWidget);
-      // TextFormFieldに文字入力
-      await tester.enterText(find.byType(TextFormField), '次郎');
-      // 保存ボタンタップ
-      await tester.tap(find.byType(ElevatedButton));
-      // 画面遷移後のWidgetがレンダリング完了するまで処理を待機
-      await tester.pumpAndSettle();
-      // ニックネームが変更されたことを確認
-      expect(find.text('ようこそ次郎さん'), findsOneWidget);
+      expect(find.text('確認コード入力'), findsOneWidget);
+      expect(find.text('確認コードを'), findsOneWidget);
+      expect(find.text(verifyMobilePhoneNumber), findsOneWidget);
+      expect(find.text('へ送信しました。'), findsOneWidget);
+      expect(find.text('続けるには4桁の確認コードを入力してください。'), findsOneWidget);
       // Mockの呼び出しを検証
-      verify(_userManagementRepository.getUser()).called(2);
-      verify(_updateUserRepository.updateUser(
-          userId: anyNamed('userId'), nickname: anyNamed('nickname')));
-      verify(_patientCardRepository.fetchList());
+      verify(_repository.sendShortMessage(
+          mobilePhoneNumber: verifyMobilePhoneNumber));
+    });
+  });
+
+  group('Testing error of sign in view.', () {
+    testWidgets('Test for error widget of exception.',
+        (WidgetTester tester) async {
+      // APIレスポンスの戻り値を設定。
+      when(_repository.sendShortMessage(
+              mobilePhoneNumber: anyNamed('mobilePhoneNumber')))
+          .thenThrow(Exception('Error message.'));
+      // View widgetビルド
+      await tester.pumpWidget(setUpProviderScope());
+      // 画面表示要素チェック
+      _verifyElementOfView();
+      // TextFormFieldに文字入力
+      const verifyMobilePhoneNumber = '09012345678';
+      await tester.enterText(
+          find.byType(TextFormField), verifyMobilePhoneNumber);
+      // ボタンタップ
+      await tester.tap(find.byType(OutlinedButton));
+      // SnackBar表示まで待機
+      await tester.pump();
+      // SnackBar表示確認
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.text('Exception: Error message.'), findsOneWidget);
+      // Mockの呼び出しを検証
+      verify(_repository.sendShortMessage(
+          mobilePhoneNumber: verifyMobilePhoneNumber));
     });
   });
 }

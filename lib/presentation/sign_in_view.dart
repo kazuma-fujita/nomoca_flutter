@@ -26,6 +26,8 @@ class _Form extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final mobilePhoneNumber = useState('');
+    final sendShortMessageAsyncValue =
+        useProvider(sendShortMessageProvider(mobilePhoneNumber.value));
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -59,7 +61,11 @@ class _Form extends HookWidget {
         ),
         const Spacer(),
         OutlinedButton(
-          onPressed: () => _submission(mobilePhoneNumber.value, context),
+          onPressed: () => _submission(
+            mobilePhoneNumber,
+            context,
+            sendShortMessageAsyncValue,
+          ),
           child: const Text('確認コードを送信'),
         ),
         const Spacer(),
@@ -67,18 +73,22 @@ class _Form extends HookWidget {
     );
   }
 
-  void _submission(String mobilePhoneNumber, BuildContext context) {
+  void _submission(
+    ValueNotifier<String> mobilePhoneNumber,
+    BuildContext context,
+    AsyncValue<void> sendShortMessageAsyncValue,
+  ) {
     // TextFormFieldのvalidate実行
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       // プロフィール or 家族アカウント作成・更新
-      context.read(sendShortMessageProvider(mobilePhoneNumber)).when(
+      sendShortMessageAsyncValue.when(
         data: (_) async {
           // ローディング非表示
           await EasyLoading.dismiss();
           // 認証画面へ遷移
           await Navigator.pushNamed(context, RouteNames.authentication,
-              arguments: mobilePhoneNumber);
+              arguments: mobilePhoneNumber.value);
         },
         loading: () async {
           // ローディング表示

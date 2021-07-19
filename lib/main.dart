@@ -135,7 +135,7 @@ class MyApp extends StatelessWidget {
         RouteNames.upsertUser: (_) => UpsertUserView(),
         RouteNames.notificationDetail: (_) => NotificationDetailView(),
       },
-      home: AuthenticationView(),
+      home: SignInView(),
       builder: EasyLoading.init(),
     );
   }

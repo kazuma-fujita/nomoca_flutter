@@ -33,6 +33,11 @@ class _Form extends HookWidget {
     mobilePhoneNumber ??= '09011112222';
     final sendShortMessageAsyncValue =
         useProvider(sendShortMessageProvider(mobilePhoneNumber));
+    final args = {
+      'mobilePhoneNumber': mobilePhoneNumber,
+      'authCode': authCode.value,
+    };
+    final authenticationAsyncValue = useProvider(authenticationProvider(args));
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -86,8 +91,10 @@ class _Form extends HookWidget {
         ),
         const Spacer(),
         OutlinedButton(
-          onPressed: () =>
-              _submission(mobilePhoneNumber!, authCode.value, context),
+          onPressed: () => _submission(
+            context,
+            authenticationAsyncValue,
+          ),
           child: const Text('ログイン'),
         ),
         const Spacer(),
@@ -96,22 +103,19 @@ class _Form extends HookWidget {
   }
 
   void _submission(
-      String mobilePhoneNumber, String authCode, BuildContext context) {
+    BuildContext context,
+    AsyncValue<void> authenticationAsyncValue,
+  ) {
     // TextFormFieldのvalidate実行
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       // ユーザー認証実行
-      final args = {
-        'mobilePhoneNumber': mobilePhoneNumber,
-        'authCode': authCode
-      };
-      context.read(authenticationProvider(args)).when(
+      authenticationAsyncValue.when(
         data: (_) async {
           // ローディング非表示
           await EasyLoading.dismiss();
           // 診察券画面へ遷移
-          await Navigator.pushNamed(context, RouteNames.signIn,
-              arguments: authCode);
+          await Navigator.pushNamed(context, RouteNames.patientCard);
         },
         loading: () async {
           // ローディング表示
