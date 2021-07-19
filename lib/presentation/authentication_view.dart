@@ -31,6 +31,8 @@ class _Form extends HookWidget {
     var mobilePhoneNumber =
         ModalRoute.of(context)!.settings.arguments as String?;
     mobilePhoneNumber ??= '09011112222';
+    final sendShortMessageAsyncValue =
+        useProvider(sendShortMessageProvider(mobilePhoneNumber));
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -75,7 +77,11 @@ class _Form extends HookWidget {
           onPressed: isResendAuthCode.value
               ? null
               : () => _sendShortMessage(
-                  mobilePhoneNumber!, isResendAuthCode, context),
+                    mobilePhoneNumber!,
+                    isResendAuthCode,
+                    context,
+                    sendShortMessageAsyncValue,
+                  ),
           child: const Text('新しいコードを送信'),
         ),
         const Spacer(),
@@ -126,18 +132,23 @@ class _Form extends HookWidget {
     String mobilePhoneNumber,
     ValueNotifier<bool> isResendAuthCode,
     BuildContext context,
+    AsyncValue<void> sendShortMessageAsyncValue,
   ) {
     // 確認コード再送信
-    context.read(sendShortMessageProvider(mobilePhoneNumber)).when(
+    sendShortMessageAsyncValue.when(
       data: (_) async {
         // 再送信ボタンenabled
+        await Future.delayed(const Duration(seconds: 3));
         isResendAuthCode.value = false;
+        print('send short message success');
       },
-      loading: () async {
+      loading: () {
+        print('send short message loading');
         // 再送信ボタンdisable
         isResendAuthCode.value = true;
       },
       error: (error, _) {
+        print('send short message error');
         // 再送信ボタンenabled
         isResendAuthCode.value = false;
         // SnackBar表示
@@ -145,5 +156,23 @@ class _Form extends HookWidget {
             .showSnackBar(SnackBar(content: Text(error.toString())));
       },
     );
+    // context.read(sendShortMessageProvider(mobilePhoneNumber)).when(
+    //   data: (_) async {
+    //     // 再送信ボタンenabled
+    //     // await Future.delayed(const Duration(seconds: 3));
+    //     isResendAuthCode.value = false;
+    //   },
+    //   loading: () async {
+    //     // 再送信ボタンdisable
+    //     isResendAuthCode.value = true;
+    //   },
+    //   error: (error, _) {
+    //     // 再送信ボタンenabled
+    //     isResendAuthCode.value = false;
+    //     // SnackBar表示
+    //     ScaffoldMessenger.of(context)
+    //         .showSnackBar(SnackBar(content: Text(error.toString())));
+    //   },
+    // );
   }
 }

@@ -22,3 +22,13 @@ class SendShortMessageRepositoryImpl extends SendShortMessageRepository {
     );
   }
 }
+
+class FakeSendShortMessageRepositoryImpl extends SendShortMessageRepository {
+  FakeSendShortMessageRepositoryImpl();
+
+  @override
+  Future<void> sendShortMessage({
+    required String mobilePhoneNumber,
+  }) async =>
+      Future.delayed(const Duration(seconds: 3), () => Future.value());
+}

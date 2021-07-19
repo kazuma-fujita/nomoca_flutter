@@ -18,6 +18,7 @@ import 'package:nomoca_flutter/data/repository/fetch_notification_list_repositor
 import 'package:nomoca_flutter/data/repository/get_favorite_patient_card_repository.dart';
 import 'package:nomoca_flutter/data/repository/get_institution_repository.dart';
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
+import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart';
 import 'package:nomoca_flutter/presentation/authentication_view.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/favorite_list_view.dart';
@@ -54,8 +55,8 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [
-        sendShortMessageProvider
-            .overrideWithProvider((ref, param) => Future.value()),
+        sendShortMessageRepositoryProvider
+            .overrideWithValue(FakeSendShortMessageRepositoryImpl()),
         patientCardProvider.overrideWithValue(
           const AsyncData([
             PatientCardEntity(
