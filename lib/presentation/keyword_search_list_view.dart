@@ -27,7 +27,7 @@ class KeywordSearchView extends StatelessWidget {
   }
 }
 
-class _KeywordSearchView extends HookWidget {
+class _KeywordSearchView extends HookConsumerWidget {
   // ページング閾値
   static const _threshold = 0.8;
   // 初期表示位置を渋谷駅に設定
@@ -63,9 +63,9 @@ class _KeywordSearchView extends HookWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final textController = useTextEditingController(
-        text: context.read(keywordSearchQueryState).state);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final textController =
+        useTextEditingController(text: ref.read(keywordSearchQueryState).state);
     final focusNode = useFocusNode();
     final offset = useState(0);
     final position = useState<Position>(_initialPosition);
@@ -77,7 +77,7 @@ class _KeywordSearchView extends HookWidget {
           'useEffect lat:${position.value.latitude} long: ${position.value.longitude}');
       // 全Widgetのbuild後にAPI経由で一覧取得
       WidgetsBinding.instance!.addPostFrameCallback((_) {
-        context.read(keywordSearchListActionDispatcher).state =
+        ref.read(keywordSearchListActionDispatcher).state =
             KeywordSearchListAction.fetchList(
           query: textController.text,
           offset: 0,
@@ -96,7 +96,7 @@ class _KeywordSearchView extends HookWidget {
             'useEffect offset: ${offset.value} limit: ${KeywordSearchProperties.limit}');
         // 全Widgetのbuild後にAPI経由で一覧取得
         WidgetsBinding.instance!.addPostFrameCallback((_) {
-          context.read(keywordSearchListActionDispatcher).state =
+          ref.read(keywordSearchListActionDispatcher).state =
               KeywordSearchListAction.fetchList(
             query: textController.text,
             offset: offset.value,
@@ -116,16 +116,16 @@ class _KeywordSearchView extends HookWidget {
         // TextFieldのfocusが外れたら検索処理開始
         if (!focusNode.hasFocus) {
           // 検索文字列が前回と同じ場合、API検索処理を走らせない
-          final pastQuery = context.read(keywordSearchQueryState).state;
+          final pastQuery = ref.read(keywordSearchQueryState).state;
           if (textController.text != pastQuery) {
             // 検索処理開始
             print('Search keyword[${textController.text}]');
             // offset初期化
             offset.value = 0;
             // 検索文字列更新
-            context.read(keywordSearchQueryState).state = textController.text;
+            ref.read(keywordSearchQueryState).state = textController.text;
             // TextFieldのfocusが外れたら検索文字列で一覧取得
-            context.read(keywordSearchListActionDispatcher).state =
+            ref.read(keywordSearchListActionDispatcher).state =
                 KeywordSearchListAction.fetchList(
               query: textController.text,
               offset: 0,
@@ -156,7 +156,11 @@ class _KeywordSearchView extends HookWidget {
           child: GestureDetector(
             // ListViewタップ時TextFieldのフォーカスを外しKeyboardを非表示にする
             onTap: () => FocusScope.of(context).unfocus(),
-            child: _scrollListView(offset, position),
+            child: _scrollListView(
+              offset,
+              position,
+              ref,
+            ),
           ),
         ),
       ],
@@ -164,15 +168,18 @@ class _KeywordSearchView extends HookWidget {
   }
 
   Widget _scrollListView(
-      ValueNotifier<int> offset, ValueNotifier<Position> position) {
+    ValueNotifier<int> offset,
+    ValueNotifier<Position> position,
+    WidgetRef ref,
+  ) {
     // キーワード検索画面はページネーションを行う為、直接listStateを参照
     final context = useContext();
-    final items = useProvider(keywordSearchListState).state;
-    return useProvider(keywordSearchListReducer).maybeWhen(
+    final items = ref.watch(keywordSearchListState).state;
+    return ref.watch(keywordSearchListReducer).maybeWhen(
       error: (error, _) {
         return ErrorSnackBar(
           errorMessage: error.toString(),
-          callback: () => context.refresh(keywordSearchListReducer),
+          callback: () => ref.refresh(keywordSearchListReducer),
           backScreenWidget: _emptyListView(),
         );
       },
@@ -203,7 +210,11 @@ class _KeywordSearchView extends HookWidget {
                     key: ObjectKey(items[0]),
                     itemCount: items.length,
                     itemBuilder: (BuildContext _context, int index) {
-                      return _buildRow(items[index], context);
+                      return _buildRow(
+                        items[index],
+                        context,
+                        ref,
+                      );
                     },
                   ),
                 )
@@ -213,7 +224,11 @@ class _KeywordSearchView extends HookWidget {
     );
   }
 
-  Widget _buildRow(KeywordSearchEntity entity, BuildContext context) {
+  Widget _buildRow(
+    KeywordSearchEntity entity,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       // Widgetを押し込むpushアニメーションを付与
@@ -241,7 +256,12 @@ class _KeywordSearchView extends HookWidget {
                           isLiked: entity.isFavorite,
                           onTap: (bool isLike) async {
                             // update API実行
-                            return _updateFavorite(isLike, entity.id, context);
+                            return _updateFavorite(
+                              isLike,
+                              entity.id,
+                              context,
+                              ref,
+                            );
                           },
                         ),
                       ),
@@ -279,8 +299,12 @@ class _KeywordSearchView extends HookWidget {
   }
 
   Future<bool> _updateFavorite(
-      bool isLike, int institutionId, BuildContext context) async {
-    return await context.read(updateFavoriteProvider(institutionId)).maybeWhen(
+    bool isLike,
+    int institutionId,
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    return await ref.read(updateFavoriteProvider(institutionId)).maybeWhen(
           data: (_) async {
             // お気に入り登録時SnackBar表示
             if (!isLike) {
@@ -288,7 +312,7 @@ class _KeywordSearchView extends HookWidget {
                   .showSnackBar(const SnackBar(content: Text('お気に入り登録しました')));
             }
             // お気に入り画面データ取得
-            context.read(favoriteListActionDispatcher).state =
+            ref.read(favoriteListActionDispatcher).state =
                 const FavoriteListAction.fetchList();
             // お気に入りボタン反転処理
             return !isLike;

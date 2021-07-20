@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
-import 'package:nomoca_flutter/presentation/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
-class FamilyUserListView extends HookWidget {
+class FamilyUserListView extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    final asyncValue = useProvider(familyUserListReducer);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final asyncValue = ref.watch(familyUserListReducer);
     return Scaffold(
       appBar: AppBar(
         title: const Text('家族アカウント管理'),
@@ -36,14 +34,14 @@ class FamilyUserListView extends HookWidget {
                 padding: const EdgeInsets.all(16),
                 itemCount: entities.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return _dismissible(entities[index], context);
+                  return _dismissible(entities[index], context, ref);
                 },
               )
             : _emptyListView(),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => ErrorSnackBar(
           errorMessage: error.toString(),
-          callback: () => context.refresh(familyUserListReducer),
+          callback: () => ref.refresh(familyUserListReducer),
         ),
       ),
     );
@@ -109,7 +107,11 @@ class FamilyUserListView extends HookWidget {
     }
   }
 
-  Widget _dismissible(UserNicknameEntity user, BuildContext context) {
+  Widget _dismissible(
+    UserNicknameEntity user,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
     // ListViewのswipeができるwidget
     return Dismissible(
       // ユニークな値を設定
@@ -122,7 +124,7 @@ class FamilyUserListView extends HookWidget {
       },
       onDismissed: (DismissDirection direction) {
         // listItem削除のcallback処理。以下関数で削除APIを実行
-        _deleteFamilyUser(context, user);
+        _deleteFamilyUser(context, user, ref);
       },
       // swipe中ListTileのbackground
       background: Container(
@@ -166,14 +168,17 @@ class FamilyUserListView extends HookWidget {
   }
 
   Future<void> _deleteFamilyUser(
-      BuildContext context, UserNicknameEntity user) async {
-    await context.read(deleteFamilyUserProvider(user.id)).maybeWhen(
+    BuildContext context,
+    UserNicknameEntity user,
+    WidgetRef ref,
+  ) async {
+    await ref.read(deleteFamilyUserProvider(user.id)).maybeWhen(
         data: (_) async {
           // 家族一覧画面の状態更新。dispatcherのstateを更新するとfamilyUserListReducerが再実行される
-          context.read(familyUserActionDispatcher).state =
+          ref.read(familyUserActionDispatcher).state =
               FamilyUserAction.delete(user);
           // 診察券画面の状態更新。patientCardProviderではAPI経由で診察券情報を再取得する
-          await context.refresh(patientCardProvider);
+          ref.refresh(patientCardProvider);
           // 削除メッセージを表示
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text('${user.nickname}を削除しました')));

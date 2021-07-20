@@ -25,17 +25,17 @@ class UpsertUserView extends StatelessWidget {
   }
 }
 
-class _Form extends HookWidget {
+class _Form extends HookConsumerWidget {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // 一覧画面からuser情報を取得
     final args =
         ModalRoute.of(context)!.settings.arguments as UpsertUserViewArguments?;
     final user = args!.user;
     final nickname = useState('');
-    final asyncValue = useProvider(user == null
+    final asyncValue = ref.watch(user == null
         ? createFamilyUserProvider(nickname.value)
         : args.isFamilyUser
             ? updateFamilyUserProvider(user.copyWith(nickname: nickname.value))
@@ -64,7 +64,8 @@ class _Form extends HookWidget {
               },
             ),
             ElevatedButton(
-              onPressed: () => _submission(context, asyncValue: asyncValue),
+              onPressed: () =>
+                  _submission(context, asyncValue: asyncValue, ref: ref),
               child: const Text('保存する'),
             ),
           ],
@@ -73,7 +74,11 @@ class _Form extends HookWidget {
     );
   }
 
-  void _submission(BuildContext context, {required AsyncValue asyncValue}) {
+  void _submission(
+    BuildContext context, {
+    required AsyncValue asyncValue,
+    required WidgetRef ref,
+  }) {
     final args =
         ModalRoute.of(context)!.settings.arguments as UpsertUserViewArguments?;
     // TextFormFieldのvalidate実行
@@ -85,15 +90,15 @@ class _Form extends HookWidget {
           final entity = response as UserNicknameEntity;
           if (args!.isFamilyUser) {
             // 家族一覧画面の状態更新。dispatcherのstateを更新するとfamilyUserListReducerが再実行される
-            context.read(familyUserActionDispatcher).state = args.user == null
+            ref.read(familyUserActionDispatcher).state = args.user == null
                 ? FamilyUserAction.create(entity)
                 : FamilyUserAction.update(entity);
           } else if (args.user != null) {
             // プロフィール画面のニックネーム更新。DBからニックネーム再取得
-            await context.refresh(userManagementProvider);
+            ref.refresh(userManagementProvider);
           }
           // 診察券画面の状態更新。patientCardProviderではAPI経由で診察券情報を再取得する
-          await context.refresh(patientCardProvider);
+          ref.refresh(patientCardProvider);
           // ローディング非表示
           await EasyLoading.dismiss();
           // 一覧画面へ遷移。引数に遷移後の表示メッセージを設定

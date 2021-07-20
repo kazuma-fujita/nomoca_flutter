@@ -5,16 +5,16 @@ import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
 import 'package:nomoca_flutter/presentation/asset_image_path.dart';
 import 'package:nomoca_flutter/states/providers/update_read_post_provider.dart';
 
-class NotificationDetailView extends StatelessWidget with AssetImagePath {
+class NotificationDetailView extends HookConsumerWidget with AssetImagePath {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final notification =
         ModalRoute.of(context)!.settings.arguments as NotificationEntity?;
     return WillPopScope(
       // 戻るボタンevent
       onWillPop: () async {
         // 既読API実行
-        context.read(updateReadPostProvider(notification!.id));
+        ref.read(updateReadPostProvider(notification!.id));
         Navigator.pop(context, notification.id);
         return false;
       },

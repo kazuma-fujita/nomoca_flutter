@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
@@ -38,62 +37,63 @@ final userManagementViewDataProvider =
           ),
         ]);
 
-class UserManagementView extends HookWidget {
+class UserManagementView extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    final viewDataList = context.read(userManagementViewDataProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final viewDataList = ref.read(userManagementViewDataProvider);
     return Scaffold(
       // DBからUserEntity取得
-      body: useProvider(userManagementProvider).maybeWhen(
-        data: (user) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 64),
-              Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Text(
-                  'ようこそ${user.nickname}さん',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 32,
+      body: ref.watch(userManagementProvider).maybeWhen(
+            data: (user) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 64),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Text(
+                      'ようこそ${user.nickname}さん',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 32,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () => _transitionToNextScreen(context, user: user),
-                  child: const Text('プロフィール編集'),
-                ),
-              ),
-              ListView.builder(
-                key: UniqueKey(),
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16),
-                itemCount: viewDataList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return _listItem(viewDataList[index], context);
-                },
-              ),
-            ],
-          );
-        },
-        error: (error, _) {
-          WidgetsBinding.instance!.addPostFrameCallback((_) async {
-            if (error is AuthenticationError) {
-              // 認証エラーはログイン画面へ遷移
-              await Navigator.pushNamed(context, RouteNames.signIn);
-            }
-            // その他エラーをSnackBarで表示
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(error.toString())));
-          });
-        },
-        orElse: () {},
-      ),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () =>
+                          _transitionToNextScreen(context, user: user),
+                      child: const Text('プロフィール編集'),
+                    ),
+                  ),
+                  ListView.builder(
+                    key: UniqueKey(),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(16),
+                    itemCount: viewDataList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _listItem(viewDataList[index], context);
+                    },
+                  ),
+                ],
+              );
+            },
+            error: (error, _) {
+              WidgetsBinding.instance!.addPostFrameCallback((_) async {
+                if (error is AuthenticationError) {
+                  // 認証エラーはログイン画面へ遷移
+                  await Navigator.pushNamed(context, RouteNames.signIn);
+                }
+                // その他エラーをSnackBarで表示
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(error.toString())));
+              });
+            },
+            orElse: () {},
+          ),
     );
   }
 

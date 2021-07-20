@@ -1,6 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/api/authentication_api.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
+import 'package:nomoca_flutter/states/arguments/authentication_provider_arguments.dart';
 import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
 
 final _authenticationApiProvider = Provider.autoDispose(
@@ -17,16 +18,11 @@ final authenticationRepositoryProvider =
 );
 
 final authenticationProvider =
-    FutureProvider.autoDispose.family<void, Map<String, String>>(
+    FutureProvider.autoDispose.family<void, AuthenticationProviderArguments>(
   (ref, args) async {
-    final mobilePhoneNumber = args['mobilePhoneNumber'];
-    final authCode = args['authCode'];
-    if (mobilePhoneNumber == null || authCode == null) {
-      throw Exception('The provider arguments is not found.');
-    }
     return ref.read(authenticationRepositoryProvider).authentication(
-          mobilePhoneNumber: mobilePhoneNumber,
-          authCode: authCode,
+          mobilePhoneNumber: args.mobilePhoneNumber,
+          authCode: args.authCode,
         );
   },
 );

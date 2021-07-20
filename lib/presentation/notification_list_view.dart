@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
@@ -10,10 +9,10 @@ import 'package:nomoca_flutter/states/reducers/notification_list_reducer.dart';
 
 import 'asset_image_path.dart';
 
-class NotificationListView extends HookWidget with AssetImagePath {
+class NotificationListView extends HookConsumerWidget with AssetImagePath {
   @override
-  Widget build(BuildContext context) {
-    final asyncValue = useProvider(notificationListReducer);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final asyncValue = ref.watch(notificationListReducer);
     return Scaffold(
       appBar: AppBar(
         title: const Text('お知らせ'),
@@ -26,7 +25,7 @@ class NotificationListView extends HookWidget with AssetImagePath {
                   padding: const EdgeInsets.all(16),
                   itemCount: entities.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return _listItem(entities[index], context);
+                    return _listItem(entities[index], context, ref);
                   },
                 ),
               )
@@ -34,7 +33,7 @@ class NotificationListView extends HookWidget with AssetImagePath {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => ErrorSnackBar(
           errorMessage: error.toString(),
-          callback: () => context.refresh(notificationListReducer),
+          callback: () => ref.refresh(notificationListReducer),
         ),
       ),
     );
@@ -57,7 +56,11 @@ class NotificationListView extends HookWidget with AssetImagePath {
     );
   }
 
-  Widget _listItem(NotificationEntity notification, BuildContext context) {
+  Widget _listItem(
+    NotificationEntity notification,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(width: 1, color: Colors.grey)),
@@ -98,14 +101,17 @@ class NotificationListView extends HookWidget with AssetImagePath {
               ),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {
-          _transitionToNextScreen(context, notification);
+          _transitionToNextScreen(context, notification, ref);
         },
       ),
     );
   }
 
   Future<void> _transitionToNextScreen(
-      BuildContext context, NotificationEntity notification) async {
+    BuildContext context,
+    NotificationEntity notification,
+    WidgetRef ref,
+  ) async {
     // 詳細画面へ遷移。pushNamedの戻り値は遷移先から取得した値。
     final notificationId = await Navigator.pushNamed(
             context, RouteNames.notificationDetail, arguments: notification)
@@ -113,7 +119,7 @@ class NotificationListView extends HookWidget with AssetImagePath {
 
     if (notificationId != null) {
       // 既読未読を更新
-      context.read(notificationListActionDispatcher).state =
+      ref.read(notificationListActionDispatcher).state =
           NotificationListAction.isRead(notificationId);
     }
   }

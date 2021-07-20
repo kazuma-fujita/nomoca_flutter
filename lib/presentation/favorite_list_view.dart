@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:like_button/like_button.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
@@ -16,37 +15,41 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 
 import 'asset_image_path.dart';
 
-class FavoriteListView extends HookWidget with AssetImagePath {
+class FavoriteListView extends HookConsumerWidget with AssetImagePath {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('かかりつけ'),
       ),
-      body: useProvider(favoriteListReducer).when(
-        data: (entities) => entities.isNotEmpty
-            ? Scrollbar(
-                child: ListView.builder(
-                  key: ObjectKey(entities[0]),
-                  padding: const EdgeInsets.all(16),
-                  itemCount: entities.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _buildRow(context, entities[index], index);
-                  },
-                ),
-              )
-            : _emptyListView(),
-        loading: _shimmerView,
-        error: (error, _) => ErrorSnackBar(
-          errorMessage: error.toString(),
-          callback: () => context.refresh(favoriteListReducer),
-        ),
-      ),
+      body: ref.watch(favoriteListReducer).when(
+            data: (entities) => entities.isNotEmpty
+                ? Scrollbar(
+                    child: ListView.builder(
+                      key: ObjectKey(entities[0]),
+                      padding: const EdgeInsets.all(16),
+                      itemCount: entities.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _buildRow(context, entities[index], index, ref);
+                      },
+                    ),
+                  )
+                : _emptyListView(),
+            loading: _shimmerView,
+            error: (error, _) => ErrorSnackBar(
+              errorMessage: error.toString(),
+              callback: () => ref.refresh(favoriteListReducer),
+            ),
+          ),
     );
   }
 
   Widget _buildRow(
-      BuildContext context, FavoriteEntity entity, int verticalIndex) {
+    BuildContext context,
+    FavoriteEntity entity,
+    int verticalIndex,
+    WidgetRef ref,
+  ) {
     return AnimatedPushMotion(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -95,7 +98,11 @@ class FavoriteListView extends HookWidget with AssetImagePath {
                           onTap: (bool isLike) async {
                             // update API実行
                             return _updateFavorite(
-                                isLike, entity.institutionId, context);
+                              isLike,
+                              entity.institutionId,
+                              context,
+                              ref,
+                            );
                           },
                         ),
                       ),
@@ -152,8 +159,12 @@ class FavoriteListView extends HookWidget with AssetImagePath {
   }
 
   Future<bool> _updateFavorite(
-      bool isLike, int institutionId, BuildContext context) async {
-    return await context.read(updateFavoriteProvider(institutionId)).maybeWhen(
+    bool isLike,
+    int institutionId,
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    return await ref.read(updateFavoriteProvider(institutionId)).maybeWhen(
           data: (_) async {
             // お気に入り登録時SnackBar表示
             if (!isLike) {
@@ -161,7 +172,7 @@ class FavoriteListView extends HookWidget with AssetImagePath {
                   .showSnackBar(const SnackBar(content: Text('お気に入り登録しました')));
             }
             // キーワード検索画面のお気に入りボタン更新
-            context.read(keywordSearchListActionDispatcher).state =
+            ref.read(keywordSearchListActionDispatcher).state =
                 KeywordSearchListAction.toggleFavorite(institutionId);
             // お気に入りボタン反転処理
             return !isLike;
@@ -236,15 +247,15 @@ class FavoriteListView extends HookWidget with AssetImagePath {
   }
 }
 
-class _HorizontalItemView extends HookWidget {
+class _HorizontalItemView extends HookConsumerWidget {
   const _HorizontalItemView(this.entity, this.horizontalIndex);
 
   final FavoriteEntity entity;
   final int horizontalIndex;
 
   @override
-  Widget build(BuildContext context) {
-    return context
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref
         .read(
           getFavoritePatientCardProvider(
             {
@@ -308,7 +319,7 @@ class _HorizontalItemView extends HookWidget {
           },
           error: (error, _) => ErrorSnackBar(
             errorMessage: error.toString(),
-            callback: () => context.refresh(favoriteListReducer),
+            callback: () => ref.refresh(favoriteListReducer),
           ),
         );
   }

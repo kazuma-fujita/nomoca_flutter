@@ -20,14 +20,14 @@ class SignInView extends StatelessWidget {
   }
 }
 
-class _Form extends HookWidget {
+class _Form extends HookConsumerWidget {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final mobilePhoneNumber = useState('');
     final sendShortMessageAsyncValue =
-        useProvider(sendShortMessageProvider(mobilePhoneNumber.value));
+        ref.watch(sendShortMessageProvider(mobilePhoneNumber.value));
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

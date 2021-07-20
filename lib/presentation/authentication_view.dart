@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
+import 'package:nomoca_flutter/states/arguments/authentication_provider_arguments.dart';
 import 'package:nomoca_flutter/states/providers/send_short_message_provider.dart';
 import 'package:nomoca_flutter/states/providers/authentication_provider.dart';
 
@@ -21,23 +22,23 @@ class AuthenticationView extends StatelessWidget {
   }
 }
 
-class _Form extends HookWidget {
+class _Form extends HookConsumerWidget {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final authCode = useState('');
     final isResendAuthCode = useState(false);
     var mobilePhoneNumber =
         ModalRoute.of(context)!.settings.arguments as String?;
     mobilePhoneNumber ??= '09011112222';
     final sendShortMessageAsyncValue =
-        useProvider(sendShortMessageProvider(mobilePhoneNumber));
-    final args = {
-      'mobilePhoneNumber': mobilePhoneNumber,
-      'authCode': authCode.value,
-    };
-    final authenticationAsyncValue = useProvider(authenticationProvider(args));
+        ref.watch(sendShortMessageProvider(mobilePhoneNumber));
+    final args = AuthenticationProviderArguments(
+      mobilePhoneNumber: mobilePhoneNumber,
+      authCode: authCode.value,
+    );
+    final authenticationAsyncValue = ref.watch(authenticationProvider(args));
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -114,8 +115,13 @@ class _Form extends HookWidget {
         data: (_) async {
           // ローディング非表示
           await EasyLoading.dismiss();
-          // 診察券画面へ遷移
-          await Navigator.pushNamed(context, RouteNames.patientCard);
+          // ログイン前画面のスタックを削除して診察券画面へ遷移
+          await Navigator.pushNamedAndRemoveUntil(
+            context,
+            RouteNames.patientCard,
+            (r) => false,
+          );
+          // await Navigator.pushNamed(context, RouteNames.patientCard);
         },
         loading: () async {
           // ローディング表示
@@ -160,23 +166,5 @@ class _Form extends HookWidget {
             .showSnackBar(SnackBar(content: Text(error.toString())));
       },
     );
-    // context.read(sendShortMessageProvider(mobilePhoneNumber)).when(
-    //   data: (_) async {
-    //     // 再送信ボタンenabled
-    //     // await Future.delayed(const Duration(seconds: 3));
-    //     isResendAuthCode.value = false;
-    //   },
-    //   loading: () async {
-    //     // 再送信ボタンdisable
-    //     isResendAuthCode.value = true;
-    //   },
-    //   error: (error, _) {
-    //     // 再送信ボタンenabled
-    //     isResendAuthCode.value = false;
-    //     // SnackBar表示
-    //     ScaffoldMessenger.of(context)
-    //         .showSnackBar(SnackBar(content: Text(error.toString())));
-    //   },
-    // );
   }
 }

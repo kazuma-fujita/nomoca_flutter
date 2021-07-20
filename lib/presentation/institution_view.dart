@@ -1,7 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:like_button/like_button.dart';
 import 'package:nomoca_flutter/constants/asset_paths.dart';
@@ -18,83 +16,88 @@ import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 import 'package:nomoca_flutter/states/reducers/favorite_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 import 'components/molecules/images_slider.dart';
 
-class InstitutionView extends HookWidget with AssetImagePath {
+class InstitutionView extends HookConsumerWidget with AssetImagePath {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     var institutionId = ModalRoute.of(context)!.settings.arguments as int?;
     institutionId = 90093;
-    return useProvider(getInstitutionProvider(institutionId)).when(
-      data: (entity) {
-        return Scaffold(
-          floatingActionButton: entity.medicalDocumentUrl != null
-              ? SizedBox(
-                  width: 168,
-                  height: 60,
-                  child: FloatingActionButton(
-                    onPressed: () => launchUrl(entity.medicalDocumentUrl!),
-                    backgroundColor: Colors.white,
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    child: Image.asset(
-                      '${AssetPaths.iconImagePath}/ic_btn_medical_document.png',
+    return ref.watch(getInstitutionProvider(institutionId)).when(
+          data: (entity) {
+            return Scaffold(
+              floatingActionButton: entity.medicalDocumentUrl != null
+                  ? SizedBox(
+                      width: 168,
+                      height: 60,
+                      child: FloatingActionButton(
+                        onPressed: () => launchUrl(entity.medicalDocumentUrl!),
+                        backgroundColor: Colors.white,
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8))),
+                        child: Image.asset(
+                          '${AssetPaths.iconImagePath}/ic_btn_medical_document.png',
+                        ),
+                      ),
+                    )
+                  : Container(),
+              body: Scrollbar(
+                child: CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: <Widget>[
+                    SliverAppBar(
+                      // AppBarのelevation
+                      elevation: 0,
+                      // AppBarの背景色
+                      backgroundColor: Colors.white,
+                      // AppBarの画像を下に引き伸ばせるようにする
+                      stretch: true,
+                      // AppBarを固定表示する
+                      pinned: true,
+                      // AppBarの画像表示部分の高さ
+                      expandedHeight:
+                          entity.images != null && entity.images!.isNotEmpty
+                              ? 320
+                              : 240,
+                      // AppBarにお気に入りボタンを設置
+                      actions: <Widget>[
+                        LikeButton(
+                          key: Key('like-${entity.id}'),
+                          isLiked: entity.isFavorite,
+                          onTap: (bool isLike) async {
+                            // update API実行
+                            return _updateFavorite(
+                              isLike,
+                              entity.id,
+                              context,
+                              ref,
+                            );
+                            // return !isLike;
+                          },
+                        ),
+                      ],
+                      flexibleSpace: _flexibleSpaceBar(entity, context),
                     ),
-                  ),
-                )
-              : Container(),
-          body: Scrollbar(
-            child: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: <Widget>[
-                SliverAppBar(
-                  // AppBarのelevation
-                  elevation: 0,
-                  // AppBarの背景色
-                  backgroundColor: Colors.white,
-                  // AppBarの画像を下に引き伸ばせるようにする
-                  stretch: true,
-                  // AppBarを固定表示する
-                  pinned: true,
-                  // AppBarの画像表示部分の高さ
-                  expandedHeight:
-                      entity.images != null && entity.images!.isNotEmpty
-                          ? 320
-                          : 240,
-                  // AppBarにお気に入りボタンを設置
-                  actions: <Widget>[
-                    LikeButton(
-                      key: Key('like-${entity.id}'),
-                      isLiked: entity.isFavorite,
-                      onTap: (bool isLike) async {
-                        // update API実行
-                        return _updateFavorite(isLike, entity.id, context);
-                        // return !isLike;
-                      },
-                    ),
+                    SliverList(
+                      delegate: _sliverChildListDelegate(entity),
+                    )
                   ],
-                  flexibleSpace: _flexibleSpaceBar(entity, context),
                 ),
-                SliverList(
-                  delegate: _sliverChildListDelegate(entity),
-                )
-              ],
-            ),
+              ),
+            );
+          },
+          loading: () => Scaffold(
+            body: _shimmerView(),
           ),
+          error: (error, _) {
+            return ErrorSnackBar(
+              errorMessage: error.toString(),
+              callback: () =>
+                  ref.refresh(getInstitutionProvider(institutionId!)),
+            );
+          },
         );
-      },
-      loading: () => Scaffold(
-        body: _shimmerView(),
-      ),
-      error: (error, _) {
-        return ErrorSnackBar(
-          errorMessage: error.toString(),
-          callback: () =>
-              context.refresh(getInstitutionProvider(institutionId!)),
-        );
-      },
-    );
   }
 
   Widget _flexibleSpaceBar(InstitutionEntity entity, BuildContext context) {
@@ -313,8 +316,12 @@ class InstitutionView extends HookWidget with AssetImagePath {
   }
 
   Future<bool> _updateFavorite(
-      bool isLike, int institutionId, BuildContext context) async {
-    return await context.read(updateFavoriteProvider(institutionId)).maybeWhen(
+    bool isLike,
+    int institutionId,
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    return await ref.read(updateFavoriteProvider(institutionId)).maybeWhen(
           data: (_) async {
             // お気に入り登録時SnackBar表示
             if (!isLike) {
@@ -322,10 +329,10 @@ class InstitutionView extends HookWidget with AssetImagePath {
                   .showSnackBar(const SnackBar(content: Text('お気に入り登録しました')));
             }
             // キーワード検索画面のお気に入りボタン更新
-            context.read(keywordSearchListActionDispatcher).state =
+            ref.read(keywordSearchListActionDispatcher).state =
                 KeywordSearchListAction.toggleFavorite(institutionId);
             // お気に入り画面データ再取得
-            context.read(favoriteListActionDispatcher).state =
+            ref.read(favoriteListActionDispatcher).state =
                 const FavoriteListAction.fetchList();
             // お気に入りボタン反転処理
             return !isLike;

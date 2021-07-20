@@ -3,15 +3,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nomoca_flutter/constants/environment_variables.dart';
-import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
-import 'package:nomoca_flutter/data/api/api_client.dart';
-import 'package:nomoca_flutter/data/api/authentication_api.dart';
-import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
-import 'package:nomoca_flutter/data/repository/create_user_repository.dart';
+import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_favorite_list_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_notification_list_repository.dart';
@@ -20,14 +15,12 @@ import 'package:nomoca_flutter/data/repository/get_institution_repository.dart';
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
 import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart';
 import 'package:nomoca_flutter/presentation/authentication_view.dart';
-import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
-import 'package:nomoca_flutter/presentation/favorite_list_view.dart';
 import 'package:nomoca_flutter/presentation/institution_view.dart';
 import 'package:nomoca_flutter/presentation/notification_detail_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/sign_in_view.dart';
-import 'package:nomoca_flutter/presentation/top_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
+import 'package:nomoca_flutter/states/providers/authentication_provider.dart';
 import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
@@ -57,6 +50,8 @@ Future<void> main() async {
       overrides: [
         sendShortMessageRepositoryProvider
             .overrideWithValue(FakeSendShortMessageRepositoryImpl()),
+        authenticationRepositoryProvider
+            .overrideWithValue(FakeAuthenticationRepositoryImpl()),
         patientCardProvider.overrideWithValue(
           const AsyncData([
             PatientCardEntity(
@@ -93,23 +88,50 @@ Future<void> main() async {
             .overrideWithValue(FakeGetFavoritePatientCardRepositoryImpl()),
         keywordSearchRepositoryProvider
             .overrideWithValue(FakeKeywordSearchRepositoryImpl()),
-        updateFavoriteProvider
-            .overrideWithProvider((ref, param) => Future.value()),
+        updateFavoriteProvider.overrideWithProvider(
+          (param) => AutoDisposeProvider<AsyncValue<void>>(
+            (ref) => const AsyncValue.data(null),
+          ),
+        ),
         // updateFavoriteProvider.overrideWithProvider(
         //   (ref, param) => throw Exception('Error message.'),
         // ),
         fetchNotificationListRepositoryProvider
             .overrideWithValue(FakeFetchNotificationListRepositoryImpl()),
-        updateReadPostProvider
-            .overrideWithProvider((ref, param) => Future.value()),
+        // updateReadPostProvider
+        //     .overrideWithProvider((ref, param) => Future.value()),
+        updateReadPostProvider.overrideWithProvider(
+          (param) => AutoDisposeProvider<AsyncValue<void>>(
+            (ref) => const AsyncValue.data(null),
+          ),
+        ),
         fetchFamilyUserListRepositoryProvider
             .overrideWithValue(FakeFetchFamilyUserListRepositoryImpl()),
-        createFamilyUserProvider.overrideWithProvider((ref, param) =>
-            Future.value(const UserNicknameEntity(id: 1234, nickname: '花子'))),
-        updateFamilyUserProvider.overrideWithProvider((ref, param) =>
-            Future.value(const UserNicknameEntity(id: 1234, nickname: '次郎'))),
-        deleteFamilyUserProvider
-            .overrideWithProvider((ref, param) => Future.value()),
+        createFamilyUserProvider.overrideWithProvider(
+          (param) => AutoDisposeProvider<AsyncValue<UserNicknameEntity>>(
+            (ref) => const AsyncValue.data(
+              UserNicknameEntity(id: 1234, nickname: '花子'),
+            ),
+          ),
+        ),
+        // createFamilyUserProvider.overrideWithProvider((ref, param) =>
+        //     Future.value(const UserNicknameEntity(id: 1234, nickname: '花子'))),
+        updateFamilyUserProvider.overrideWithProvider(
+          (param) => AutoDisposeProvider<AsyncValue<UserNicknameEntity>>(
+            (ref) => const AsyncValue.data(
+              UserNicknameEntity(id: 1234, nickname: '次郎'),
+            ),
+          ),
+        ),
+        // updateFamilyUserProvider.overrideWithProvider((ref, param) =>
+        //     Future.value(const UserNicknameEntity(id: 1234, nickname: '次郎'))),
+        deleteFamilyUserProvider.overrideWithProvider(
+          (param) => AutoDisposeProvider<AsyncValue<void>>(
+            (ref) => const AsyncValue.data(null),
+          ),
+        ),
+        // deleteFamilyUserProvider
+        //     .overrideWithProvider((ref, param) => Future.value()),
       ],
       child: MyApp(),
     ),

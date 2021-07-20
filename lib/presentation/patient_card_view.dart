@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/asset_paths.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
@@ -10,10 +9,10 @@ import 'package:nomoca_flutter/presentation/components/atoms/logo_type.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
 
-class PatientCardView extends HookWidget {
+class PatientCardView extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    final asyncValue = useProvider(patientCardProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final asyncValue = ref.watch(patientCardProvider);
     return DefaultTabController(
       length: asyncValue is AsyncData ? asyncValue.data!.value.length : 0,
       child: Scaffold(
@@ -57,42 +56,42 @@ class PatientCardView extends HookWidget {
   }
 }
 
-class _PatientCardView extends HookWidget {
+class _PatientCardView extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    return useProvider(patientCardProvider).when(
-      data: (patientCardList) {
-        // Stack Widgetで背景画像の上にQRコードを配置する
-        return Stack(
-          children: [
-            // 背景画像
-            Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                      '${AssetPaths.backgroundImagePath}/bg_patient_card.webp'),
-                  fit: BoxFit.cover,
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(patientCardProvider).when(
+          data: (patientCardList) {
+            // Stack Widgetで背景画像の上にQRコードを配置する
+            return Stack(
+              children: [
+                // 背景画像
+                Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                          '${AssetPaths.backgroundImagePath}/bg_patient_card.webp'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            // QRコード
-            TabBarView(
-              children: patientCardList
-                  .map(
-                    (PatientCardEntity entity) =>
-                        _TabPage(imageUrl: entity.qrCodeImageUrl),
-                  )
-                  .toList(),
-            )
-          ],
+                // QRコード
+                TabBarView(
+                  children: patientCardList
+                      .map(
+                        (PatientCardEntity entity) =>
+                            _TabPage(imageUrl: entity.qrCodeImageUrl),
+                      )
+                      .toList(),
+                )
+              ],
+            );
+          },
+          loading: () => const CircularProgressIndicator(),
+          error: (error, _) => ErrorSnackBar(
+            errorMessage: error.toString(),
+            callback: () => ref.refresh(patientCardProvider),
+          ),
         );
-      },
-      loading: () => const CircularProgressIndicator(),
-      error: (error, _) => ErrorSnackBar(
-        errorMessage: error.toString(),
-        callback: () => context.refresh(patientCardProvider),
-      ),
-    );
   }
 }
 
