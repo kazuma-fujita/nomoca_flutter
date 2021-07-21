@@ -32,10 +32,6 @@ void main() {
   const _argumentMobilePhoneNumber = '09012345678';
   const _contentsBaseUrl = 'https://contents-debug.nomoca.com';
 
-  // setUp(() {
-  //   reset(_authenticationRepository);
-  // });
-
   tearDown(() {
     reset(_authenticationRepository);
     reset(_sendShortMessageRepository);
@@ -113,7 +109,7 @@ void main() {
         mobilePhoneNumber: _argumentMobilePhoneNumber,
         authCode: _verifyAuthCode,
       ));
-      // when(_patientCardRepository.fetchList());
+      when(_patientCardRepository.fetchList());
     });
   });
 
