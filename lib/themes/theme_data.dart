@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const _textTheme = TextTheme(
-// ボタン全般のフォントサイズ
+  // ボタン全般のフォントサイズ
   button: TextStyle(fontSize: 16),
 );
 

@@ -39,7 +39,7 @@ class TopView extends StatelessWidget {
                 const SizedBox(height: 32),
                 OutlinedWhiteButton(
                   onPressed: () async {
-                    await Navigator.pushNamed(context, RouteNames.signIn);
+                    await Navigator.pushNamed(context, RouteNames.signUp);
                   },
                   label: '新規登録',
                 ),
