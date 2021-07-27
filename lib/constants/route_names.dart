@@ -6,4 +6,6 @@ class RouteNames {
   static const institution = '/institution';
   static const upsertUser = '/upsert-user';
   static const notificationDetail = '/notification-detail';
+  static const qrReadInput = '/qr-read-input';
+  static const qrReadConfirm = '/qr-read-confirm';
 }

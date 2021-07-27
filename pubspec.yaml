@@ -38,6 +38,8 @@ dependencies:
   shimmer_animation: ^2.1.0+1
   state_notifier: ^0.7.0
   url_launcher: ^6.0.8
+  permission_handler: ^8.1.4+1
+  qr_code_scanner: ^0.5.2
 
 dev_dependencies:
   build_runner: ^2.0.4
