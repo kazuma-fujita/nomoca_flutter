@@ -10,7 +10,7 @@ import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart'
     as _i6;
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart'
     as _i2;
-import 'package:nomoca_flutter/data/repository/patient_card_repository.dart'
+import 'package:nomoca_flutter/data/repository/fetch_patient_cards_repository.dart'
     as _i5;
 import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart'
     as _i4;
@@ -65,12 +65,12 @@ class MockSendShortMessageRepository extends _i1.Mock
           returnValueForMissingStub: Future.value()) as _i3.Future<void>);
 }
 
-/// A class which mocks [PatientCardRepository].
+/// A class which mocks [FetchPatientCardsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPatientCardRepository extends _i1.Mock
-    implements _i5.PatientCardRepository {
-  MockPatientCardRepository() {
+class MockFetchPatientCardsRepository extends _i1.Mock
+    implements _i5.FetchPatientCardsRepository {
+  MockFetchPatientCardsRepository() {
     _i1.throwOnMissingStub(this);
   }
 

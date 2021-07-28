@@ -9,7 +9,7 @@ import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/create_family_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/delete_family_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart';
-import 'package:nomoca_flutter/data/repository/patient_card_repository.dart';
+import 'package:nomoca_flutter/data/repository/fetch_patient_cards_repository.dart';
 import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
@@ -26,14 +26,14 @@ import 'family_user_integration_test.mocks.dart';
   UpdateFamilyUserRepository,
   DeleteFamilyUserRepository,
   FetchFamilyUserListRepository,
-  PatientCardRepository,
+  FetchPatientCardsRepository,
 ])
 void main() {
   final _listRepository = MockFetchFamilyUserListRepository();
   final _createRepository = MockCreateFamilyUserRepository();
   final _updateRepository = MockUpdateFamilyUserRepository();
   final _deleteRepository = MockDeleteFamilyUserRepository();
-  final _patientCardRepository = MockPatientCardRepository();
+  final _patientCardRepository = MockFetchPatientCardsRepository();
 
   tearDown(() {
     reset(_listRepository);

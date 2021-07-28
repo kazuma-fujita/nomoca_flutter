@@ -1,22 +1,22 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:nomoca_flutter/data/api/patient_card_api.dart';
+import 'package:nomoca_flutter/data/api/fetch_patient_cards_api.dart';
 import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
-import 'package:nomoca_flutter/data/repository/patient_card_repository.dart';
+import 'package:nomoca_flutter/data/repository/fetch_patient_cards_repository.dart';
 import '../../fixture.dart';
 import 'patient_card_repository_test.mocks.dart';
 
-@GenerateMocks([PatientCardApi, UserDao])
+@GenerateMocks([FetchPatientCardsApi, UserDao])
 void main() {
-  late MockPatientCardApi _api;
-  late PatientCardRepository _repository;
+  late MockFetchPatientCardsApi _api;
+  late FetchPatientCardsRepository _repository;
   late MockUserDao _userDao;
 
   setUp(() async {
-    _api = MockPatientCardApi();
+    _api = MockFetchPatientCardsApi();
     _userDao = MockUserDao();
     _repository =
         PatientCardRepositoryImpl(patientCardApi: _api, userDao: _userDao);

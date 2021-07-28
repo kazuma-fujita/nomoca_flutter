@@ -16,7 +16,7 @@ import 'package:nomoca_flutter/data/repository/delete_family_user_repository.dar
     as _i7;
 import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart'
     as _i8;
-import 'package:nomoca_flutter/data/repository/patient_card_repository.dart'
+import 'package:nomoca_flutter/data/repository/fetch_patient_cards_repository.dart'
     as _i9;
 import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart'
     as _i6;
@@ -116,12 +116,12 @@ class MockFetchFamilyUserListRepository extends _i1.Mock
           returnValue: '') as String);
 }
 
-/// A class which mocks [PatientCardRepository].
+/// A class which mocks [FetchPatientCardsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPatientCardRepository extends _i1.Mock
-    implements _i9.PatientCardRepository {
-  MockPatientCardRepository() {
+class MockFetchPatientCardsRepository extends _i1.Mock
+    implements _i9.FetchPatientCardsRepository {
+  MockFetchPatientCardsRepository() {
     _i1.throwOnMissingStub(this);
   }
 

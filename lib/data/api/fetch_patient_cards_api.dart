@@ -3,13 +3,13 @@ import 'package:nomoca_flutter/constants/nomoca_api_properties.dart';
 import 'package:nomoca_flutter/data/api/api_client.dart';
 
 // ignore: one_member_abstracts
-abstract class PatientCardApi {
+abstract class FetchPatientCardsApi {
   Future<String> get({
     required String authenticationToken,
   });
 }
 
-class PatientCardApiImpl implements PatientCardApi {
+class PatientCardApiImpl implements FetchPatientCardsApi {
   PatientCardApiImpl({required this.apiClient});
 
   final ApiClient apiClient;

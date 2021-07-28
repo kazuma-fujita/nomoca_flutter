@@ -22,6 +22,8 @@ void main() {
         _api(
           mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
           nickname: anyNamed('nickname'),
+          osVersion: anyNamed('osVersion'),
+          deviceName: anyNamed('deviceName'),
         ),
       ).thenAnswer((_) async => Future.value());
       // Run the test method.
@@ -33,6 +35,8 @@ void main() {
       verify(_api(
         mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
         nickname: anyNamed('nickname'),
+        osVersion: anyNamed('osVersion'),
+        deviceName: anyNamed('deviceName'),
       ));
     });
   });
@@ -43,6 +47,8 @@ void main() {
       when(_api(
         mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
         nickname: anyNamed('nickname'),
+        osVersion: anyNamed('osVersion'),
+        deviceName: anyNamed('deviceName'),
       )).thenThrow(Exception('Exception message.'));
       // Run the test method.
       expect(
@@ -56,6 +62,8 @@ void main() {
       verify(_api(
         mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
         nickname: anyNamed('nickname'),
+        osVersion: anyNamed('osVersion'),
+        deviceName: anyNamed('deviceName'),
       ));
     });
   });

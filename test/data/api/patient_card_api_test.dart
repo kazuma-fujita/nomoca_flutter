@@ -2,13 +2,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nomoca_flutter/data/api/api_client.dart';
-import 'package:nomoca_flutter/data/api/patient_card_api.dart';
+import 'package:nomoca_flutter/data/api/fetch_patient_cards_api.dart';
 import 'patient_card_api_test.mocks.dart';
 
 @GenerateMocks([ApiClient])
 void main() {
   late MockApiClient _apiClient;
-  late PatientCardApi _patientCardApi;
+  late FetchPatientCardsApi _patientCardApi;
 
   setUp(() async {
     _apiClient = MockApiClient();

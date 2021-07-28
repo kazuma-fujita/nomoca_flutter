@@ -5,7 +5,7 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:nomoca_flutter/data/api/patient_card_api.dart' as _i2;
+import 'package:nomoca_flutter/data/api/fetch_patient_cards_api.dart' as _i2;
 import 'package:nomoca_flutter/data/dao/user_dao.dart' as _i4;
 import 'package:nomoca_flutter/data/entity/database/user.dart' as _i5;
 
@@ -15,11 +15,12 @@ import 'package:nomoca_flutter/data/entity/database/user.dart' as _i5;
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: unnecessary_parenthesis
 
-/// A class which mocks [PatientCardApi].
+/// A class which mocks [FetchPatientCardsApi].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPatientCardApi extends _i1.Mock implements _i2.PatientCardApi {
-  MockPatientCardApi() {
+class MockFetchPatientCardsApi extends _i1.Mock
+    implements _i2.FetchPatientCardsApi {
+  MockFetchPatientCardsApi() {
     _i1.throwOnMissingStub(this);
   }
 

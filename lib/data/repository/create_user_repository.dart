@@ -5,8 +5,6 @@ abstract class CreateUserRepository {
   Future<void> createUser({
     required String mobilePhoneNumber,
     required String nickname,
-    String? osVersion,
-    String? deviceName,
   });
 }
 
@@ -19,9 +17,10 @@ class CreateUserRepositoryImpl extends CreateUserRepository {
   Future<void> createUser({
     required String mobilePhoneNumber,
     required String nickname,
-    String? osVersion,
-    String? deviceName,
   }) async {
+    // TODO: UNFIXED
+    const osVersion = '';
+    const deviceName = '';
     await createUserApi(
       mobilePhoneNumber: mobilePhoneNumber,
       nickname: nickname,

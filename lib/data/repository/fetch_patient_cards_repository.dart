@@ -1,20 +1,20 @@
 import 'dart:convert';
 
 import 'package:nomoca_flutter/constants/nomoca_urls.dart';
-import 'package:nomoca_flutter/data/api/patient_card_api.dart';
+import 'package:nomoca_flutter/data/api/fetch_patient_cards_api.dart';
 import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 import 'package:nomoca_flutter/data/repository/authenticated.dart';
 
 // ignore: one_member_abstracts
-abstract class PatientCardRepository with Authenticated {
+abstract class FetchPatientCardsRepository with Authenticated {
   Future<List<PatientCardEntity>> fetchList();
 }
 
-class PatientCardRepositoryImpl extends PatientCardRepository {
+class PatientCardRepositoryImpl extends FetchPatientCardsRepository {
   PatientCardRepositoryImpl(
       {required this.patientCardApi, required this.userDao});
-  final PatientCardApi patientCardApi;
+  final FetchPatientCardsApi patientCardApi;
   final UserDao userDao;
 
   @override

@@ -24,18 +24,10 @@ class MockCreateUserRepository extends _i1.Mock
   }
 
   @override
-  _i3.Future<void> createUser(
-          {String? mobilePhoneNumber,
-          String? nickname,
-          String? osVersion,
-          String? deviceName}) =>
+  _i3.Future<void> createUser({String? mobilePhoneNumber, String? nickname}) =>
       (super.noSuchMethod(
-          Invocation.method(#createUser, [], {
-            #mobilePhoneNumber: mobilePhoneNumber,
-            #nickname: nickname,
-            #osVersion: osVersion,
-            #deviceName: deviceName
-          }),
+          Invocation.method(#createUser, [],
+              {#mobilePhoneNumber: mobilePhoneNumber, #nickname: nickname}),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future.value()) as _i3.Future<void>);
 }

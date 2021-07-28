@@ -5,7 +5,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
-import 'package:nomoca_flutter/data/repository/patient_card_repository.dart';
+import 'package:nomoca_flutter/data/repository/fetch_patient_cards_repository.dart';
 import 'package:nomoca_flutter/data/repository/update_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/user_management_repository.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
@@ -16,17 +16,20 @@ import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
 
 import 'update_user_integration_test.mocks.dart';
 
-@GenerateMocks(
-    [UserManagementRepository, UpdateUserRepository, PatientCardRepository])
+@GenerateMocks([
+  UserManagementRepository,
+  UpdateUserRepository,
+  FetchPatientCardsRepository
+])
 void main() {
   late MockUserManagementRepository _userManagementRepository;
   late MockUpdateUserRepository _updateUserRepository;
-  late MockPatientCardRepository _patientCardRepository;
+  late MockFetchPatientCardsRepository _patientCardRepository;
 
   setUp(() {
     _userManagementRepository = MockUserManagementRepository();
     _updateUserRepository = MockUpdateUserRepository();
-    _patientCardRepository = MockPatientCardRepository();
+    _patientCardRepository = MockFetchPatientCardsRepository();
   });
 
   ProviderScope setUpProviderScope() {
