@@ -5,8 +5,6 @@ abstract class AuthenticationRepository {
   Future<void> authentication({
     required String mobilePhoneNumber,
     required String authCode,
-    String? osVersion,
-    String? deviceName,
   });
 }
 
@@ -19,9 +17,10 @@ class AuthenticationRepositoryImpl extends AuthenticationRepository {
   Future<void> authentication({
     required String mobilePhoneNumber,
     required String authCode,
-    String? osVersion,
-    String? deviceName,
   }) async {
+    // TODO: 動的に値を取得
+    const osVersion = '';
+    const deviceName = '';
     await authenticationApi(
       mobilePhoneNumber: mobilePhoneNumber,
       authCode: authCode,
@@ -38,8 +37,6 @@ class FakeAuthenticationRepositoryImpl extends AuthenticationRepository {
   Future<void> authentication({
     required String mobilePhoneNumber,
     required String authCode,
-    String? osVersion,
-    String? deviceName,
   }) async =>
       Future.delayed(const Duration(seconds: 1), () => Future.value());
 }
