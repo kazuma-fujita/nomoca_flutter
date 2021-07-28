@@ -6,7 +6,6 @@ import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/repository/registration_card_repository.dart';
 
-import '../../fixture.dart';
 import 'registration_card_repository_test.mocks.dart';
 
 @GenerateMocks([RegistrationCardApi, UserDao])

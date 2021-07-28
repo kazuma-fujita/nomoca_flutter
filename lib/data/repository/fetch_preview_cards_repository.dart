@@ -7,7 +7,7 @@ import 'package:nomoca_flutter/data/repository/authenticated.dart';
 
 // ignore: one_member_abstracts
 abstract class FetchPreviewCardsRepository with Authenticated {
-  Future<void> fetchCards({
+  Future<PreviewCardsEntity> fetchCards({
     required String userToken,
     int? familyUserId,
   });
