@@ -32,17 +32,10 @@ class MockAuthenticationRepository extends _i1.Mock
 
   @override
   _i3.Future<void> authentication(
-          {String? mobilePhoneNumber,
-          String? authCode,
-          String? osVersion,
-          String? deviceName}) =>
+          {String? mobilePhoneNumber, String? authCode}) =>
       (super.noSuchMethod(
-          Invocation.method(#authentication, [], {
-            #mobilePhoneNumber: mobilePhoneNumber,
-            #authCode: authCode,
-            #osVersion: osVersion,
-            #deviceName: deviceName
-          }),
+          Invocation.method(#authentication, [],
+              {#mobilePhoneNumber: mobilePhoneNumber, #authCode: authCode}),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future.value()) as _i3.Future<void>);
 }

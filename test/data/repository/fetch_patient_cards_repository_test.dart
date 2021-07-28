@@ -7,7 +7,7 @@ import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 import 'package:nomoca_flutter/data/repository/fetch_patient_cards_repository.dart';
 import '../../fixture.dart';
-import 'patient_card_repository_test.mocks.dart';
+import 'fetch_patient_cards_repository_test.mocks.dart';
 
 @GenerateMocks([FetchPatientCardsApi, UserDao])
 void main() {

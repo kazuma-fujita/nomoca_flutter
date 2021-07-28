@@ -5,9 +5,7 @@ import 'package:nomoca_flutter/data/api/get_institution_api.dart';
 import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/institution_entity.dart';
-import 'package:nomoca_flutter/data/entity/remote/keyword_search_entity.dart';
 import 'package:nomoca_flutter/data/repository/get_institution_repository.dart';
-import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
 
 import '../../fixture.dart';
 import 'get_institution_repository_test.mocks.dart';

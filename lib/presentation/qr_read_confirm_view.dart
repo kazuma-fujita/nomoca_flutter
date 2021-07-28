@@ -17,13 +17,12 @@ class QrReadConfirmView extends HookConsumerWidget {
       appBar: AppBar(
         title: const Text('診察券登録'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            disabledColor: Colors.black,
+          TextButton(
             // List取得成功時以外は+ボタンdisabled
             onPressed: () => asyncValue is AsyncData
                 ? _transitionToNextScreen(context)
                 : null,
+            child: const Text('登録'),
           ),
         ],
       ),
