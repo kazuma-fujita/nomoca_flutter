@@ -2,22 +2,48 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
+import 'package:nomoca_flutter/data/entity/remote/preview_cards_entity.dart';
+import 'package:nomoca_flutter/states/arguments/fetch_preview_cards_provider_arguments.dart';
+import 'package:nomoca_flutter/states/providers/fetch_preview_cards_provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-@immutable
-class ConfirmViewArguments {
-  const ConfirmViewArguments({required this.type, required this.data});
-  final String type;
-  final String data;
-}
-
-class QrReadInputView extends StatefulWidget {
+class QrReadInputView extends HookConsumerWidget {
   @override
-  _QrReadInputViewState createState() => _QrReadInputViewState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userToken = useState('');
+    final args = FetchPreviewCardsProviderArguments(
+        userToken: userToken.value, familyUserId: null);
+    final asyncValue = ref.watch(fetchPreviewCardsProvider(args));
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('診察券登録'),
+      ),
+      body: QrReadWidget(
+        fetchPreviewCardsAsyncValue: asyncValue,
+        userToken: userToken,
+      ),
+    );
+  }
 }
 
-class _QrReadInputViewState extends State<QrReadInputView> {
+class QrReadWidget extends StatefulWidget {
+  const QrReadWidget({
+    required this.fetchPreviewCardsAsyncValue,
+    required this.userToken,
+  });
+
+  final AsyncValue<PreviewCardsEntity> fetchPreviewCardsAsyncValue;
+  final ValueNotifier<String> userToken;
+
+  @override
+  _QrReadWidgetState createState() => _QrReadWidgetState();
+}
+
+class _QrReadWidgetState extends State<QrReadWidget> {
   QRViewController? _qrController;
   final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
   bool _isQRScanned = false;
@@ -41,103 +67,6 @@ class _QrReadInputViewState extends State<QrReadInputView> {
 
   @override
   Widget build(BuildContext context) {
-    // _checkPermissionState();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('診察券登録'),
-      ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 4,
-            // child: _buildPermissionState(context),
-            child: _buildQRView(context),
-          ),
-          Expanded(
-            flex: 1,
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  const Text('Scan a code'),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await _qrController?.toggleFlash();
-                            setState(() {});
-                          },
-                          child: FutureBuilder(
-                            future: _qrController?.getFlashStatus(),
-                            builder: (context, snapshot) =>
-                                Text('Flash: ${snapshot.data}'),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await _qrController?.flipCamera();
-                            setState(() {});
-                          },
-                          child: FutureBuilder(
-                            future: _qrController?.getCameraInfo(),
-                            builder: (context, snapshot) => snapshot.data !=
-                                    null
-                                ? Text(
-                                    'Camera facing ${describeEnum(snapshot.data!)}')
-                                : const Text('loading'),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await _qrController?.pauseCamera();
-                          },
-                          child: const Text(
-                            'pause',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await _qrController?.resumeCamera();
-                          },
-                          child: const Text(
-                            'resume',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQRView(BuildContext context) {
     return QRView(
       key: _qrKey,
       onQRViewCreated: _onQRViewCreated,
@@ -146,7 +75,6 @@ class _QrReadInputViewState extends State<QrReadInputView> {
         borderRadius: 16,
         borderLength: 24,
         borderWidth: 8,
-        // cutOutSize: scanArea,
       ),
     );
   }
@@ -161,26 +89,47 @@ class _QrReadInputViewState extends State<QrReadInputView> {
       if (scanData.code.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('QR code data does not exist'),
+            content: Text('QRコードが読み取れません'),
           ),
         );
         return;
       }
-      // 次の画面へ遷移
-      _transitionToNextScreen(describeEnum(scanData.format), scanData.code);
+      // トークンを最新化
+      widget.userToken.value = scanData.code;
+      print('qrCode value:${widget.userToken.value}');
+
+      widget.fetchPreviewCardsAsyncValue.when(
+        data: (entity) async {
+          // ローディング非表示
+          await EasyLoading.dismiss();
+          // 次の画面へ遷移
+          await _transitionToNextScreen(entity);
+        },
+        loading: () async {
+          // ローディング表示
+          await EasyLoading.show();
+        },
+        error: (error, _) {
+          // ローディング非表示
+          EasyLoading.dismiss();
+          // SnackBar表示
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(error.toString())));
+        },
+      );
     });
   }
 
-  Future<void> _transitionToNextScreen(String type, String data) async {
+  Future<void> _transitionToNextScreen(PreviewCardsEntity entity) async {
     if (!_isQRScanned) {
       // カメラを一時停止
-      _qrController?.pauseCamera();
+      await _qrController?.pauseCamera();
       _isQRScanned = true;
       // 次の画面へ遷移
       await Navigator.pushNamed(
         context,
         RouteNames.qrReadConfirm,
-        arguments: ConfirmViewArguments(type: type, data: data),
+        arguments: entity,
       ).then(
         // 遷移先画面から戻った場合カメラを再開
         (value) {
@@ -190,33 +139,4 @@ class _QrReadInputViewState extends State<QrReadInputView> {
       );
     }
   }
-// Future<void> _checkPermissionState() async {
-//   if (!await Permission.camera.status.isGranted) {
-//     _showRequestPermissionDialog(context);
-//   }
-// }
-//
-// Future<void> _showRequestPermissionDialog(BuildContext context) async {
-//   await showDialog<void>(
-//     context: context,
-//     builder: (BuildContext context) {
-//       return AlertDialog(
-//         title: const Text('カメラを許可してください'),
-//         content: const Text('QRコードを読み取る為にカメラを利用します'),
-//         actions: <Widget>[
-//           ElevatedButton(
-//             onPressed: () => Navigator.pop(context),
-//             child: const Text('キャンセル'),
-//           ),
-//           ElevatedButton(
-//             onPressed: () async {
-//               openAppSettings();
-//             },
-//             child: const Text('設定'),
-//           ),
-//         ],
-//       );
-//     },
-//   );
-// }
 }

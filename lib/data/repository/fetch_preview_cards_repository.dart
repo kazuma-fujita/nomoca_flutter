@@ -41,3 +41,34 @@ class FetchPreviewCardsRepositoryImpl extends FetchPreviewCardsRepository {
     }
   }
 }
+
+class FakeFetchPreviewCardsRepositoryImpl extends FetchPreviewCardsRepository {
+  FakeFetchPreviewCardsRepositoryImpl();
+
+  @override
+  Future<PreviewCardsEntity> fetchCards({
+    required String userToken,
+    int? familyUserId,
+  }) async =>
+      Future.delayed(const Duration(seconds: 2), () => fakePreviewCardsEntity);
+}
+
+// main.dartでQrReadConfirmViewのモックでも使用
+const fakePreviewCardsEntity = PreviewCardsEntity(sourceUserId: 123, patients: [
+  PreviewCardPatientEntity(
+    nameKana: 'ｻﾄｳ ﾀﾛｳ',
+    localId: '12345',
+    institution: PreviewCardInstitutionEntity(
+      institutionId: 1234,
+      institutionName: '田中歯科',
+    ),
+  ),
+  // PreviewCardPatientEntity(
+  //   nameKana: 'ｻﾄｳ ﾀﾛｳ',
+  //   localId: '6789012345',
+  //   institution: PreviewCardInstitutionEntity(
+  //     institutionId: 5678,
+  //     institutionName: '長い名前デンタルクリニック長い名前デンタルクリニック',
+  //   ),
+  // )
+]);

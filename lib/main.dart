@@ -18,6 +18,7 @@ import 'package:nomoca_flutter/presentation/authentication_view.dart';
 import 'package:nomoca_flutter/presentation/institution_view.dart';
 import 'package:nomoca_flutter/presentation/notification_detail_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card_view.dart';
+import 'package:nomoca_flutter/presentation/qr_read_confirm_view.dart';
 import 'package:nomoca_flutter/presentation/qr_read_input_view.dart';
 import 'package:nomoca_flutter/presentation/qr_read_select_user_type_view.dart';
 import 'package:nomoca_flutter/presentation/sign_in_view.dart';
@@ -26,6 +27,7 @@ import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
 import 'package:nomoca_flutter/states/providers/authentication_provider.dart';
 import 'package:nomoca_flutter/states/providers/create_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';
+import 'package:nomoca_flutter/states/providers/fetch_preview_cards_provider.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
 import 'package:nomoca_flutter/states/providers/send_short_message_provider.dart';
@@ -41,6 +43,7 @@ import 'package:nomoca_flutter/themes/theme_data.dart';
 
 import 'constants/db_table_names.dart';
 import 'data/entity/remote/patient_card_entity.dart';
+import 'data/repository/fetch_preview_cards_repository.dart';
 
 Future<void> main() async {
   initEasyLoading();
@@ -63,9 +66,9 @@ class MyApp extends StatelessWidget {
       title: 'Nomoca application',
       // Default theme
       theme: lightThemeData,
-      // theme: darkThemeData,
       // Dark mode theme
-      darkTheme: darkThemeData,
+      darkTheme: lightThemeData,
+      // darkTheme: darkThemeData,
       routes: <String, WidgetBuilder>{
         RouteNames.signUp: (_) => SignUpView(),
         RouteNames.signIn: (_) => SignInView(),
@@ -75,8 +78,15 @@ class MyApp extends StatelessWidget {
         RouteNames.upsertUser: (_) => UpsertUserView(),
         RouteNames.notificationDetail: (_) => NotificationDetailView(),
         RouteNames.qrReadInput: (_) => QrReadInputView(),
+        RouteNames.qrReadConfirm: (_) => QrReadConfirmView(),
       },
-      home: QrReadSelectUserTypeView(),
+      home: Navigator(
+        // 画面間引数設定
+        onGenerateRoute: (_) => MaterialPageRoute(
+          builder: (_) => QrReadConfirmView(),
+          settings: const RouteSettings(arguments: fakePreviewCardsEntity),
+        ),
+      ),
       builder: EasyLoading.init(),
     );
   }
@@ -173,4 +183,6 @@ final _overrides = [
   ),
   // deleteFamilyUserProvider
   //     .overrideWithProvider((ref, param) => Future.value()),
+  fetchPreviewCardsRepositoryProvider
+      .overrideWithValue(FakeFetchPreviewCardsRepositoryImpl()),
 ];

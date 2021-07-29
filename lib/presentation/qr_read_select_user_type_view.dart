@@ -4,6 +4,7 @@ import 'package:nomoca_flutter/constants/nomoca_urls.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/presentation/common/launch_url.dart';
 import 'package:nomoca_flutter/presentation/components/atoms/outlined_white_button.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class QrReadSelectUserTypeView extends StatelessWidget {
   @override
@@ -53,7 +54,12 @@ class QrReadSelectUserTypeView extends StatelessWidget {
                 const SizedBox(height: 32),
                 OutlinedWhiteButton(
                   onPressed: () async {
-                    await Navigator.pushNamed(context, RouteNames.signIn);
+                    if (await Permission.camera.request().isGranted) {
+                      await Navigator.pushNamed(
+                          context, RouteNames.qrReadInput);
+                    } else {
+                      await showRequestPermissionDialog(context);
+                    }
                   },
                   label: '自分の診察券',
                 ),
@@ -87,6 +93,30 @@ class QrReadSelectUserTypeView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> showRequestPermissionDialog(BuildContext context) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('カメラを許可してください'),
+          content: const Text('QRコードを読み取る為にカメラを利用します'),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('キャンセル'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                openAppSettings();
+              },
+              child: const Text('設定'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
