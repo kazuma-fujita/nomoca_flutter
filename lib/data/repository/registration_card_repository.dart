@@ -30,3 +30,14 @@ class RegistrationCardRepositoryImpl extends RegistrationCardRepository {
     );
   }
 }
+
+class FakeRegistrationCardRepositoryImpl extends RegistrationCardRepository {
+  FakeRegistrationCardRepositoryImpl();
+
+  @override
+  Future<void> registration({
+    required int sourceUserId,
+    int? familyUserId,
+  }) async =>
+      Future.delayed(const Duration(seconds: 3), () => Future.value());
+}

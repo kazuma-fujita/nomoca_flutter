@@ -24,3 +24,9 @@ class UserManagementRepositoryImpl extends UserManagementRepository {
     return UserNicknameEntity(id: user.userId!, nickname: user.nickname!);
   }
 }
+
+class FakeUserManagementRepositoryImpl extends UserManagementRepository {
+  @override
+  UserNicknameEntity getUser() =>
+      const UserNicknameEntity(id: 1234, nickname: '太郎');
+}

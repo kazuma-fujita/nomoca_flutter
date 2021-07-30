@@ -4,12 +4,19 @@ import 'package:nomoca_flutter/constants/nomoca_urls.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/presentation/common/launch_url.dart';
 import 'package:nomoca_flutter/presentation/components/atoms/outlined_white_button.dart';
+import 'package:nomoca_flutter/presentation/qr_read_input_view.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class QrReadSelectUserTypeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        // AppBarの透過度。0で透過
+        backgroundColor: Colors.white.withOpacity(0),
+      ),
+      // 透過を有効にするフラグ
+      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           // 背景画像
@@ -67,7 +74,7 @@ class QrReadSelectUserTypeView extends StatelessWidget {
                 Column(
                   children: [
                     TextButton(
-                      onPressed: () => launchUrl(NomocaUrls.termsUrl),
+                      onPressed: () => Navigator.pop(context),
                       child: const Text(
                         'スキップする',
                         style: TextStyle(
@@ -110,7 +117,7 @@ class QrReadSelectUserTypeView extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () async {
-                openAppSettings();
+                await openAppSettings();
               },
               child: const Text('設定'),
             ),

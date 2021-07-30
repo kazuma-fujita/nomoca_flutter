@@ -3,44 +3,51 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/errors/authentication_error.dart';
+import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
+import 'package:nomoca_flutter/presentation/qr_read_select_user_type_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
 import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
 
 @immutable
-class UserManagementViewData {
-  const UserManagementViewData({
+class _UserManagementViewData {
+  const _UserManagementViewData({
     required this.caption,
     required this.description,
     required this.transitionRoute,
+    required this.isFullScreenDialog,
   });
   final String caption;
   final String description;
-  final String transitionRoute;
+  final Widget transitionRoute;
+  final bool isFullScreenDialog;
 }
 
-final userManagementViewDataProvider =
-    Provider.autoDispose<List<UserManagementViewData>>((ref) => const [
-          UserManagementViewData(
+final _userManagementViewDataProvider =
+    Provider.autoDispose<List<_UserManagementViewData>>((ref) => [
+          _UserManagementViewData(
             caption: '家族アカウント管理',
             description: '家族アカウントの追加/編集/削除を行います',
-            transitionRoute: '',
+            transitionRoute: FamilyUserListView(),
+            isFullScreenDialog: false,
           ),
-          UserManagementViewData(
+          _UserManagementViewData(
             caption: '診察券登録',
             description: '診察券QRコードを読み込んで病院を追加します',
-            transitionRoute: '',
+            transitionRoute: QrReadSelectUserTypeView(),
+            isFullScreenDialog: true,
           ),
-          UserManagementViewData(
+          _UserManagementViewData(
             caption: '設定',
             description: '通知設定やログアウトを行います',
-            transitionRoute: '',
+            transitionRoute: FamilyUserListView(),
+            isFullScreenDialog: false,
           ),
         ]);
 
 class UserManagementView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewDataList = ref.read(userManagementViewDataProvider);
+    final viewDataList = ref.read(_userManagementViewDataProvider);
     return Scaffold(
       // DBからUserEntity取得
       body: ref.watch(userManagementProvider).maybeWhen(
@@ -84,8 +91,9 @@ class UserManagementView extends HookConsumerWidget {
             error: (error, _) {
               WidgetsBinding.instance!.addPostFrameCallback((_) async {
                 if (error is AuthenticationError) {
-                  // 認証エラーはログイン画面へ遷移
-                  await Navigator.pushNamed(context, RouteNames.signIn);
+                  // 認証エラーはtop画面へ遷移
+                  await Navigator.pushNamedAndRemoveUntil(
+                      context, RouteNames.top, (_) => false);
                 }
                 // その他エラーをSnackBarで表示
                 ScaffoldMessenger.of(context)
@@ -97,7 +105,7 @@ class UserManagementView extends HookConsumerWidget {
     );
   }
 
-  Widget _listItem(UserManagementViewData viewData, BuildContext context) {
+  Widget _listItem(_UserManagementViewData viewData, BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(width: 1, color: Colors.grey)),
@@ -119,7 +127,12 @@ class UserManagementView extends HookConsumerWidget {
         ),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {
-          // _transitionToNextScreen(context, user: user);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => viewData.transitionRoute,
+                fullscreenDialog: viewData.isFullScreenDialog,
+              ));
         },
       ),
     );

@@ -16,7 +16,9 @@ class QrReadInputView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userToken = useState('');
     final args = FetchPreviewCardsProviderArguments(
-        userToken: userToken.value, familyUserId: null);
+      userToken: userToken.value,
+      familyUserId: null,
+    );
     final asyncValue = ref.watch(fetchPreviewCardsProvider(args));
     return Scaffold(
       appBar: AppBar(

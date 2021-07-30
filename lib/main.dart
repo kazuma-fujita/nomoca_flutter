@@ -13,6 +13,7 @@ import 'package:nomoca_flutter/data/repository/fetch_notification_list_repositor
 import 'package:nomoca_flutter/data/repository/get_favorite_patient_card_repository.dart';
 import 'package:nomoca_flutter/data/repository/get_institution_repository.dart';
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
+import 'package:nomoca_flutter/data/repository/registration_card_repository.dart';
 import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart';
 import 'package:nomoca_flutter/presentation/authentication_view.dart';
 import 'package:nomoca_flutter/presentation/institution_view.dart';
@@ -23,17 +24,21 @@ import 'package:nomoca_flutter/presentation/qr_read_input_view.dart';
 import 'package:nomoca_flutter/presentation/qr_read_select_user_type_view.dart';
 import 'package:nomoca_flutter/presentation/sign_in_view.dart';
 import 'package:nomoca_flutter/presentation/sign_up_view.dart';
+import 'package:nomoca_flutter/presentation/top_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
+import 'package:nomoca_flutter/presentation/user_management_view.dart';
 import 'package:nomoca_flutter/states/providers/authentication_provider.dart';
 import 'package:nomoca_flutter/states/providers/create_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/fetch_preview_cards_provider.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
+import 'package:nomoca_flutter/states/providers/registration_card_provider.dart';
 import 'package:nomoca_flutter/states/providers/send_short_message_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_read_post_provider.dart';
 import 'package:nomoca_flutter/states/providers/upsert_user_provider.dart';
+import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/favorite_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
@@ -44,6 +49,7 @@ import 'package:nomoca_flutter/themes/theme_data.dart';
 import 'constants/db_table_names.dart';
 import 'data/entity/remote/patient_card_entity.dart';
 import 'data/repository/fetch_preview_cards_repository.dart';
+import 'data/repository/user_management_repository.dart';
 
 Future<void> main() async {
   initEasyLoading();
@@ -70,6 +76,7 @@ class MyApp extends StatelessWidget {
       darkTheme: lightThemeData,
       // darkTheme: darkThemeData,
       routes: <String, WidgetBuilder>{
+        RouteNames.top: (_) => TopView(),
         RouteNames.signUp: (_) => SignUpView(),
         RouteNames.signIn: (_) => SignInView(),
         RouteNames.authentication: (_) => AuthenticationView(),
@@ -77,16 +84,18 @@ class MyApp extends StatelessWidget {
         RouteNames.institution: (_) => InstitutionView(),
         RouteNames.upsertUser: (_) => UpsertUserView(),
         RouteNames.notificationDetail: (_) => NotificationDetailView(),
+        RouteNames.userManagement: (_) => UserManagementView(),
         RouteNames.qrReadInput: (_) => QrReadInputView(),
         RouteNames.qrReadConfirm: (_) => QrReadConfirmView(),
       },
-      home: Navigator(
-        // 画面間引数設定
-        onGenerateRoute: (_) => MaterialPageRoute(
-          builder: (_) => QrReadConfirmView(),
-          settings: const RouteSettings(arguments: fakePreviewCardsEntity),
-        ),
-      ),
+      home: UserManagementView(),
+      // home: Navigator(
+      //   // Debug用 QrReadConfirm画面引数設定
+      //   onGenerateRoute: (_) => MaterialPageRoute(
+      //     builder: (_) => QrReadConfirmView(),
+      //     settings: const RouteSettings(arguments: fakePreviewCardsEntity),
+      //   ),
+      // ),
       builder: EasyLoading.init(),
     );
   }
@@ -183,6 +192,10 @@ final _overrides = [
   ),
   // deleteFamilyUserProvider
   //     .overrideWithProvider((ref, param) => Future.value()),
+  userManagementRepositoryProvider
+      .overrideWithValue(FakeUserManagementRepositoryImpl()),
   fetchPreviewCardsRepositoryProvider
       .overrideWithValue(FakeFetchPreviewCardsRepositoryImpl()),
+  registrationCardRepositoryProvider
+      .overrideWithValue(FakeRegistrationCardRepositoryImpl()),
 ];
