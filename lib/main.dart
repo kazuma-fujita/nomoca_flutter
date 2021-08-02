@@ -16,12 +16,12 @@ import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
 import 'package:nomoca_flutter/data/repository/registration_card_repository.dart';
 import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart';
 import 'package:nomoca_flutter/presentation/authentication_view.dart';
+import 'package:nomoca_flutter/presentation/bottom_navigation_bar_view.dart';
 import 'package:nomoca_flutter/presentation/institution_view.dart';
 import 'package:nomoca_flutter/presentation/notification_detail_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/qr_read_confirm_view.dart';
 import 'package:nomoca_flutter/presentation/qr_read_input_view.dart';
-import 'package:nomoca_flutter/presentation/qr_read_select_user_type_view.dart';
 import 'package:nomoca_flutter/presentation/sign_in_view.dart';
 import 'package:nomoca_flutter/presentation/sign_up_view.dart';
 import 'package:nomoca_flutter/presentation/top_view.dart';
@@ -88,7 +88,7 @@ class MyApp extends StatelessWidget {
         RouteNames.qrReadInput: (_) => QrReadInputView(),
         RouteNames.qrReadConfirm: (_) => QrReadConfirmView(),
       },
-      home: UserManagementView(),
+      home: BottomNavigationBarView(),
       // home: Navigator(
       //   // Debug用 QrReadConfirm画面引数設定
       //   onGenerateRoute: (_) => MaterialPageRoute(
