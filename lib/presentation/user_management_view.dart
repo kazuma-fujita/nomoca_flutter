@@ -47,6 +47,17 @@ final _userManagementViewDataProvider =
 class UserManagementView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // 診察券登録画面戻りのハンドリング
+    final result = ModalRoute.of(context)!.settings.arguments as String?;
+    if (result != null) {
+      // 戻り値が存在する場合メッセージをSnackBarで表示
+      // 全Widgetのbuild後にsnackBarを表示
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(result)));
+      });
+    }
+
     final viewDataList = ref.read(_userManagementViewDataProvider);
     return Scaffold(
       // DBからUserEntity取得
@@ -71,7 +82,7 @@ class UserManagementView extends HookConsumerWidget {
                   Center(
                     child: ElevatedButton(
                       onPressed: () =>
-                          _transitionToNextScreen(context, user: user),
+                          _transitionToUpsertUserView(context, user: user),
                       child: const Text('プロフィール編集'),
                     ),
                   ),
@@ -138,7 +149,7 @@ class UserManagementView extends HookConsumerWidget {
     );
   }
 
-  Future<void> _transitionToNextScreen(BuildContext context,
+  Future<void> _transitionToUpsertUserView(BuildContext context,
       {required UserNicknameEntity user}) async {
     // upsert-user画面へ遷移。pushNamedの戻り値は遷移先から取得した値。
     final result = await Navigator.pushNamed(context, RouteNames.upsertUser,

@@ -38,6 +38,8 @@ class FakeRegistrationCardRepositoryImpl extends RegistrationCardRepository {
   Future<void> registration({
     required int sourceUserId,
     int? familyUserId,
-  }) async =>
-      Future.delayed(const Duration(seconds: 3), () => Future.value());
+  }) async {
+    print('FakeRegistrationCardRepositoryImpl $sourceUserId / $familyUserId');
+    return Future.delayed(const Duration(seconds: 3), () => Future.value());
+  }
 }
