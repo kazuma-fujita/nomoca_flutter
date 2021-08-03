@@ -12,8 +12,6 @@ class NotificationDetailView extends HookConsumerWidget with AssetImagePath {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final notification =
-    //     ModalRoute.of(context)!.settings.arguments as NotificationEntity?;
     return WillPopScope(
       // 戻るボタンevent
       onWillPop: () async {

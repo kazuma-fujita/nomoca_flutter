@@ -45,11 +45,10 @@ class RouteGenerator {
           builder: (context) => InstitutionView(),
         );
       case RouteNames.notificationDetail:
-        return MaterialPageRoute(
-          builder: (context) => NotificationDetailView(
-            arguments as NotificationEntity?,
-          ),
-        );
+        return arguments is NotificationEntity?
+            ? MaterialPageRoute(
+                builder: (context) => NotificationDetailView(arguments))
+            : MaterialPageRoute(builder: (context) => TopView());
       case RouteNames.upsertUser:
         return MaterialPageRoute(
           builder: (context) => UpsertUserView(),
