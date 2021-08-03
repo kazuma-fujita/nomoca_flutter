@@ -47,8 +47,15 @@ void main() {
       ],
       child: MaterialApp(
         home: NotificationListView(),
-        routes: <String, WidgetBuilder>{
-          RouteNames.notificationDetail: (_) => NotificationDetailView(),
+        onGenerateRoute: (RouteSettings settings) {
+          switch (settings.name) {
+            case RouteNames.notificationDetail:
+              return MaterialPageRoute(
+                builder: (context) => NotificationDetailView(
+                  settings.arguments as NotificationEntity?,
+                ),
+              );
+          }
         },
         builder: EasyLoading.init(),
       ),

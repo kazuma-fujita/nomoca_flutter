@@ -6,23 +6,27 @@ import 'package:nomoca_flutter/presentation/asset_image_path.dart';
 import 'package:nomoca_flutter/states/providers/update_read_post_provider.dart';
 
 class NotificationDetailView extends HookConsumerWidget with AssetImagePath {
+  const NotificationDetailView(this.notification);
+
+  final NotificationEntity? notification;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notification =
-        ModalRoute.of(context)!.settings.arguments as NotificationEntity?;
+    // final notification =
+    //     ModalRoute.of(context)!.settings.arguments as NotificationEntity?;
     return WillPopScope(
       // 戻るボタンevent
       onWillPop: () async {
         // 既読API実行
         ref.read(updateReadPostProvider(notification!.id));
-        Navigator.pop(context, notification.id);
+        Navigator.pop(context, notification!.id);
         return false;
       },
       child: Scaffold(
         appBar: AppBar(
           title: Text(notification!.detail.contributor),
         ),
-        body: _body(notification, context),
+        body: _body(notification!, context),
       ),
     );
   }

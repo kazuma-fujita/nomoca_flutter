@@ -8,6 +8,8 @@ class RouteNames {
   static const upsertUser = '/upsert-user';
   static const notificationDetail = '/notification-detail';
   static const userManagement = '/user-management';
+  static const familyUserList = '/family-user-list';
+  static const qrReadSelectUserType = '/qr-read-select-user-type';
   static const qrReadInput = '/qr-read-input';
   static const qrReadConfirm = '/qr-read-confirm';
 }

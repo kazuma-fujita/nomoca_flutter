@@ -14,11 +14,13 @@ class _UserManagementViewData {
     required this.caption,
     required this.description,
     required this.transitionRoute,
+    required this.transitionRouteName,
     required this.isFullScreenDialog,
   });
   final String caption;
   final String description;
   final Widget transitionRoute;
+  final String transitionRouteName;
   final bool isFullScreenDialog;
 }
 
@@ -28,18 +30,21 @@ final _userManagementViewDataProvider =
             caption: '家族アカウント管理',
             description: '家族アカウントの追加/編集/削除を行います',
             transitionRoute: FamilyUserListView(),
+            transitionRouteName: RouteNames.familyUserList,
             isFullScreenDialog: false,
           ),
           _UserManagementViewData(
             caption: '診察券登録',
             description: '診察券QRコードを読み込んで病院を追加します',
             transitionRoute: QrReadSelectUserTypeView(),
+            transitionRouteName: RouteNames.qrReadSelectUserType,
             isFullScreenDialog: true,
           ),
           _UserManagementViewData(
             caption: '設定',
             description: '通知設定やログアウトを行います',
             transitionRoute: FamilyUserListView(),
+            transitionRouteName: RouteNames.familyUserList,
             isFullScreenDialog: false,
           ),
         ]);
@@ -138,12 +143,13 @@ class UserManagementView extends HookConsumerWidget {
         ),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => viewData.transitionRoute,
-                fullscreenDialog: viewData.isFullScreenDialog,
-              ));
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => viewData.transitionRoute,
+          //       fullscreenDialog: viewData.isFullScreenDialog,
+          //     ));
+          Navigator.pushNamed(context, viewData.transitionRouteName);
         },
       ),
     );

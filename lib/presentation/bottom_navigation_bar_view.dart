@@ -29,45 +29,42 @@ class BottomNavigationBarView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tabType = ref.watch(_tabTypeProvider);
-    return MaterialApp(
-      theme: ThemeData(primaryColor: Colors.white),
-      home: Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.shifting,
-          selectedItemColor: Colors.black,
-          unselectedItemColor: Colors.grey,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.credit_card),
-              label: '診察券',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: '病院検索',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_outline),
-              label: 'かかりつけ',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.doorbell_outlined),
-              label: 'お知らせ',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle_outlined),
-              label: 'プロフィール',
-            ),
-          ],
-          onTap: (int selectIndex) {
-            tabType.state = _TabType.values[selectIndex];
-          },
-          currentIndex: tabType.state.index,
-        ),
-        body: _views[tabType.state.index],
-        // body: ProviderScope(
-        //   child: _views[_selectIndex],
-        // ),
+    return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.shifting,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.credit_card),
+            label: '診察券',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: '病院検索',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite_outline),
+            label: 'かかりつけ',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.doorbell_outlined),
+            label: 'お知らせ',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle_outlined),
+            label: 'プロフィール',
+          ),
+        ],
+        onTap: (int selectIndex) {
+          tabType.state = _TabType.values[selectIndex];
+        },
+        currentIndex: tabType.state.index,
       ),
+      body: _views[tabType.state.index],
+      // body: ProviderScope(
+      //   child: _views[_selectIndex],
+      // ),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
+import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_family_user_list_repository.dart';
@@ -17,11 +18,13 @@ import 'package:nomoca_flutter/data/repository/registration_card_repository.dart
 import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart';
 import 'package:nomoca_flutter/presentation/authentication_view.dart';
 import 'package:nomoca_flutter/presentation/bottom_navigation_bar_view.dart';
+import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/institution_view.dart';
 import 'package:nomoca_flutter/presentation/notification_detail_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/qr_read_confirm_view.dart';
 import 'package:nomoca_flutter/presentation/qr_read_input_view.dart';
+import 'package:nomoca_flutter/presentation/qr_read_select_user_type_view.dart';
 import 'package:nomoca_flutter/presentation/sign_in_view.dart';
 import 'package:nomoca_flutter/presentation/sign_up_view.dart';
 import 'package:nomoca_flutter/presentation/top_view.dart';
@@ -75,18 +78,50 @@ class MyApp extends StatelessWidget {
       // Dark mode theme
       darkTheme: lightThemeData,
       // darkTheme: darkThemeData,
-      routes: <String, WidgetBuilder>{
-        RouteNames.top: (_) => TopView(),
-        RouteNames.signUp: (_) => SignUpView(),
-        RouteNames.signIn: (_) => SignInView(),
-        RouteNames.authentication: (_) => AuthenticationView(),
-        RouteNames.patientCard: (_) => PatientCardView(),
-        RouteNames.institution: (_) => InstitutionView(),
-        RouteNames.upsertUser: (_) => UpsertUserView(),
-        RouteNames.notificationDetail: (_) => NotificationDetailView(),
-        RouteNames.userManagement: (_) => UserManagementView(),
-        RouteNames.qrReadInput: (_) => QrReadInputView(),
-        RouteNames.qrReadConfirm: (_) => QrReadConfirmView(),
+      // routes: <String, WidgetBuilder>{
+      //   RouteNames.top: (_) => TopView(),
+      //   RouteNames.signUp: (_) => SignUpView(),
+      //   RouteNames.signIn: (_) => SignInView(),
+      //   RouteNames.authentication: (_) => AuthenticationView(),
+      //   RouteNames.patientCard: (_) => PatientCardView(),
+      //   RouteNames.institution: (_) => InstitutionView(),
+      //   RouteNames.upsertUser: (_) => UpsertUserView(),
+      //   RouteNames.notificationDetail: (_) => NotificationDetailView(),
+      //   RouteNames.userManagement: (_) => UserManagementView(),
+      //   RouteNames.qrReadInput: (_) => QrReadInputView(),
+      //   RouteNames.qrReadConfirm: (_) => QrReadConfirmView(),
+      // },
+      // initialRoute: '/',
+      onGenerateRoute: (RouteSettings settings) {
+        switch (settings.name) {
+          case RouteNames.institution:
+            return MaterialPageRoute(
+              builder: (context) => InstitutionView(),
+            );
+          case RouteNames.notificationDetail:
+            return MaterialPageRoute(
+              builder: (context) => NotificationDetailView(
+                settings.arguments as NotificationEntity?,
+              ),
+            );
+          case RouteNames.familyUserList:
+            return MaterialPageRoute(
+              builder: (context) => FamilyUserListView(),
+            );
+          case RouteNames.qrReadSelectUserType:
+            return MaterialPageRoute(
+              builder: (context) => QrReadSelectUserTypeView(),
+              fullscreenDialog: true,
+            );
+          case RouteNames.qrReadInput:
+            return MaterialPageRoute(
+              builder: (context) => QrReadInputView(),
+            );
+          case RouteNames.qrReadConfirm:
+            return MaterialPageRoute(
+              builder: (context) => QrReadConfirmView(),
+            );
+        }
       },
       home: BottomNavigationBarView(),
       // home: Navigator(
