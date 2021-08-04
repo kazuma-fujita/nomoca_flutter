@@ -26,7 +26,7 @@ class _UserManagementViewData {
 
 final _userManagementViewDataProvider =
     Provider.autoDispose<List<_UserManagementViewData>>((ref) => [
-          _UserManagementViewData(
+          const _UserManagementViewData(
             caption: '家族アカウント管理',
             description: '家族アカウントの追加/編集/削除を行います',
             transitionRoute: FamilyUserListView(),
@@ -40,7 +40,7 @@ final _userManagementViewDataProvider =
             transitionRouteName: RouteNames.qrReadSelectUserType,
             isFullScreenDialog: true,
           ),
-          _UserManagementViewData(
+          const _UserManagementViewData(
             caption: '設定',
             description: '通知設定やログアウトを行います',
             transitionRoute: FamilyUserListView(),

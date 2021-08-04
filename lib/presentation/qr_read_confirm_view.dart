@@ -13,13 +13,32 @@ class QrReadConfirmView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final entity =
-    //     ModalRoute.of(context)!.settings.arguments as PreviewCardsEntity?;
-    // final args = RegistrationCardProviderArguments(
-    //   sourceUserId: entity!.sourceUserId,
-    //   familyUserId: null,
-    // );
+    ref.watch(registrationCardProvider).when(
+      data: (isSuccess) async {
+        if (isSuccess) {
+          // ローディング非表示
+          await EasyLoading.dismiss();
+          // 今までのスタックを削除してプロフィール画面へ遷移
+          await Navigator.pushNamedAndRemoveUntil(
+              context, RouteNames.userManagement, (_) => false,
+              arguments: '診察券を登録しました');
+        }
+      },
+      loading: () async {
+        // ローディング表示
+        await EasyLoading.show();
+      },
+      error: (error, _) {
+        // ローディング非表示
+        EasyLoading.dismiss();
+        // SnackBar表示
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(error.toString())));
+      },
+    );
+
     final asyncValue = ref.watch(registrationCardProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('診察券登録'),
@@ -28,12 +47,10 @@ class QrReadConfirmView extends HookConsumerWidget {
             // 読み込み中はボタンdisabled
             onPressed: () => asyncValue is AsyncLoading
                 ? null
-                : _transitionToNextScreen(
-                    context,
-                    ref,
-                    args!.entity.sourceUserId,
-                    args!.familyUserId,
-                  ),
+                : ref.read(registrationCardProvider.notifier).registration(
+                      sourceUserId: args!.entity.sourceUserId,
+                      familyUserId: args!.familyUserId,
+                    ),
             child: Text(
               '登録',
               style: TextStyle(
@@ -105,30 +122,5 @@ class QrReadConfirmView extends HookConsumerWidget {
     await ref
         .read(registrationCardProvider.notifier)
         .registration(sourceUserId: sourceUserId, familyUserId: familyUserId);
-
-    await ref.watch(registrationCardProvider).when(
-      data: (_) async {
-        // ローディング非表示
-        await EasyLoading.dismiss();
-        // 今までのスタックを削除してプロフィール画面へ遷移
-        await Navigator.pushNamedAndRemoveUntil(
-            context, RouteNames.userManagement, (_) => false,
-            arguments: '診察券を登録しました');
-        // // SnackBar表示
-        // ScaffoldMessenger.of(context)
-        //     .showSnackBar(const SnackBar(content: Text('診察券を登録しました')));
-      },
-      loading: () async {
-        // ローディング表示
-        await EasyLoading.show();
-      },
-      error: (error, _) {
-        // ローディング非表示
-        EasyLoading.dismiss();
-        // SnackBar表示
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(error.toString())));
-      },
-    );
   }
 }

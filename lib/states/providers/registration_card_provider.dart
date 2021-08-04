@@ -4,24 +4,12 @@ import 'package:nomoca_flutter/data/repository/registration_card_repository.dart
 import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
 
-abstract class RegistrationCardProvider
-    extends StateNotifier<AsyncValue<void>> {
-  RegistrationCardProvider(AsyncValue<void> state) : super(state);
-
-  Future<void> registration({
-    required int sourceUserId,
-    int? familyUserId,
-  });
-}
-
-class RegistrationCardProviderImpl extends StateNotifier<AsyncValue<void>>
-    implements RegistrationCardProvider {
-  RegistrationCardProviderImpl({required this.registrationCardRepository})
-      : super(const AsyncData(null));
+class RegistrationCardStateNotifier extends StateNotifier<AsyncValue<bool>> {
+  RegistrationCardStateNotifier({required this.registrationCardRepository})
+      : super(const AsyncData(false));
 
   final RegistrationCardRepository registrationCardRepository;
 
-  @override
   Future<void> registration({
     required int sourceUserId,
     int? familyUserId,
@@ -32,7 +20,7 @@ class RegistrationCardProviderImpl extends StateNotifier<AsyncValue<void>>
         sourceUserId: sourceUserId,
         familyUserId: familyUserId,
       );
-      state = const AsyncData(null);
+      state = const AsyncData(true);
     } on Exception catch (error) {
       state = AsyncError(error);
     }
@@ -54,8 +42,8 @@ final registrationCardRepositoryProvider =
 );
 
 final registrationCardProvider = StateNotifierProvider.autoDispose<
-    RegistrationCardProvider, AsyncValue<void>>(
-  (ref) => RegistrationCardProviderImpl(
+    RegistrationCardStateNotifier, AsyncValue<bool>>(
+  (ref) => RegistrationCardStateNotifier(
     registrationCardRepository: ref.read(registrationCardRepositoryProvider),
   ),
 );

@@ -5,17 +5,6 @@ import 'package:nomoca_flutter/data/repository/fetch_preview_cards_repository.da
 import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
 
-// abstract class FetchPreviewCardsProvider
-//     extends StateNotifier<AsyncValue<PreviewCardsEntity>> {
-//   FetchPreviewCardsProvider(AsyncValue<PreviewCardsEntity> state)
-//       : super(state);
-//
-//   Future<void> fetchCards({
-//     required String userToken,
-//     int? familyUserId,
-//   });
-// }
-
 class FetchPreviewCardsStateNotifier
     extends StateNotifier<AsyncValue<PreviewCardsEntity?>> {
   FetchPreviewCardsStateNotifier({required this.fetchPreviewCardsRepository})
