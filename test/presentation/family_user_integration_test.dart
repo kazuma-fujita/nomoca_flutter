@@ -57,7 +57,7 @@ void main() {
         patientCardRepositoryProvider.overrideWithValue(_patientCardRepository),
       ],
       child: MaterialApp(
-        home: FamilyUserListView(),
+        home: const FamilyUserListView(),
         routes: <String, WidgetBuilder>{
           RouteNames.upsertUser: (_) => UpsertUserView(),
         },

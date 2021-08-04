@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
+import 'package:nomoca_flutter/presentation/common/show_request_permisson_dialog.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
 import 'package:nomoca_flutter/states/actions/family_user_action.dart';
 import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class FamilyUserListView extends HookConsumerWidget {
+  const FamilyUserListView({this.isQrInputRoute});
+  final bool? isQrInputRoute;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncValue = ref.watch(familyUserListReducer);
@@ -95,15 +99,28 @@ class FamilyUserListView extends HookConsumerWidget {
 
   Future<void> _transitionToNextScreen(BuildContext context,
       {UserNicknameEntity? user}) async {
-    // upsert-user画面へ遷移。pushNamedの戻り値は遷移先から取得した値。
-    final result = await Navigator.pushNamed(context, RouteNames.upsertUser,
-            arguments: UpsertUserViewArguments(isFamilyUser: true, user: user))
-        as String?;
+    // QRコード読み取りユーザー選択画面からの遷移判定
+    if (isQrInputRoute != null && isQrInputRoute!) {
+      // カメラパーミッションが許可されているか判定
+      if (await Permission.camera.request().isGranted) {
+        // パーミッションが許可されている場合QRコード読み込み画面へ遷移
+        await Navigator.pushNamed(context, RouteNames.qrReadInput);
+      } else {
+        // カメラパーミッション許可ダイアログ表示
+        await showRequestPermissionDialog(context);
+      }
+    } else {
+      // upsert-user画面へ遷移。pushNamedの戻り値は遷移先から取得した値。
+      final result = await Navigator.pushNamed(context, RouteNames.upsertUser,
+              arguments:
+                  UpsertUserViewArguments(isFamilyUser: true, user: user))
+          as String?;
 
-    if (result != null) {
-      // 家族アカウントを(作成/編集)しましたメッセージをSnackBarで表示
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(result)));
+      if (result != null) {
+        // 家族アカウントを(作成/編集)しましたメッセージをSnackBarで表示
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(result)));
+      }
     }
   }
 

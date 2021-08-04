@@ -3,13 +3,16 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/preview_cards_entity.dart';
+import 'package:nomoca_flutter/presentation/arguments/qr_read_confirm_argument.dart';
 import 'package:nomoca_flutter/states/providers/registration_card_provider.dart';
 
 class QrReadConfirmView extends HookConsumerWidget {
+  const QrReadConfirmView(this.args);
+  final QrReadConfirmArgument? args;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entity =
-        ModalRoute.of(context)!.settings.arguments as PreviewCardsEntity?;
+    // final entity =
+    //     ModalRoute.of(context)!.settings.arguments as PreviewCardsEntity?;
     // final args = RegistrationCardProviderArguments(
     //   sourceUserId: entity!.sourceUserId,
     //   familyUserId: null,
@@ -26,8 +29,8 @@ class QrReadConfirmView extends HookConsumerWidget {
                 : _transitionToNextScreen(
                     context,
                     ref,
-                    entity!.sourceUserId,
-                    null,
+                    args!.entity.sourceUserId,
+                    args!.familyUserId,
                   ),
             child: Text(
               '登録',
@@ -54,13 +57,12 @@ class QrReadConfirmView extends HookConsumerWidget {
           Expanded(
             flex: 3,
             child: ListView.builder(
-              key: UniqueKey(),
-              padding: const EdgeInsets.all(16),
-              itemCount: entity!.patients.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _listItem(entity.patients[index], context, ref);
-              },
-            ),
+                key: UniqueKey(),
+                padding: const EdgeInsets.all(16),
+                itemCount: args!.entity.patients.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return _listItem(args!.entity.patients[index], context, ref);
+                }),
           ),
         ],
       ),

@@ -7,11 +7,16 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/preview_cards_entity.dart';
+import 'package:nomoca_flutter/presentation/arguments/qr_read_confirm_argument.dart';
 import 'package:nomoca_flutter/states/arguments/fetch_preview_cards_provider_arguments.dart';
 import 'package:nomoca_flutter/states/providers/fetch_preview_cards_provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QrReadInputView extends HookConsumerWidget {
+  const QrReadInputView(this.familyUserId);
+
+  final int? familyUserId;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userToken = useState('');
@@ -27,6 +32,7 @@ class QrReadInputView extends HookConsumerWidget {
       body: QrReadWidget(
         fetchPreviewCardsAsyncValue: asyncValue,
         userToken: userToken,
+        familyUserId: familyUserId,
       ),
     );
   }
@@ -36,10 +42,12 @@ class QrReadWidget extends StatefulWidget {
   const QrReadWidget({
     required this.fetchPreviewCardsAsyncValue,
     required this.userToken,
+    required this.familyUserId,
   });
 
   final AsyncValue<PreviewCardsEntity> fetchPreviewCardsAsyncValue;
   final ValueNotifier<String> userToken;
+  final int? familyUserId;
 
   @override
   _QrReadWidgetState createState() => _QrReadWidgetState();
@@ -127,11 +135,15 @@ class _QrReadWidgetState extends State<QrReadWidget> {
       // カメラを一時停止
       await _qrController?.pauseCamera();
       _isQRScanned = true;
+      final args = QrReadConfirmArgument(
+        entity: entity,
+        familyUserId: widget.familyUserId,
+      );
       // 次の画面へ遷移
       await Navigator.pushNamed(
         context,
         RouteNames.qrReadConfirm,
-        arguments: entity,
+        arguments: args,
       ).then(
         // 遷移先画面から戻った場合カメラを再開
         (value) {

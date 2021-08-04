@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
+import 'package:nomoca_flutter/presentation/arguments/qr_read_confirm_argument.dart';
 import 'package:nomoca_flutter/presentation/authentication_view.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/institution_view.dart';
@@ -54,9 +55,11 @@ class RouteGenerator {
           builder: (context) => UpsertUserView(),
         );
       case RouteNames.familyUserList:
-        return MaterialPageRoute(
-          builder: (context) => FamilyUserListView(),
-        );
+        return arguments is bool?
+            ? MaterialPageRoute(
+                builder: (context) =>
+                    FamilyUserListView(isQrInputRoute: arguments))
+            : MaterialPageRoute(builder: (context) => TopView());
       case RouteNames.userManagement:
         return MaterialPageRoute(
           builder: (context) => UserManagementView(),
@@ -67,13 +70,15 @@ class RouteGenerator {
           fullscreenDialog: true,
         );
       case RouteNames.qrReadInput:
-        return MaterialPageRoute(
-          builder: (context) => QrReadInputView(),
-        );
+        return arguments is int?
+            ? MaterialPageRoute(
+                builder: (context) => QrReadInputView(arguments))
+            : MaterialPageRoute(builder: (context) => TopView());
       case RouteNames.qrReadConfirm:
-        return MaterialPageRoute(
-          builder: (context) => QrReadConfirmView(),
-        );
+        return arguments is QrReadConfirmArgument?
+            ? MaterialPageRoute(
+                builder: (context) => QrReadConfirmView(arguments))
+            : MaterialPageRoute(builder: (context) => TopView());
       default:
         return MaterialPageRoute(
           builder: (context) => TopView(),
