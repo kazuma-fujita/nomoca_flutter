@@ -50,7 +50,8 @@ class FakeFetchPreviewCardsRepositoryImpl extends FetchPreviewCardsRepository {
     required String userToken,
     int? familyUserId,
   }) async =>
-      Future.delayed(const Duration(seconds: 2), () => fakePreviewCardsEntity);
+      Future.delayed(const Duration(seconds: 3), () => fakePreviewCardsEntity);
+  // Future.error(Exception('QR read error'));
 }
 
 // main.dartでQrReadConfirmViewのモックでも使用

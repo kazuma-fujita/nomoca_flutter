@@ -1,13 +1,44 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/api/fetch_preview_cards_api.dart';
-import 'package:nomoca_flutter/data/api/registration_card_api.dart';
 import 'package:nomoca_flutter/data/entity/remote/preview_cards_entity.dart';
 import 'package:nomoca_flutter/data/repository/fetch_preview_cards_repository.dart';
-import 'package:nomoca_flutter/data/repository/registration_card_repository.dart';
-import 'package:nomoca_flutter/states/arguments/fetch_preview_cards_provider_arguments.dart';
-import 'package:nomoca_flutter/states/arguments/registration_card_provider_arguments.dart';
 import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
+
+// abstract class FetchPreviewCardsProvider
+//     extends StateNotifier<AsyncValue<PreviewCardsEntity>> {
+//   FetchPreviewCardsProvider(AsyncValue<PreviewCardsEntity> state)
+//       : super(state);
+//
+//   Future<void> fetchCards({
+//     required String userToken,
+//     int? familyUserId,
+//   });
+// }
+
+class FetchPreviewCardsStateNotifier
+    extends StateNotifier<AsyncValue<PreviewCardsEntity?>> {
+  FetchPreviewCardsStateNotifier({required this.fetchPreviewCardsRepository})
+      : super(const AsyncData(null));
+
+  final FetchPreviewCardsRepository fetchPreviewCardsRepository;
+
+  Future<void> fetchCards({
+    required String userToken,
+    int? familyUserId,
+  }) async {
+    state = const AsyncLoading();
+    try {
+      final entities = await fetchPreviewCardsRepository.fetchCards(
+        userToken: userToken,
+        familyUserId: familyUserId,
+      );
+      state = AsyncData(entities);
+    } on Exception catch (error) {
+      state = AsyncError(error);
+    }
+  }
+}
 
 final _fetchPreviewCardsApiProvider = Provider.autoDispose(
   (ref) => FetchPreviewCardsApiImpl(
@@ -23,12 +54,9 @@ final fetchPreviewCardsRepositoryProvider =
   ),
 );
 
-final fetchPreviewCardsProvider = FutureProvider.autoDispose
-    .family<PreviewCardsEntity, FetchPreviewCardsProviderArguments>(
-  (ref, args) async {
-    return ref.read(fetchPreviewCardsRepositoryProvider).fetchCards(
-          userToken: args.userToken,
-          familyUserId: args.familyUserId,
-        );
-  },
+final fetchPreviewCardsProvider = StateNotifierProvider<
+    FetchPreviewCardsStateNotifier, AsyncValue<PreviewCardsEntity?>>(
+  (ref) => FetchPreviewCardsStateNotifier(
+    fetchPreviewCardsRepository: ref.read(fetchPreviewCardsRepositoryProvider),
+  ),
 );

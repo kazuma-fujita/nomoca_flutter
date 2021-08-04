@@ -8,7 +8,9 @@ import 'package:nomoca_flutter/states/providers/registration_card_provider.dart'
 
 class QrReadConfirmView extends HookConsumerWidget {
   const QrReadConfirmView(this.args);
+
   final QrReadConfirmArgument? args;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // final entity =
