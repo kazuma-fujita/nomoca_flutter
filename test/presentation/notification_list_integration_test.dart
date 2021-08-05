@@ -52,7 +52,7 @@ void main() {
             case RouteNames.notificationDetail:
               return MaterialPageRoute(
                 builder: (context) => NotificationDetailView(
-                  settings.arguments as NotificationEntity?,
+                  notification: settings.arguments as NotificationEntity?,
                 ),
               );
           }

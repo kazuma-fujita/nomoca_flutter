@@ -45,7 +45,7 @@ void main() {
       ],
       child: MaterialApp(
         // 初期表示画面設定
-        home: UserManagementView(),
+        home: const UserManagementView(),
         routes: <String, WidgetBuilder>{
           // 遷移先画面設定
           RouteNames.upsertUser: (_) => UpsertUserView(),

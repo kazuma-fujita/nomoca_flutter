@@ -12,7 +12,7 @@ import 'package:nomoca_flutter/states/providers/fetch_preview_cards_provider.dar
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QrReadInputView extends HookConsumerWidget {
-  const QrReadInputView(this.familyUserId);
+  const QrReadInputView({this.familyUserId});
 
   final int? familyUserId;
 

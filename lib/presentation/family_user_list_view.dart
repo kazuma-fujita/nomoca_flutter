@@ -13,7 +13,9 @@ import 'package:permission_handler/permission_handler.dart';
 
 class FamilyUserListView extends HookConsumerWidget {
   const FamilyUserListView({this.isQrInputRoute});
+
   final bool? isQrInputRoute;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncValue = ref.watch(familyUserListReducer);

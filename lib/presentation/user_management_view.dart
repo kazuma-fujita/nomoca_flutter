@@ -50,16 +50,19 @@ final _userManagementViewDataProvider =
         ]);
 
 class UserManagementView extends HookConsumerWidget {
+  const UserManagementView({this.informationMessage});
+
+  final String? informationMessage;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 診察券登録画面戻りのハンドリング
-    final result = ModalRoute.of(context)!.settings.arguments as String?;
-    if (result != null) {
+    // 診察券登録画面からの遷移の場合「診察券を登録しました」メッセージ表示
+    if (informationMessage != null) {
       // 戻り値が存在する場合メッセージをSnackBarで表示
       // 全Widgetのbuild後にsnackBarを表示
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(result)));
+            .showSnackBar(SnackBar(content: Text(informationMessage!)));
       });
     }
 

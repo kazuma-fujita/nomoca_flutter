@@ -6,7 +6,7 @@ import 'package:nomoca_flutter/presentation/asset_image_path.dart';
 import 'package:nomoca_flutter/states/providers/update_read_post_provider.dart';
 
 class NotificationDetailView extends HookConsumerWidget with AssetImagePath {
-  const NotificationDetailView(this.notification);
+  const NotificationDetailView({this.notification});
 
   final NotificationEntity? notification;
 

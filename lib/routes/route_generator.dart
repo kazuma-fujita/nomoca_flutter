@@ -48,7 +48,8 @@ class RouteGenerator {
       case RouteNames.notificationDetail:
         return arguments is NotificationEntity?
             ? MaterialPageRoute(
-                builder: (context) => NotificationDetailView(arguments))
+                builder: (context) =>
+                    NotificationDetailView(notification: arguments))
             : MaterialPageRoute(builder: (context) => TopView());
       case RouteNames.upsertUser:
         return MaterialPageRoute(
@@ -61,9 +62,11 @@ class RouteGenerator {
                     FamilyUserListView(isQrInputRoute: arguments))
             : MaterialPageRoute(builder: (context) => TopView());
       case RouteNames.userManagement:
-        return MaterialPageRoute(
-          builder: (context) => UserManagementView(),
-        );
+        return arguments is String?
+            ? MaterialPageRoute(
+                builder: (context) =>
+                    UserManagementView(informationMessage: arguments))
+            : MaterialPageRoute(builder: (context) => TopView());
       case RouteNames.qrReadSelectUserType:
         return MaterialPageRoute(
           builder: (context) => QrReadSelectUserTypeView(),
@@ -72,12 +75,12 @@ class RouteGenerator {
       case RouteNames.qrReadInput:
         return arguments is int?
             ? MaterialPageRoute(
-                builder: (context) => QrReadInputView(arguments))
+                builder: (context) => QrReadInputView(familyUserId: arguments))
             : MaterialPageRoute(builder: (context) => TopView());
       case RouteNames.qrReadConfirm:
         return arguments is QrReadConfirmArgument?
             ? MaterialPageRoute(
-                builder: (context) => QrReadConfirmView(arguments))
+                builder: (context) => QrReadConfirmView(args: arguments))
             : MaterialPageRoute(builder: (context) => TopView());
       default:
         return MaterialPageRoute(

@@ -7,7 +7,7 @@ import 'package:nomoca_flutter/presentation/arguments/qr_read_confirm_argument.d
 import 'package:nomoca_flutter/states/providers/registration_card_provider.dart';
 
 class QrReadConfirmView extends HookConsumerWidget {
-  const QrReadConfirmView(this.args);
+  const QrReadConfirmView({this.args});
 
   final QrReadConfirmArgument? args;
 
