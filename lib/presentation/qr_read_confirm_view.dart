@@ -13,12 +13,13 @@ class QrReadConfirmView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // 診察券登録ボタン押下時処理
     ref.watch(registrationCardProvider).when(
       data: (isSuccess) async {
         if (isSuccess) {
           // ローディング非表示
           await EasyLoading.dismiss();
-          // 今までのスタックを削除してプロフィール画面へ遷移
+          // 今までのスタックを削除してプロフィール画面へ遷移。引数にSnackBarで表示するメッセージを設定
           await Navigator.pushNamedAndRemoveUntil(
               context, RouteNames.userManagement, (_) => false,
               arguments: '診察券を登録しました');

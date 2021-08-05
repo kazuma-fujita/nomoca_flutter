@@ -16,7 +16,7 @@ void main() {
         userManagementProvider.overrideWithValue(asyncValue),
       ],
       child: MaterialApp(
-        home: UserManagementView(),
+        home: const UserManagementView(),
         routes: <String, WidgetBuilder>{
           RouteNames.signIn: (_) => SignInView(),
         },

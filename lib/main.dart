@@ -38,13 +38,6 @@ class MyApp extends StatelessWidget {
       // darkTheme: darkThemeData,
       onGenerateRoute: RouteGenerator.generateRoute,
       home: BottomNavigationBarView(),
-      // home: Navigator(
-      //   // Debug用 QrReadConfirm画面引数設定
-      //   onGenerateRoute: (_) => MaterialPageRoute(
-      //     builder: (_) => QrReadConfirmView(),
-      //     settings: const RouteSettings(arguments: fakePreviewCardsEntity),
-      //   ),
-      // ),
       builder: EasyLoading.init(),
     );
   }
