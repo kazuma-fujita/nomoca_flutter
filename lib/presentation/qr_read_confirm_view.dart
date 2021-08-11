@@ -21,8 +21,11 @@ class QrReadConfirmView extends HookConsumerWidget {
           await EasyLoading.dismiss();
           // 今までのスタックを削除してプロフィール画面へ遷移。引数にSnackBarで表示するメッセージを設定
           await Navigator.pushNamedAndRemoveUntil(
-              context, RouteNames.userManagement, (_) => false,
-              arguments: '診察券を登録しました');
+            context,
+            RouteNames.userManagement,
+            (_) => false,
+            arguments: '診察券を登録しました',
+          );
         }
       },
       loading: () async {
@@ -33,8 +36,10 @@ class QrReadConfirmView extends HookConsumerWidget {
         // ローディング非表示
         EasyLoading.dismiss();
         // SnackBar表示
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(error.toString())));
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(error.toString())));
+        });
       },
     );
 
@@ -112,16 +117,5 @@ class QrReadConfirmView extends HookConsumerWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _transitionToNextScreen(
-    BuildContext context,
-    WidgetRef ref,
-    int sourceUserId,
-    int? familyUserId,
-  ) async {
-    await ref
-        .read(registrationCardProvider.notifier)
-        .registration(sourceUserId: sourceUserId, familyUserId: familyUserId);
   }
 }

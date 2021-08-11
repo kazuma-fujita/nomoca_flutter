@@ -14,7 +14,6 @@ import 'package:nomoca_flutter/presentation/qr_read_confirm_view.dart';
 import 'package:nomoca_flutter/presentation/user_management_view.dart';
 import 'package:nomoca_flutter/states/providers/registration_card_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
-import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
 
 import 'qr_read_confirm_view_test.mocks.dart';
 
@@ -91,9 +90,7 @@ void main() {
       when(_repository.registration(
         sourceUserId: anyNamed('sourceUserId'),
         familyUserId: anyNamed('familyUserId'),
-        // )).thenAnswer((_) => Future.value());
-      )).thenAnswer((_) =>
-          Future.delayed(const Duration(seconds: 3), () => Future.value()));
+      )).thenAnswer((_) => Future.value());
       // プロフィール画面に表示するニックネームをモッキング
       when(_userManagementRepository.getUser())
           .thenReturn(const UserNicknameEntity(id: 1234, nickname: '太郎'));
@@ -130,36 +127,45 @@ void main() {
 
   // 単体でこのテストは通る。
   // mainで複数のテストを実行すると何故かmokitoでCannot call `when` within a stub responseでエラーになる
-  // group('Testing error of sign up view.', () {
-  //   testWidgets('Test for error widget of exception.',
-  //       (WidgetTester tester) async {
-  //     // APIレスポンスの戻り値を設定
-  //     when(_repository.createUser(
-  //       mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
-  //       nickname: anyNamed('nickname'),
-  //     )).thenThrow(Exception('Error message.'));
-  //     // View widgetビルド
-  //     await tester.pumpWidget(setUpProviderScope());
-  //     // 画面表示要素チェック
-  //     _verifyElementOfView();
-  //     // TextFormFieldに文字入力
-  //     const verifyNickname = '太郎';
-  //     const verifyMobilePhoneNumber = '09012345678';
-  //     await tester.enterText(find.byKey(const Key('nickname')), verifyNickname);
-  //     await tester.enterText(
-  //         find.byKey(const Key('mobilePhoneNumber')), verifyMobilePhoneNumber);
-  //     // ボタンタップ
-  //     await tester.tap(find.byType(OutlinedButton));
-  //     // SnackBar表示まで待機
-  //     await tester.pump();
-  //     // SnackBar表示確認
-  //     expect(find.byType(SnackBar), findsOneWidget);
-  //     expect(find.text('Exception: Error message.'), findsOneWidget);
-  //     // Mockの呼び出しを検証
-  //     when(_repository.createUser(
-  //       mobilePhoneNumber: verifyMobilePhoneNumber,
-  //       nickname: verifyNickname,
-  //     ));
-  //   });
-  // });
+  group('Testing error of qr read confirm view.', () {
+    testWidgets('Test for error widget of exception.',
+        (WidgetTester tester) async {
+      // 診察券登録APIレスポンスの戻り値を設定
+      when(_repository.registration(
+        sourceUserId: anyNamed('sourceUserId'),
+        familyUserId: anyNamed('familyUserId'),
+      )).thenThrow(Exception('Error message.'));
+      // 診察券登録画面の引数に渡すオブジェクト
+      const previewCards = PreviewCardsEntity(sourceUserId: 123, patients: [
+        PreviewCardPatientEntity(
+          nameKana: 'ｻﾄｳ ﾀﾛｳ',
+          localId: '12345',
+          institution: PreviewCardInstitutionEntity(
+            institutionId: 1234,
+            institutionName: '田中歯科',
+          ),
+        ),
+      ]);
+      const args =
+          QrReadConfirmArgument(entity: previewCards, familyUserId: null);
+      // View widgetビルド
+      await tester.pumpWidget(setUpProviderScope(args));
+      // 画面表示要素チェック
+      _verifyElementOfView();
+      expect(find.text('田中歯科'), findsOneWidget);
+      expect(find.text('ｻﾄｳ ﾀﾛｳ  診察券番号 12345'), findsOneWidget);
+      // ボタンタップ
+      await tester.tap(find.byType(TextButton));
+      // SnackBar表示まで待機
+      await tester.pumpAndSettle();
+      // SnackBar表示確認
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.text('Exception: Error message.'), findsOneWidget);
+      // Mockの呼び出しを検証
+      verify(_repository.registration(
+        sourceUserId: anyNamed('sourceUserId'),
+        familyUserId: anyNamed('familyUserId'),
+      ));
+    });
+  });
 }
