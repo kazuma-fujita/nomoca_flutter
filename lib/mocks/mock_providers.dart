@@ -12,6 +12,7 @@ import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
 import 'package:nomoca_flutter/data/repository/registration_card_repository.dart';
 import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart';
 import 'package:nomoca_flutter/data/repository/user_management_repository.dart';
+import 'package:nomoca_flutter/mocks/fake_create_user_repository.dart';
 import 'package:nomoca_flutter/states/providers/authentication_provider.dart';
 import 'package:nomoca_flutter/states/providers/create_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';
@@ -38,11 +39,8 @@ class MockProviders {
     return [
       sendShortMessageRepositoryProvider
           .overrideWithValue(FakeSendShortMessageRepositoryImpl()),
-      createUserProvider.overrideWithProvider(
-        (param) => AutoDisposeProvider<AsyncValue<void>>(
-          (ref) => const AsyncValue.data(null),
-        ),
-      ),
+      createUserRepositoryProvider
+          .overrideWithValue(FakeCreateUserRepositoryImpl()),
       authenticationRepositoryProvider
           .overrideWithValue(FakeAuthenticationRepositoryImpl()),
       patientCardProvider.overrideWithValue(

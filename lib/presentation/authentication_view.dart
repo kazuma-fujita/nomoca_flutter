@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
-import 'package:nomoca_flutter/states/arguments/authentication_provider_arguments.dart';
-import 'package:nomoca_flutter/states/providers/send_short_message_provider.dart';
 import 'package:nomoca_flutter/states/providers/authentication_provider.dart';
+import 'package:nomoca_flutter/states/providers/send_short_message_provider.dart';
 
 class AuthenticationView extends StatelessWidget {
   @override
@@ -32,13 +31,60 @@ class _Form extends HookConsumerWidget {
     var mobilePhoneNumber =
         ModalRoute.of(context)!.settings.arguments as String?;
     mobilePhoneNumber ??= '09011112222';
-    final sendShortMessageAsyncValue =
-        ref.watch(sendShortMessageProvider(mobilePhoneNumber));
-    final args = AuthenticationProviderArguments(
-      mobilePhoneNumber: mobilePhoneNumber,
-      authCode: authCode.value,
+
+    // 再送信ボタン押下時処理
+    ref.watch(sendShortMessageProvider).when(
+      data: (isSuccess) async {
+        if (isSuccess) {
+          // 再送信ボタンenabled
+          // await Future.delayed(const Duration(seconds: 3));
+          isResendAuthCode.value = false;
+        }
+      },
+      loading: () async {
+        // 再送信ボタンdisable
+        isResendAuthCode.value = true;
+      },
+      error: (error, _) {
+        // 再送信ボタンenabled
+        isResendAuthCode.value = false;
+        // SnackBar表示
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(error.toString())));
+        });
+      },
     );
-    final authenticationAsyncValue = ref.watch(authenticationProvider(args));
+
+    // ボタン押下時処理
+    ref.watch(authenticationProvider).when(
+      data: (isSuccess) async {
+        if (isSuccess) {
+          // ローディング非表示
+          await EasyLoading.dismiss();
+          // ログイン前画面のスタックを削除して診察券画面へ遷移
+          await Navigator.pushNamedAndRemoveUntil(
+            context,
+            RouteNames.patientCard,
+            (r) => false,
+          );
+        }
+      },
+      loading: () async {
+        // ローディング表示
+        await EasyLoading.show();
+      },
+      error: (error, _) {
+        // ローディング非表示
+        EasyLoading.dismiss();
+        // SnackBar表示
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(error.toString())));
+        });
+      },
+    );
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -82,20 +128,14 @@ class _Form extends HookConsumerWidget {
           // authCode送信API実行中はボタンdisabled
           onPressed: isResendAuthCode.value
               ? null
-              : () => _sendShortMessage(
-                    mobilePhoneNumber!,
-                    isResendAuthCode,
-                    context,
-                    sendShortMessageAsyncValue,
-                  ),
+              : () => ref
+                  .read(sendShortMessageProvider.notifier)
+                  .sendShortMessage(mobilePhoneNumber: mobilePhoneNumber!),
           child: const Text('新しいコードを送信'),
         ),
         const Spacer(),
         OutlinedButton(
-          onPressed: () => _submission(
-            context,
-            authenticationAsyncValue,
-          ),
+          onPressed: () => _submission(mobilePhoneNumber!, authCode, ref),
           child: const Text('ログイン'),
         ),
         const Spacer(),
@@ -104,67 +144,17 @@ class _Form extends HookConsumerWidget {
   }
 
   void _submission(
-    BuildContext context,
-    AsyncValue<void> authenticationAsyncValue,
+    String mobilePhoneNumber,
+    ValueNotifier<String> authCode,
+    WidgetRef ref,
   ) {
     // TextFormFieldのvalidate実行
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // ユーザー認証実行
-      authenticationAsyncValue.when(
-        data: (_) async {
-          // ローディング非表示
-          await EasyLoading.dismiss();
-          // ログイン前画面のスタックを削除して診察券画面へ遷移
-          await Navigator.pushNamedAndRemoveUntil(
-            context,
-            RouteNames.patientCard,
-            (r) => false,
+      ref.read(authenticationProvider.notifier).authentication(
+            mobilePhoneNumber: mobilePhoneNumber,
+            authCode: authCode.value,
           );
-          // await Navigator.pushNamed(context, RouteNames.patientCard);
-        },
-        loading: () async {
-          // ローディング表示
-          await EasyLoading.show();
-        },
-        error: (error, _) {
-          // ローディング非表示
-          EasyLoading.dismiss();
-          // SnackBar表示
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(error.toString())));
-        },
-      );
     }
-  }
-
-  void _sendShortMessage(
-    String mobilePhoneNumber,
-    ValueNotifier<bool> isResendAuthCode,
-    BuildContext context,
-    AsyncValue<void> sendShortMessageAsyncValue,
-  ) {
-    // 確認コード再送信
-    sendShortMessageAsyncValue.when(
-      data: (_) async {
-        // 再送信ボタンenabled
-        await Future.delayed(const Duration(seconds: 3));
-        isResendAuthCode.value = false;
-        print('send short message success');
-      },
-      loading: () {
-        print('send short message loading');
-        // 再送信ボタンdisable
-        isResendAuthCode.value = true;
-      },
-      error: (error, _) {
-        print('send short message error');
-        // 再送信ボタンenabled
-        isResendAuthCode.value = false;
-        // SnackBar表示
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(error.toString())));
-      },
-    );
   }
 }

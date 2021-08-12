@@ -4,6 +4,29 @@ import 'package:nomoca_flutter/data/repository/create_user_repository.dart';
 import 'package:nomoca_flutter/states/arguments/create_user_provider_arguments.dart';
 import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
 
+class CreateUserStateNotifier extends StateNotifier<AsyncValue<bool>> {
+  CreateUserStateNotifier({required this.createUserRepository})
+      : super(const AsyncData(false));
+
+  final CreateUserRepository createUserRepository;
+
+  Future<void> createUser({
+    required String mobilePhoneNumber,
+    required String nickname,
+  }) async {
+    state = const AsyncLoading();
+    try {
+      await createUserRepository.createUser(
+        mobilePhoneNumber: mobilePhoneNumber,
+        nickname: nickname,
+      );
+      state = const AsyncData(true);
+    } on Exception catch (error) {
+      state = AsyncError(error);
+    }
+  }
+}
+
 final _createUserApiProvider = Provider.autoDispose(
   (ref) => CreateUserApiImpl(
     apiClient: ref.read(apiClientProvider),
@@ -16,12 +39,9 @@ final createUserRepositoryProvider = Provider.autoDispose<CreateUserRepository>(
   ),
 );
 
-final createUserProvider =
-    FutureProvider.autoDispose.family<void, CreateUserProviderArguments>(
-  (ref, args) async {
-    return ref.read(createUserRepositoryProvider).createUser(
-          mobilePhoneNumber: args.mobilePhoneNumber,
-          nickname: args.nickname,
-        );
-  },
+final createUserProvider = StateNotifierProvider.autoDispose<
+    CreateUserStateNotifier, AsyncValue<bool>>(
+  (ref) => CreateUserStateNotifier(
+    createUserRepository: ref.read(createUserRepositoryProvider),
+  ),
 );

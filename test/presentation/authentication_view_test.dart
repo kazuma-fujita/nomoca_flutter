@@ -73,7 +73,7 @@ void main() {
   }
 
   group('Testing authentication view.', () {
-    testWidgets('Test for tapped of submit button of sending short message.',
+    testWidgets('Test for tapped of submit button of authentication button.',
         (WidgetTester tester) async {
       // APIレスポンスの戻り値を設定
       when(_authenticationRepository.authentication(
@@ -96,50 +96,50 @@ void main() {
       await tester.enterText(find.byType(TextFormField), _verifyAuthCode);
       // ボタンタップ
       await tester.tap(find.byType(OutlinedButton));
+      // expect(find.byType(EasyLoading), findsOneWidget);
       // 画面遷移後のWidgetがレンダリング完了するまで処理を待機
-      await tester.pumpAndSettle();
+      // await tester.pumpAndSettle();
+      await tester.pump();
       // 遷移後画面要素確認
       // 遷移が確認できないので調査
       // expect(find.byType(SvgPicture), findsNWidgets(2));
       // expect(find.text('診察券'), findsOneWidget);
       // expect(find.text('花子'), findsOneWidget);
       // Mockの呼び出しを検証
-      when(_authenticationRepository.authentication(
+      verify(_authenticationRepository.authentication(
         mobilePhoneNumber: _argumentMobilePhoneNumber,
         authCode: _verifyAuthCode,
       ));
-      // when(_patientCardRepository.fetchList());
+      // verify(_patientCardRepository.fetchList());
     });
   });
 
-  // 単体でこのテストは通る
-  // mainで複数テストを実行すると何故かCannot call `when` within a stub responseで落ちる
-  // group('Testing error of authentication view.', () {
-  //   testWidgets('Test for error widget of exception.',
-  //       (WidgetTester tester) async {
-  //     // APIレスポンスの戻り値を設定
-  //     when(_authenticationRepository.authentication(
-  //       mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
-  //       authCode: anyNamed('authCode'),
-  //     )).thenThrow(Exception('Error message.'));
-  //     // View widgetビルド
-  //     await tester.pumpWidget(setUpProviderScope());
-  //     // 画面表示要素チェック
-  //     _verifyElementOfView();
-  //     // TextFormFieldに文字入力
-  //     await tester.enterText(find.byType(TextFormField), _verifyAuthCode);
-  //     // ボタンタップ
-  //     await tester.tap(find.byType(OutlinedButton));
-  //     // SnackBar表示まで待機
-  //     await tester.pump();
-  //     // SnackBar表示確認
-  //     expect(find.byType(SnackBar), findsOneWidget);
-  //     expect(find.text('Exception: Error message.'), findsOneWidget);
-  //     // Mockの呼び出しを検証
-  //     verify(_authenticationRepository.authentication(
-  //       mobilePhoneNumber: _argumentMobilePhoneNumber,
-  //       authCode: _verifyAuthCode,
-  //     ));
-  //   });
-  // });
+  group('Testing error of authentication view.', () {
+    testWidgets('Test for error widget of exception.',
+        (WidgetTester tester) async {
+      // APIレスポンスの戻り値を設定
+      when(_authenticationRepository.authentication(
+        mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
+        authCode: anyNamed('authCode'),
+      )).thenThrow(Exception('Error message.'));
+      // View widgetビルド
+      await tester.pumpWidget(setUpProviderScope());
+      // 画面表示要素チェック
+      _verifyElementOfView();
+      // TextFormFieldに文字入力
+      await tester.enterText(find.byType(TextFormField), _verifyAuthCode);
+      // ボタンタップ
+      await tester.tap(find.byType(OutlinedButton));
+      // SnackBar表示まで待機
+      await tester.pumpAndSettle();
+      // SnackBar表示確認
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.text('Exception: Error message.'), findsOneWidget);
+      // Mockの呼び出しを検証
+      verify(_authenticationRepository.authentication(
+        mobilePhoneNumber: _argumentMobilePhoneNumber,
+        authCode: _verifyAuthCode,
+      ));
+    });
+  });
 }

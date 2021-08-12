@@ -92,7 +92,7 @@ void main() {
       // ボタンタップ
       await tester.tap(find.byType(OutlinedButton));
       // SnackBar表示まで待機
-      await tester.pump();
+      await tester.pumpAndSettle();
       // SnackBar表示確認
       expect(find.byType(SnackBar), findsOneWidget);
       expect(find.text('Exception: Error message.'), findsOneWidget);

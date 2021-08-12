@@ -26,8 +26,32 @@ class _Form extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mobilePhoneNumber = useState('');
-    final sendShortMessageAsyncValue =
-        ref.watch(sendShortMessageProvider(mobilePhoneNumber.value));
+    // ボタン押下時処理
+    ref.watch(sendShortMessageProvider).when(
+      data: (isSuccess) async {
+        if (isSuccess) {
+          // ローディング非表示
+          await EasyLoading.dismiss();
+          // 認証画面へ遷移
+          await Navigator.pushNamed(context, RouteNames.authentication,
+              arguments: mobilePhoneNumber.value);
+        }
+      },
+      loading: () async {
+        // ローディング表示
+        await EasyLoading.show();
+      },
+      error: (error, _) {
+        // ローディング非表示
+        EasyLoading.dismiss();
+        // SnackBar表示
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(error.toString())));
+        });
+      },
+    );
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -63,8 +87,7 @@ class _Form extends HookConsumerWidget {
         OutlinedButton(
           onPressed: () => _submission(
             mobilePhoneNumber,
-            context,
-            sendShortMessageAsyncValue,
+            ref,
           ),
           child: const Text('確認コードを送信'),
         ),
@@ -75,33 +98,14 @@ class _Form extends HookConsumerWidget {
 
   void _submission(
     ValueNotifier<String> mobilePhoneNumber,
-    BuildContext context,
-    AsyncValue<void> sendShortMessageAsyncValue,
+    WidgetRef ref,
   ) {
     // TextFormFieldのvalidate実行
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // プロフィール or 家族アカウント作成・更新
-      sendShortMessageAsyncValue.when(
-        data: (_) async {
-          // ローディング非表示
-          await EasyLoading.dismiss();
-          // 認証画面へ遷移
-          await Navigator.pushNamed(context, RouteNames.authentication,
-              arguments: mobilePhoneNumber.value);
-        },
-        loading: () async {
-          // ローディング表示
-          await EasyLoading.show();
-        },
-        error: (error, _) {
-          // ローディング非表示
-          EasyLoading.dismiss();
-          // SnackBar表示
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(error.toString())));
-        },
-      );
+      ref
+          .read(sendShortMessageProvider.notifier)
+          .sendShortMessage(mobilePhoneNumber: mobilePhoneNumber.value);
     }
   }
 }
