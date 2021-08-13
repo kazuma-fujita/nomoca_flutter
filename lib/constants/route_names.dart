@@ -12,4 +12,5 @@ class RouteNames {
   static const qrReadSelectUserType = '/qr-read-select-user-type';
   static const qrReadInput = '/qr-read-input';
   static const qrReadConfirm = '/qr-read-confirm';
+  static const error = '/error';
 }

@@ -3,6 +3,7 @@ import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
 import 'package:nomoca_flutter/presentation/arguments/qr_read_confirm_argument.dart';
 import 'package:nomoca_flutter/presentation/authentication_view.dart';
+import 'package:nomoca_flutter/presentation/error_view.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/institution_view.dart';
 import 'package:nomoca_flutter/presentation/notification_detail_view.dart';
@@ -86,9 +87,19 @@ class RouteGenerator {
             ? MaterialPageRoute(
                 builder: (context) => QrReadConfirmView(args: arguments))
             : MaterialPageRoute(builder: (context) => TopView());
+      case RouteNames.error:
+        return MaterialPageRoute(
+          builder: (context) => ErrorView(
+            errorMessage: arguments is String?
+                ? (arguments != null)
+                    ? arguments
+                    : 'エラー画面の引数が存在しません'
+                : 'エラー画面の引数が文字列ではありません',
+          ),
+        );
       default:
         return MaterialPageRoute(
-          builder: (context) => TopView(),
+          builder: (context) => const ErrorView(errorMessage: '指定された画面が存在しません'),
         );
     }
   }

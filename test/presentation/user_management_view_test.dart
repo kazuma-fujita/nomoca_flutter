@@ -4,8 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/errors/authentication_error.dart';
-import 'package:nomoca_flutter/presentation/sign_in_view.dart';
-import 'package:nomoca_flutter/presentation/top_view.dart';
+import 'package:nomoca_flutter/presentation/error_view.dart';
 import 'package:nomoca_flutter/presentation/user_management_view.dart';
 import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
 
@@ -17,11 +16,18 @@ void main() {
         userManagementProvider.overrideWithValue(asyncValue),
       ],
       child: MaterialApp(
-        home: const UserManagementView(),
-        routes: <String, WidgetBuilder>{
-          RouteNames.top: (_) => TopView(),
-        },
-      ),
+          home: const UserManagementView(),
+          // 遷移先の引数設定
+          onGenerateRoute: (RouteSettings settings) {
+            switch (settings.name) {
+              case RouteNames.error:
+                return MaterialPageRoute(
+                  builder: (context) => ErrorView(
+                    errorMessage: settings.arguments as String?,
+                  ),
+                );
+            }
+          }),
     );
   }
 
@@ -47,7 +53,8 @@ void main() {
           setUpProviderScope(AsyncValue.error(AuthenticationError())));
       // 遷移先画面Widgetがレンダリングし終わるまで待機
       await tester.pumpAndSettle();
-      expect(find.text('続行することでNOMOCaの'), findsOneWidget);
+      expect(find.text('例外エラーが発生しました'), findsOneWidget);
+      expect(find.text(AuthenticationError.description), findsOneWidget);
     });
   });
 }

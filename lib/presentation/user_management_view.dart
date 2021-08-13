@@ -110,9 +110,13 @@ class UserManagementView extends HookConsumerWidget {
             error: (error, _) {
               WidgetsBinding.instance!.addPostFrameCallback((_) async {
                 if (error is AuthenticationError) {
-                  // 認証エラーはtop画面へ遷移
+                  // エラー画面へ遷移
                   await Navigator.pushNamedAndRemoveUntil(
-                      context, RouteNames.top, (_) => false);
+                    context,
+                    RouteNames.error,
+                    (_) => false,
+                    arguments: AuthenticationError.description,
+                  );
                 }
                 // その他エラーをSnackBarで表示
                 ScaffoldMessenger.of(context)
