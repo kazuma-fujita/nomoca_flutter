@@ -161,13 +161,15 @@ class UserManagementView extends HookConsumerWidget {
   Future<void> _transitionToUpsertUserView(BuildContext context,
       {required UserNicknameEntity user}) async {
     // upsert-user画面へ遷移。pushNamedの戻り値は遷移先から取得した値。
-    final result = await Navigator.pushNamed(context, RouteNames.upsertUser,
-        arguments: UpsertUserViewArguments(user: user)) as String?;
+    await Navigator.pushNamed(context, RouteNames.upsertUser,
+        arguments: UpsertUserViewArguments(user: user));
+    // final result = await Navigator.pushNamed(context, RouteNames.upsertUser,
+    //     arguments: UpsertUserViewArguments(user: user)) as String?;
 
-    if (result != null) {
-      // プロフィールを更新しましたメッセージをSnackBarで表示
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(result)));
-    }
+    // if (result != null) {
+    //   // プロフィールを更新しましたメッセージをSnackBarで表示
+    //   ScaffoldMessenger.of(context)
+    //       .showSnackBar(SnackBar(content: Text(result)));
+    // }
   }
 }

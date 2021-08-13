@@ -14,9 +14,11 @@ import 'package:nomoca_flutter/data/repository/update_family_user_repository.dar
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
+import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
+import 'package:nomoca_flutter/states/providers/create_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
-import 'package:nomoca_flutter/states/providers/upsert_user_provider.dart';
+import 'package:nomoca_flutter/states/providers/update_family_user_provider.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 
 import 'family_user_integration_test.mocks.dart';
@@ -58,8 +60,16 @@ void main() {
       ],
       child: MaterialApp(
         home: const FamilyUserListView(),
-        routes: <String, WidgetBuilder>{
-          RouteNames.upsertUser: (_) => UpsertUserView(),
+        // 遷移先の引数設定
+        onGenerateRoute: (RouteSettings settings) {
+          switch (settings.name) {
+            case RouteNames.upsertUser:
+              return MaterialPageRoute(
+                builder: (context) => UpsertUserView(
+                  args: settings.arguments as UpsertUserViewArguments?,
+                ),
+              );
+          }
         },
         builder: EasyLoading.init(),
       ),

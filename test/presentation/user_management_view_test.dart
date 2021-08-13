@@ -5,6 +5,7 @@ import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/errors/authentication_error.dart';
 import 'package:nomoca_flutter/presentation/sign_in_view.dart';
+import 'package:nomoca_flutter/presentation/top_view.dart';
 import 'package:nomoca_flutter/presentation/user_management_view.dart';
 import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
 
@@ -18,7 +19,7 @@ void main() {
       child: MaterialApp(
         home: const UserManagementView(),
         routes: <String, WidgetBuilder>{
-          RouteNames.signIn: (_) => SignInView(),
+          RouteNames.top: (_) => TopView(),
         },
       ),
     );
@@ -46,7 +47,7 @@ void main() {
           setUpProviderScope(AsyncValue.error(AuthenticationError())));
       // 遷移先画面Widgetがレンダリングし終わるまで待機
       await tester.pumpAndSettle();
-      expect(find.text('ログイン'), findsOneWidget);
+      expect(find.text('続行することでNOMOCaの'), findsOneWidget);
     });
   });
 }

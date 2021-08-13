@@ -113,16 +113,23 @@ class FamilyUserListView extends HookConsumerWidget {
       }
     } else {
       // upsert-user画面へ遷移。pushNamedの戻り値は遷移先から取得した値。
-      final result = await Navigator.pushNamed(context, RouteNames.upsertUser,
-              arguments:
-                  UpsertUserViewArguments(isFamilyUser: true, user: user))
-          as String?;
+      await Navigator.pushNamed(
+        context,
+        RouteNames.upsertUser,
+        arguments: UpsertUserViewArguments(isFamilyUser: true, user: user),
+      );
+      // final result = await Navigator.pushNamed(context, RouteNames.upsertUser,
+      //         arguments:
+      //             UpsertUserViewArguments(isFamilyUser: true, user: user))
+      //     as String?;
 
-      if (result != null) {
-        // 家族アカウントを(作成/編集)しましたメッセージをSnackBarで表示
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(result)));
-      }
+      // if (result != null) {
+      //   // 家族アカウントを(作成/編集)しましたメッセージをSnackBarで表示
+      //   WidgetsBinding.instance!.addPostFrameCallback((_) {
+      //     ScaffoldMessenger.of(context)
+      //         .showSnackBar(SnackBar(content: Text(result)));
+      //   });
+      // }
     }
   }
 

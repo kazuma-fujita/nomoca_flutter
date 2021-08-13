@@ -9,9 +9,10 @@ import 'package:nomoca_flutter/data/repository/fetch_patient_cards_repository.da
 import 'package:nomoca_flutter/data/repository/update_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/user_management_repository.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
+import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
 import 'package:nomoca_flutter/presentation/user_management_view.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
-import 'package:nomoca_flutter/states/providers/upsert_user_provider.dart';
+import 'package:nomoca_flutter/states/providers/update_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
 
 import 'update_user_integration_test.mocks.dart';
@@ -46,9 +47,16 @@ void main() {
       child: MaterialApp(
         // 初期表示画面設定
         home: const UserManagementView(),
-        routes: <String, WidgetBuilder>{
-          // 遷移先画面設定
-          RouteNames.upsertUser: (_) => UpsertUserView(),
+        // 遷移先の引数設定
+        onGenerateRoute: (RouteSettings settings) {
+          switch (settings.name) {
+            case RouteNames.upsertUser:
+              return MaterialPageRoute(
+                builder: (context) => UpsertUserView(
+                  args: settings.arguments as UpsertUserViewArguments?,
+                ),
+              );
+          }
         },
       ),
     );

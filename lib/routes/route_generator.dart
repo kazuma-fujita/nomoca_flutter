@@ -14,6 +14,7 @@ import 'package:nomoca_flutter/presentation/sign_in_view.dart';
 import 'package:nomoca_flutter/presentation/sign_up_view.dart';
 import 'package:nomoca_flutter/presentation/top_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
+import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
 import 'package:nomoca_flutter/presentation/user_management_view.dart';
 
 class RouteGenerator {
@@ -52,9 +53,10 @@ class RouteGenerator {
                     NotificationDetailView(notification: arguments))
             : MaterialPageRoute(builder: (context) => TopView());
       case RouteNames.upsertUser:
-        return MaterialPageRoute(
-          builder: (context) => UpsertUserView(),
-        );
+        return arguments is UpsertUserViewArguments?
+            ? MaterialPageRoute(
+                builder: (context) => UpsertUserView(args: arguments))
+            : MaterialPageRoute(builder: (context) => TopView());
       case RouteNames.familyUserList:
         return arguments is bool?
             ? MaterialPageRoute(

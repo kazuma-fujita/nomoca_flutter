@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       darkTheme: lightThemeData,
       // darkTheme: darkThemeData,
       onGenerateRoute: RouteGenerator.generateRoute,
-      home: TopView(),
+      home: BottomNavigationBarView(),
       builder: EasyLoading.init(),
     );
   }

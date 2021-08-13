@@ -33,10 +33,3 @@ class CreateFamilyUserRepositoryImpl extends CreateFamilyUserRepository {
     }
   }
 }
-
-class FakeCreateFamilyUserRepositoryImpl extends CreateFamilyUserRepository {
-  @override
-  Future<UserNicknameEntity> createUser({required String nickname}) async {
-    return const UserNicknameEntity(id: 1234, nickname: '花子');
-  }
-}

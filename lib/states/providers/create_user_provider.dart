@@ -1,7 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/api/create_user_api.dart';
 import 'package:nomoca_flutter/data/repository/create_user_repository.dart';
-import 'package:nomoca_flutter/states/arguments/create_user_provider_arguments.dart';
 import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
 
 class CreateUserStateNotifier extends StateNotifier<AsyncValue<bool>> {

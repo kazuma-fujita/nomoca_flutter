@@ -11,9 +11,14 @@ import 'package:nomoca_flutter/data/repository/get_institution_repository.dart';
 import 'package:nomoca_flutter/data/repository/keyword_search_repository.dart';
 import 'package:nomoca_flutter/data/repository/registration_card_repository.dart';
 import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart';
+import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/user_management_repository.dart';
+import 'package:nomoca_flutter/mocks/fake_create_family_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_create_user_repository.dart';
+import 'package:nomoca_flutter/mocks/fake_update_family_user_repository.dart';
+import 'package:nomoca_flutter/mocks/fake_update_user_repository.dart';
 import 'package:nomoca_flutter/states/providers/authentication_provider.dart';
+import 'package:nomoca_flutter/states/providers/create_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/create_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/fetch_preview_cards_provider.dart';
@@ -21,9 +26,10 @@ import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
 import 'package:nomoca_flutter/states/providers/registration_card_provider.dart';
 import 'package:nomoca_flutter/states/providers/send_short_message_provider.dart';
+import 'package:nomoca_flutter/states/providers/update_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_read_post_provider.dart';
-import 'package:nomoca_flutter/states/providers/upsert_user_provider.dart';
+import 'package:nomoca_flutter/states/providers/update_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/favorite_list_reducer.dart';
@@ -98,24 +104,12 @@ class MockProviders {
       ),
       fetchFamilyUserListRepositoryProvider
           .overrideWithValue(FakeFetchFamilyUserListRepositoryImpl()),
-      createFamilyUserProvider.overrideWithProvider(
-        (param) => AutoDisposeProvider<AsyncValue<UserNicknameEntity>>(
-          (ref) => const AsyncValue.data(
-            UserNicknameEntity(id: 1234, nickname: '花子'),
-          ),
-        ),
-      ),
-      // createFamilyUserProvider.overrideWithProvider((ref, param) =>
-      //     Future.value(const UserNicknameEntity(id: 1234, nickname: '花子'))),
-      updateFamilyUserProvider.overrideWithProvider(
-        (param) => AutoDisposeProvider<AsyncValue<UserNicknameEntity>>(
-          (ref) => const AsyncValue.data(
-            UserNicknameEntity(id: 1234, nickname: '次郎'),
-          ),
-        ),
-      ),
-      // updateFamilyUserProvider.overrideWithProvider((ref, param) =>
-      //     Future.value(const UserNicknameEntity(id: 1234, nickname: '次郎'))),
+      updateUserRepositoryProvider
+          .overrideWithValue(FakeUpdateUserRepositoryImpl()),
+      createFamilyUserRepositoryProvider
+          .overrideWithValue(FakeCreateFamilyUserRepositoryImpl()),
+      updateFamilyUserRepositoryProvider
+          .overrideWithValue(FakeUpdateFamilyUserRepositoryImpl()),
       deleteFamilyUserProvider.overrideWithProvider(
         (param) => AutoDisposeProvider<AsyncValue<void>>(
           (ref) => const AsyncValue.data(null),

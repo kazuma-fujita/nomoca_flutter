@@ -40,13 +40,3 @@ class UpdateFamilyUserRepositoryImpl extends UpdateFamilyUserRepository {
     }
   }
 }
-
-class FakeUpdateFamilyUserRepositoryImpl extends UpdateFamilyUserRepository {
-  @override
-  Future<UserNicknameEntity> updateUser({
-    required int familyUserId,
-    required String nickname,
-  }) async {
-    return const UserNicknameEntity(id: 1234, nickname: '次郎');
-  }
-}
