@@ -7,6 +7,10 @@ import 'package:nomoca_flutter/states/providers/authentication_provider.dart';
 import 'package:nomoca_flutter/states/providers/send_short_message_provider.dart';
 
 class AuthenticationView extends StatelessWidget {
+  const AuthenticationView({this.mobilePhoneNumber});
+
+  final String? mobilePhoneNumber;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,22 +19,24 @@ class AuthenticationView extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 24, right: 24),
-        child: _Form(),
+        child: _Form(mobilePhoneNumber: mobilePhoneNumber),
       ),
     );
   }
 }
 
 class _Form extends HookConsumerWidget {
+  _Form({this.mobilePhoneNumber});
+
+  final String? mobilePhoneNumber;
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authCode = useState('');
     final isResendAuthCode = useState(false);
-    var mobilePhoneNumber =
-        ModalRoute.of(context)!.settings.arguments as String?;
-    mobilePhoneNumber ??= '09011112222';
+    // var mobilePhoneNumber =
+    //     ModalRoute.of(context)!.settings.arguments as String?;
 
     // 再送信ボタン押下時処理
     ref.watch(sendShortMessageProvider).when(
@@ -96,7 +102,7 @@ class _Form extends HookConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text('確認コードを'),
-                Text(mobilePhoneNumber),
+                Text(mobilePhoneNumber!),
                 const Text('へ送信しました。'),
               ],
             ),

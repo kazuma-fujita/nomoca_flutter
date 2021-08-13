@@ -51,13 +51,8 @@ void main() {
       ],
       child: MaterialApp(
         // 初期表示画面設定
-        home: Navigator(
-            // 画面間引数設定
-            onGenerateRoute: (_) => MaterialPageRoute(
-                  builder: (_) => AuthenticationView(),
-                  settings: const RouteSettings(
-                      arguments: _argumentMobilePhoneNumber),
-                )),
+        home: const AuthenticationView(
+            mobilePhoneNumber: _argumentMobilePhoneNumber),
         routes: <String, WidgetBuilder>{
           // 遷移先画面設定
           RouteNames.patientCard: (_) => PatientCardView(),

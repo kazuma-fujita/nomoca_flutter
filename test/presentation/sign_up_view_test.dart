@@ -29,9 +29,16 @@ void main() {
       child: MaterialApp(
         // 初期表示画面設定
         home: SignUpView(),
-        routes: <String, WidgetBuilder>{
-          // 遷移先画面設定
-          RouteNames.authentication: (_) => AuthenticationView(),
+        // 遷移先の引数設定
+        onGenerateRoute: (RouteSettings settings) {
+          switch (settings.name) {
+            case RouteNames.authentication:
+              return MaterialPageRoute(
+                builder: (context) => AuthenticationView(
+                  mobilePhoneNumber: settings.arguments as String?,
+                ),
+              );
+          }
         },
         builder: EasyLoading.init(),
       ),

@@ -35,9 +35,11 @@ class RouteGenerator {
           builder: (context) => SignInView(),
         );
       case RouteNames.authentication:
-        return MaterialPageRoute(
-          builder: (context) => AuthenticationView(),
-        );
+        return arguments is String?
+            ? MaterialPageRoute(
+                builder: (context) =>
+                    AuthenticationView(mobilePhoneNumber: arguments))
+            : MaterialPageRoute(builder: (context) => TopView());
       case RouteNames.patientCard:
         return MaterialPageRoute(
           builder: (context) => PatientCardView(),
