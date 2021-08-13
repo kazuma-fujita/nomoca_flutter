@@ -24,10 +24,10 @@ class _Body extends HookConsumerWidget {
             user.authenticationToken == null ||
             user.userId == null ||
             user.nickname == null) {
-          // userのカラムデータが無ければTopへ遷移
+          // userのカラムデータが無ければログイン前状態なのでTopへ遷移
           Navigator.pushNamed(context, RouteNames.top);
         } else {
-          // userのカラムデータがあればBottomNaviBar画面を表示
+          // userのカラムデータがあればログイン後状態なのでBottomNaviBar画面を表示
           Navigator.pushNamed(context, RouteNames.bottomNavigation);
         }
       });

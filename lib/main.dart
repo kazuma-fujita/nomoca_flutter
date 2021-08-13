@@ -5,9 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/mocks/mock_providers.dart';
-import 'package:nomoca_flutter/presentation/bottom_navigation_bar_view.dart';
 import 'package:nomoca_flutter/presentation/root_view.dart';
-import 'package:nomoca_flutter/presentation/top_view.dart';
 import 'package:nomoca_flutter/routes/route_generator.dart';
 import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
 import 'package:nomoca_flutter/themes/theme_data.dart';
@@ -39,7 +37,6 @@ class MyApp extends StatelessWidget {
       darkTheme: lightThemeData,
       // darkTheme: darkThemeData,
       onGenerateRoute: RouteGenerator.generateRoute,
-      // home: BottomNavigationBarView(),
       home: RootView(),
       builder: EasyLoading.init(),
     );

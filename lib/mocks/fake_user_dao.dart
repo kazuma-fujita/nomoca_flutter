@@ -6,6 +6,9 @@ class FakeUserDaoImpl extends UserDao {
 
   @override
   User? get() {
+    // ログイン前画面検証時はnullを返却
+    // return null;
+    // ログイン後画面検証時はUserインスタンスを返却
     return User()
       ..authenticationToken = 'dummyToken'
       ..userId = 9999
