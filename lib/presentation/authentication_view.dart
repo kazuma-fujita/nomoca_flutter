@@ -57,33 +57,34 @@ class _Form extends HookConsumerWidget {
     );
 
     // ボタン押下時処理
-    ref.watch(authenticationProvider).when(
-      data: (isSuccess) async {
-        if (isSuccess) {
+    final asyncValue = ref.watch(authenticationProvider)
+      ..when(
+        data: (isSuccess) async {
+          if (isSuccess) {
+            // ローディング非表示
+            await EasyLoading.dismiss();
+            // ログイン前画面のスタックを削除して診察券画面へ遷移
+            await Navigator.pushNamedAndRemoveUntil(
+              context,
+              RouteNames.patientCard,
+              (r) => false,
+            );
+          }
+        },
+        loading: () async {
+          // ローディング表示
+          await EasyLoading.show();
+        },
+        error: (error, _) {
           // ローディング非表示
-          await EasyLoading.dismiss();
-          // ログイン前画面のスタックを削除して診察券画面へ遷移
-          await Navigator.pushNamedAndRemoveUntil(
-            context,
-            RouteNames.patientCard,
-            (r) => false,
-          );
-        }
-      },
-      loading: () async {
-        // ローディング表示
-        await EasyLoading.show();
-      },
-      error: (error, _) {
-        // ローディング非表示
-        EasyLoading.dismiss();
-        // SnackBar表示
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(error.toString())));
-        });
-      },
-    );
+          EasyLoading.dismiss();
+          // SnackBar表示
+          WidgetsBinding.instance!.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(error.toString())));
+          });
+        },
+      );
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -135,7 +136,10 @@ class _Form extends HookConsumerWidget {
         ),
         const Spacer(),
         OutlinedButton(
-          onPressed: () => _submission(mobilePhoneNumber!, authCode, ref),
+          // 読み込み中はボタンdisabled
+          onPressed: () => asyncValue is AsyncLoading
+              ? null
+              : _submission(mobilePhoneNumber!, authCode, ref),
           child: const Text('ログイン'),
         ),
         const Spacer(),

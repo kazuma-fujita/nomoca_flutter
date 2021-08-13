@@ -29,30 +29,31 @@ class _Form extends HookConsumerWidget {
     final mobilePhoneNumber = useState('');
 
     // ボタン押下時処理
-    ref.watch(createUserProvider).when(
-      data: (isSuccess) async {
-        if (isSuccess) {
+    final asyncValue = ref.watch(createUserProvider)
+      ..when(
+        data: (isSuccess) async {
+          if (isSuccess) {
+            // ローディング非表示
+            await EasyLoading.dismiss();
+            // 認証画面へ遷移
+            await Navigator.pushNamed(context, RouteNames.authentication,
+                arguments: mobilePhoneNumber.value);
+          }
+        },
+        loading: () async {
+          // ローディング表示
+          await EasyLoading.show();
+        },
+        error: (error, _) {
           // ローディング非表示
-          await EasyLoading.dismiss();
-          // 認証画面へ遷移
-          await Navigator.pushNamed(context, RouteNames.authentication,
-              arguments: mobilePhoneNumber.value);
-        }
-      },
-      loading: () async {
-        // ローディング表示
-        await EasyLoading.show();
-      },
-      error: (error, _) {
-        // ローディング非表示
-        EasyLoading.dismiss();
-        // SnackBar表示
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(error.toString())));
-        });
-      },
-    );
+          EasyLoading.dismiss();
+          // SnackBar表示
+          WidgetsBinding.instance!.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(error.toString())));
+          });
+        },
+      );
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,11 +109,14 @@ class _Form extends HookConsumerWidget {
         ),
         const Spacer(),
         OutlinedButton(
-          onPressed: () => _submission(
-            mobilePhoneNumber,
-            nickname,
-            ref,
-          ),
+          // 読み込み中はボタンdisabled
+          onPressed: () => asyncValue is AsyncLoading
+              ? null
+              : _submission(
+                  mobilePhoneNumber,
+                  nickname,
+                  ref,
+                ),
           child: const Text('アカウント新規登録'),
         ),
         const Spacer(),

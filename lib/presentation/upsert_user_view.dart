@@ -39,55 +39,54 @@ class _Form extends HookConsumerWidget {
     // 一覧画面からuser情報を取得
     final nickname = useState('');
     // ボタン押下時処理
-    ref
-        .watch(
+    final asyncValue = ref.watch(
       args!.user == null
           ? createFamilyUserProvider
           : args!.isFamilyUser
               ? updateFamilyUserProvider
               : updateUserProvider,
-    )
-        .when(
-      data: (entity) async {
-        if (entity != null) {
+    )..when(
+        data: (entity) async {
+          if (entity != null) {
+            // ローディング非表示
+            await EasyLoading.dismiss();
+            // 全てのbuildが終わってから他画面の状態変更処理
+            WidgetsBinding.instance!.addPostFrameCallback((_) {
+              if (args!.isFamilyUser) {
+                // 家族一覧画面の状態更新。
+                // dispatcherのstateを更新するとfamilyUserListReducerが再実行される
+                ref.read(familyUserActionDispatcher).state = args!.user == null
+                    ? FamilyUserAction.create(entity)
+                    : FamilyUserAction.update(entity);
+              } else if (args!.user != null) {
+                // プロフィール画面のニックネーム更新。DBからニックネーム再取得
+                ref.refresh(userManagementProvider);
+              }
+              // 診察券画面の状態更新。patientCardProviderではAPI経由で診察券情報を再取得する
+              ref.refresh(patientCardProvider);
+              // 遷移元画面へ戻る
+              // Navigator.pop(context, args!.navigationPopMessage());
+              Navigator.pop(context);
+              // 作成・編集しましたメッセージをSnackBarで表示
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(args!.navigationPopMessage())));
+            });
+          }
+        },
+        loading: () async {
+          // ローディング表示
+          await EasyLoading.show();
+        },
+        error: (error, _) {
           // ローディング非表示
-          await EasyLoading.dismiss();
-          // 全てのbuildが終わってから他画面の状態変更処理
+          EasyLoading.dismiss();
+          // SnackBar表示
           WidgetsBinding.instance!.addPostFrameCallback((_) {
-            if (args!.isFamilyUser) {
-              // 家族一覧画面の状態更新。dispatcherのstateを更新するとfamilyUserListReducerが再実行される
-              ref.read(familyUserActionDispatcher).state = args!.user == null
-                  ? FamilyUserAction.create(entity)
-                  : FamilyUserAction.update(entity);
-            } else if (args!.user != null) {
-              // プロフィール画面のニックネーム更新。DBからニックネーム再取得
-              ref.refresh(userManagementProvider);
-            }
-            // 診察券画面の状態更新。patientCardProviderではAPI経由で診察券情報を再取得する
-            ref.refresh(patientCardProvider);
-            // 遷移元画面へ戻る
-            // Navigator.pop(context, args!.navigationPopMessage());
-            Navigator.pop(context);
-            // 作成・編集しましたメッセージをSnackBarで表示
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(args!.navigationPopMessage())));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(error.toString())));
           });
-        }
-      },
-      loading: () async {
-        // ローディング表示
-        await EasyLoading.show();
-      },
-      error: (error, _) {
-        // ローディング非表示
-        EasyLoading.dismiss();
-        // SnackBar表示
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(error.toString())));
-        });
-      },
-    );
+        },
+      );
 
     return Form(
       key: _formKey,
@@ -113,8 +112,9 @@ class _Form extends HookConsumerWidget {
               },
             ),
             ElevatedButton(
-              onPressed: () =>
-                  _submission(context, nickname: nickname, ref: ref),
+              onPressed: () => asyncValue is AsyncLoading
+                  ? null
+                  : _submission(context, nickname: nickname, ref: ref),
               child: const Text('保存する'),
             ),
           ],

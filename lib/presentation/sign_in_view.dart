@@ -27,30 +27,31 @@ class _Form extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mobilePhoneNumber = useState('');
     // ボタン押下時処理
-    ref.watch(sendShortMessageProvider).when(
-      data: (isSuccess) async {
-        if (isSuccess) {
+    final asyncValue = ref.watch(sendShortMessageProvider)
+      ..when(
+        data: (isSuccess) async {
+          if (isSuccess) {
+            // ローディング非表示
+            await EasyLoading.dismiss();
+            // 認証画面へ遷移
+            await Navigator.pushNamed(context, RouteNames.authentication,
+                arguments: mobilePhoneNumber.value);
+          }
+        },
+        loading: () async {
+          // ローディング表示
+          await EasyLoading.show();
+        },
+        error: (error, _) {
           // ローディング非表示
-          await EasyLoading.dismiss();
-          // 認証画面へ遷移
-          await Navigator.pushNamed(context, RouteNames.authentication,
-              arguments: mobilePhoneNumber.value);
-        }
-      },
-      loading: () async {
-        // ローディング表示
-        await EasyLoading.show();
-      },
-      error: (error, _) {
-        // ローディング非表示
-        EasyLoading.dismiss();
-        // SnackBar表示
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(error.toString())));
-        });
-      },
-    );
+          EasyLoading.dismiss();
+          // SnackBar表示
+          WidgetsBinding.instance!.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(error.toString())));
+          });
+        },
+      );
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -66,7 +67,6 @@ class _Form extends HookConsumerWidget {
           child: Form(
             key: _formKey,
             child: TextFormField(
-              // initialValue: args.textFormFieldInitialValue(),
               maxLength: 11,
               decoration: const InputDecoration(
                 hintText: '携帯電話番号を入力してください',
@@ -85,10 +85,13 @@ class _Form extends HookConsumerWidget {
         ),
         const Spacer(),
         OutlinedButton(
-          onPressed: () => _submission(
-            mobilePhoneNumber,
-            ref,
-          ),
+          // 読み込み中はボタンdisabled
+          onPressed: () => asyncValue is AsyncLoading
+              ? null
+              : _submission(
+                  mobilePhoneNumber,
+                  ref,
+                ),
           child: const Text('確認コードを送信'),
         ),
         const Spacer(),
