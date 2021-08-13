@@ -1,8 +1,10 @@
 class RouteNames {
+  static const root = '/root';
   static const top = '/top';
   static const signUp = '/sign-up';
   static const signIn = '/sign-in';
   static const authentication = '/authentication';
+  static const bottomNavigation = '/bottom-navigation';
   static const patientCard = '/patient-card';
   static const institution = '/institution';
   static const upsertUser = '/upsert-user';

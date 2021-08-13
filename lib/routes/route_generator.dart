@@ -3,6 +3,7 @@ import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
 import 'package:nomoca_flutter/presentation/arguments/qr_read_confirm_argument.dart';
 import 'package:nomoca_flutter/presentation/authentication_view.dart';
+import 'package:nomoca_flutter/presentation/bottom_navigation_bar_view.dart';
 import 'package:nomoca_flutter/presentation/error_view.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/institution_view.dart';
@@ -11,6 +12,7 @@ import 'package:nomoca_flutter/presentation/patient_card_view.dart';
 import 'package:nomoca_flutter/presentation/qr_read_confirm_view.dart';
 import 'package:nomoca_flutter/presentation/qr_read_input_view.dart';
 import 'package:nomoca_flutter/presentation/qr_read_select_user_type_view.dart';
+import 'package:nomoca_flutter/presentation/root_view.dart';
 import 'package:nomoca_flutter/presentation/sign_in_view.dart';
 import 'package:nomoca_flutter/presentation/sign_up_view.dart';
 import 'package:nomoca_flutter/presentation/top_view.dart';
@@ -23,6 +25,10 @@ class RouteGenerator {
     final arguments = settings.arguments;
 
     switch (settings.name) {
+      case RouteNames.root:
+        return MaterialPageRoute(
+          builder: (context) => RootView(),
+        );
       case RouteNames.top:
         return MaterialPageRoute(
           builder: (context) => TopView(),
@@ -41,6 +47,10 @@ class RouteGenerator {
                 builder: (context) =>
                     AuthenticationView(mobilePhoneNumber: arguments))
             : MaterialPageRoute(builder: (context) => TopView());
+      case RouteNames.bottomNavigation:
+        return MaterialPageRoute(
+          builder: (context) => BottomNavigationBarView(),
+        );
       case RouteNames.patientCard:
         return MaterialPageRoute(
           builder: (context) => PatientCardView(),

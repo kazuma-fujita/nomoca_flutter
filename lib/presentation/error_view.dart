@@ -41,8 +41,8 @@ class _Body extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         OutlinedButton(
-          onPressed: () => Navigator.pushNamed(context, RouteNames.top),
-          child: const Text('Topへ戻る'),
+          onPressed: () => Navigator.pushNamed(context, RouteNames.root),
+          child: const Text('戻る'),
         ),
         const Spacer(),
       ],

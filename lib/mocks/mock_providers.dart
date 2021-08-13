@@ -17,6 +17,7 @@ import 'package:nomoca_flutter/mocks/fake_create_family_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_create_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_update_family_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_update_user_repository.dart';
+import 'package:nomoca_flutter/mocks/fake_user_dao.dart';
 import 'package:nomoca_flutter/states/providers/authentication_provider.dart';
 import 'package:nomoca_flutter/states/providers/create_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/create_user_provider.dart';
@@ -30,6 +31,7 @@ import 'package:nomoca_flutter/states/providers/update_family_user_provider.dart
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_read_post_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_user_provider.dart';
+import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
 import 'package:nomoca_flutter/states/reducers/family_user_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/favorite_list_reducer.dart';
@@ -43,6 +45,7 @@ class MockProviders {
 
   static List<Override> overrides() {
     return [
+      userDaoProvider.overrideWithValue(FakeUserDaoImpl()),
       sendShortMessageRepositoryProvider
           .overrideWithValue(FakeSendShortMessageRepositoryImpl()),
       createUserRepositoryProvider
