@@ -5,7 +5,7 @@ part 'patient_card_entity.freezed.dart';
 part 'patient_card_entity.g.dart';
 
 @freezed
-abstract class PatientCardEntity with _$PatientCardEntity {
+class PatientCardEntity with _$PatientCardEntity {
   const factory PatientCardEntity({
     @JsonKey(name: 'name') required String nickname,
     @JsonKey(name: 'qr_code_image') required String qrCodeImageUrl,

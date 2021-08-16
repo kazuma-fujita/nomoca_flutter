@@ -5,7 +5,7 @@ part 'institution_entity.freezed.dart';
 part 'institution_entity.g.dart';
 
 @freezed
-abstract class InstitutionEntity with _$InstitutionEntity {
+class InstitutionEntity with _$InstitutionEntity {
   const factory InstitutionEntity({
     required int id,
     required String name,

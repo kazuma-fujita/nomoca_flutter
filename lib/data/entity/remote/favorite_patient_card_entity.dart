@@ -5,7 +5,7 @@ part 'favorite_patient_card_entity.freezed.dart';
 part 'favorite_patient_card_entity.g.dart';
 
 @freezed
-abstract class FavoritePatientCardEntity with _$FavoritePatientCardEntity {
+class FavoritePatientCardEntity with _$FavoritePatientCardEntity {
   const factory FavoritePatientCardEntity({
     @JsonKey(name: 'institution_id') required int institutionId,
     @JsonKey(name: 'end_user_id') required int userId,

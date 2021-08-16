@@ -5,7 +5,7 @@ part 'user_nickname_entity.freezed.dart';
 part 'user_nickname_entity.g.dart';
 
 @freezed
-abstract class UserNicknameEntity with _$UserNicknameEntity {
+class UserNicknameEntity with _$UserNicknameEntity {
   const factory UserNicknameEntity({
     required int id,
     @JsonKey(name: 'name') required String nickname,

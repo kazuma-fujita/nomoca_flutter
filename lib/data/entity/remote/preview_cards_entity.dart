@@ -5,7 +5,7 @@ part 'preview_cards_entity.freezed.dart';
 part 'preview_cards_entity.g.dart';
 
 @freezed
-abstract class PreviewCardsEntity with _$PreviewCardsEntity {
+class PreviewCardsEntity with _$PreviewCardsEntity {
   const factory PreviewCardsEntity({
     @JsonKey(name: 'id') required int sourceUserId,
     @JsonKey(name: 'patients') required List<PreviewCardPatientEntity> patients,
@@ -16,7 +16,7 @@ abstract class PreviewCardsEntity with _$PreviewCardsEntity {
 }
 
 @freezed
-abstract class PreviewCardPatientEntity with _$PreviewCardPatientEntity {
+class PreviewCardPatientEntity with _$PreviewCardPatientEntity {
   const factory PreviewCardPatientEntity({
     @JsonKey(name: 'name_kana') required String nameKana,
     @JsonKey(name: 'local_id') required String localId,
@@ -29,8 +29,7 @@ abstract class PreviewCardPatientEntity with _$PreviewCardPatientEntity {
 }
 
 @freezed
-abstract class PreviewCardInstitutionEntity
-    with _$PreviewCardInstitutionEntity {
+class PreviewCardInstitutionEntity with _$PreviewCardInstitutionEntity {
   const factory PreviewCardInstitutionEntity({
     @JsonKey(name: 'id') required int institutionId,
     @JsonKey(name: 'name') required String institutionName,

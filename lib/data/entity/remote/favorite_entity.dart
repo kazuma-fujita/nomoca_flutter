@@ -5,7 +5,7 @@ part 'favorite_entity.freezed.dart';
 part 'favorite_entity.g.dart';
 
 @freezed
-abstract class FavoriteEntity with _$FavoriteEntity {
+class FavoriteEntity with _$FavoriteEntity {
   const factory FavoriteEntity({
     @JsonKey(name: 'institution_id') required int institutionId,
     required String type,
