@@ -18,12 +18,14 @@ import 'package:nomoca_flutter/mocks/fake_create_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_update_family_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_update_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_user_dao.dart';
+import 'package:nomoca_flutter/mocks/fake_get_version_repository.dart';
 import 'package:nomoca_flutter/states/providers/authentication_provider.dart';
 import 'package:nomoca_flutter/states/providers/create_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/create_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/fetch_preview_cards_provider.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
+import 'package:nomoca_flutter/states/providers/get_version_provider.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
 import 'package:nomoca_flutter/states/providers/registration_card_provider.dart';
 import 'package:nomoca_flutter/states/providers/send_short_message_provider.dart';
@@ -126,6 +128,8 @@ class MockProviders {
           .overrideWithValue(FakeFetchPreviewCardsRepositoryImpl()),
       registrationCardRepositoryProvider
           .overrideWithValue(FakeRegistrationCardRepositoryImpl()),
+      getVersionRepositoryProvider
+          .overrideWithValue(FakeGetVersionRepositoryImpl()),
     ];
   }
 }
