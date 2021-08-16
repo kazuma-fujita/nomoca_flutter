@@ -8,6 +8,7 @@ import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/repository/create_user_repository.dart';
 import 'package:nomoca_flutter/presentation/authentication_view.dart';
 import 'package:nomoca_flutter/presentation/sign_up_view.dart';
+import 'package:nomoca_flutter/routes/route_generator.dart';
 import 'package:nomoca_flutter/states/providers/create_user_provider.dart';
 
 import 'sign_up_view_test.mocks.dart';
@@ -29,17 +30,7 @@ void main() {
       child: MaterialApp(
         // 初期表示画面設定
         home: SignUpView(),
-        // 遷移先の引数設定
-        onGenerateRoute: (RouteSettings settings) {
-          switch (settings.name) {
-            case RouteNames.authentication:
-              return MaterialPageRoute(
-                builder: (context) => AuthenticationView(
-                  mobilePhoneNumber: settings.arguments as String?,
-                ),
-              );
-          }
-        },
+        onGenerateRoute: RouteGenerator.generateRoute,
         builder: EasyLoading.init(),
       ),
     );

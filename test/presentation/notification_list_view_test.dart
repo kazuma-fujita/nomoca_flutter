@@ -13,7 +13,7 @@ void main() {
       overrides: [
         familyUserListReducer.overrideWithValue(asyncValue),
       ],
-      child: MaterialApp(home: FamilyUserListView()),
+      child: const MaterialApp(home: FamilyUserListView()),
     );
   }
 

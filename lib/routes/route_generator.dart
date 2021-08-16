@@ -4,6 +4,7 @@ import 'package:nomoca_flutter/data/entity/remote/notification_entity.dart';
 import 'package:nomoca_flutter/presentation/arguments/qr_read_confirm_argument.dart';
 import 'package:nomoca_flutter/presentation/authentication_view.dart';
 import 'package:nomoca_flutter/presentation/bottom_navigation_bar_view.dart';
+import 'package:nomoca_flutter/presentation/components/settings_view.dart';
 import 'package:nomoca_flutter/presentation/error_view.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
 import 'package:nomoca_flutter/presentation/institution_view.dart';
@@ -97,6 +98,10 @@ class RouteGenerator {
             ? MaterialPageRoute(
                 builder: (context) => QrReadConfirmView(args: arguments))
             : MaterialPageRoute(builder: (context) => TopView());
+      case RouteNames.settings:
+        return MaterialPageRoute(
+          builder: (context) => SettingsView(),
+        );
       case RouteNames.error:
         return MaterialPageRoute(
           builder: (context) => ErrorView(

@@ -11,6 +11,7 @@ import 'package:nomoca_flutter/data/repository/user_management_repository.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
 import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
 import 'package:nomoca_flutter/presentation/user_management_view.dart';
+import 'package:nomoca_flutter/routes/route_generator.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
@@ -44,20 +45,10 @@ void main() {
         // ニックネーム変更時に診察券画面のデータ再取得実行
         patientCardRepositoryProvider.overrideWithValue(_patientCardRepository),
       ],
-      child: MaterialApp(
+      child: const MaterialApp(
         // 初期表示画面設定
-        home: const UserManagementView(),
-        // 遷移先の引数設定
-        onGenerateRoute: (RouteSettings settings) {
-          switch (settings.name) {
-            case RouteNames.upsertUser:
-              return MaterialPageRoute(
-                builder: (context) => UpsertUserView(
-                  args: settings.arguments as UpsertUserViewArguments?,
-                ),
-              );
-          }
-        },
+        home: UserManagementView(),
+        onGenerateRoute: RouteGenerator.generateRoute,
       ),
     );
   }

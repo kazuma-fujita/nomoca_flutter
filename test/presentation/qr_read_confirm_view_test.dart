@@ -12,6 +12,7 @@ import 'package:nomoca_flutter/data/repository/user_management_repository.dart';
 import 'package:nomoca_flutter/presentation/arguments/qr_read_confirm_argument.dart';
 import 'package:nomoca_flutter/presentation/qr_read_confirm_view.dart';
 import 'package:nomoca_flutter/presentation/user_management_view.dart';
+import 'package:nomoca_flutter/routes/route_generator.dart';
 import 'package:nomoca_flutter/states/providers/registration_card_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_management_provider.dart';
 
@@ -37,17 +38,7 @@ void main() {
       child: MaterialApp(
         // 初期表示画面設定
         home: QrReadConfirmView(args: args),
-        // 遷移先の引数設定
-        onGenerateRoute: (RouteSettings settings) {
-          switch (settings.name) {
-            case RouteNames.userManagement:
-              return MaterialPageRoute(
-                builder: (context) => UserManagementView(
-                  informationMessage: settings.arguments as String?,
-                ),
-              );
-          }
-        },
+        onGenerateRoute: RouteGenerator.generateRoute,
         builder: EasyLoading.init(),
       ),
     );

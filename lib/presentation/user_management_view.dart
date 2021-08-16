@@ -13,13 +13,11 @@ class _UserManagementViewData {
   const _UserManagementViewData({
     required this.caption,
     required this.description,
-    required this.transitionRoute,
     required this.transitionRouteName,
     required this.isFullScreenDialog,
   });
   final String caption;
   final String description;
-  final Widget transitionRoute;
   final String transitionRouteName;
   final bool isFullScreenDialog;
 }
@@ -29,22 +27,19 @@ final _userManagementViewDataProvider =
           const _UserManagementViewData(
             caption: '家族アカウント管理',
             description: '家族アカウントの追加/編集/削除を行います',
-            transitionRoute: FamilyUserListView(),
             transitionRouteName: RouteNames.familyUserList,
             isFullScreenDialog: false,
           ),
-          _UserManagementViewData(
+          const _UserManagementViewData(
             caption: '診察券登録',
             description: '診察券QRコードを読み込んで病院を追加します',
-            transitionRoute: QrReadSelectUserTypeView(),
             transitionRouteName: RouteNames.qrReadSelectUserType,
             isFullScreenDialog: true,
           ),
           const _UserManagementViewData(
             caption: '設定',
             description: '通知設定やログアウトを行います',
-            transitionRoute: FamilyUserListView(),
-            transitionRouteName: RouteNames.familyUserList,
+            transitionRouteName: RouteNames.settings,
             isFullScreenDialog: false,
           ),
         ]);

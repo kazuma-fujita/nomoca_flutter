@@ -12,6 +12,7 @@ import 'package:nomoca_flutter/data/repository/fetch_patient_cards_repository.da
 import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart';
 import 'package:nomoca_flutter/presentation/authentication_view.dart';
 import 'package:nomoca_flutter/presentation/patient_card_view.dart';
+import 'package:nomoca_flutter/routes/route_generator.dart';
 import 'package:nomoca_flutter/states/providers/authentication_provider.dart';
 import 'package:nomoca_flutter/states/providers/patient_card_provider.dart';
 import 'package:nomoca_flutter/states/providers/send_short_message_provider.dart';
@@ -53,10 +54,7 @@ void main() {
         // 初期表示画面設定
         home: const AuthenticationView(
             mobilePhoneNumber: _argumentMobilePhoneNumber),
-        routes: <String, WidgetBuilder>{
-          // 遷移先画面設定
-          RouteNames.patientCard: (_) => PatientCardView(),
-        },
+        onGenerateRoute: RouteGenerator.generateRoute,
         builder: EasyLoading.init(),
       ),
     );
