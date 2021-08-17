@@ -1,14 +1,13 @@
-import 'package:nomoca_flutter/data/api/update_favorite_api.dart';
 import 'package:nomoca_flutter/data/api/update_next_reserve_date_api.dart';
 import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/repository/authenticated.dart';
-import 'package:nomoca_flutter/errors/authentication_error.dart';
 
 // ignore: one_member_abstracts
 abstract class UpdateNextReserveDateRepository with Authenticated {
   Future<void> updateNextReserveDate({
     required int userId,
     required int institutionId,
+    required String reserveDate,
   });
 }
 
@@ -24,12 +23,14 @@ class UpdateNextReserveDateRepositoryImpl
   Future<void> updateNextReserveDate({
     required int userId,
     required int institutionId,
+    required String reserveDate,
   }) async {
     final authenticationToken = getAuthenticationToken(userDao.get());
     await updateNextReserveDateApi(
       authenticationToken: authenticationToken,
       userId: userId,
       institutionId: institutionId,
+      reserveDate: reserveDate,
     );
   }
 }

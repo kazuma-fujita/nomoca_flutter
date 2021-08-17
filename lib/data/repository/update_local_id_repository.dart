@@ -7,6 +7,7 @@ abstract class UpdateLocalIdRepository with Authenticated {
   Future<void> updateLocalId({
     required int userId,
     required int institutionId,
+    required String localId,
   });
 }
 
@@ -21,12 +22,14 @@ class UpdateLocalIdRepositoryImpl extends UpdateLocalIdRepository {
   Future<void> updateLocalId({
     required int userId,
     required int institutionId,
+    required String localId,
   }) async {
     final authenticationToken = getAuthenticationToken(userDao.get());
     await updateLocalIdApi(
       authenticationToken: authenticationToken,
       userId: userId,
       institutionId: institutionId,
+      localId: localId,
     );
   }
 }
