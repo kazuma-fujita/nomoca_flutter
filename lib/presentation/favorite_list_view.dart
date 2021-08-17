@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/favorite_entity.dart';
@@ -136,7 +139,7 @@ class FavoriteListView extends HookConsumerWidget with AssetImagePath {
     return SizedBox(
       height: 280,
       child: PageView.builder(
-        controller: PageController(viewportFraction: 0.85),
+        controller: PageController(viewportFraction: 0.85, keepPage: true),
         itemCount: entity.userIds.length,
         // onPageChanged: (int index) {},
         itemBuilder: (context, horizontalIndex) => Padding(
@@ -266,10 +269,12 @@ class _HorizontalItemView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final reserveDate = useState('');
     final args = FavoritePatientCardArguments(
       userId: entity.userIds[horizontalIndex],
       institutionId: entity.institutionId,
     );
+    print('V: $verticalIndex H: $horizontalIndex build');
     return ref.watch(getFavoritePatientCardProvider(args)).when(
           data: (entity) {
             print(
@@ -295,23 +300,34 @@ class _HorizontalItemView extends HookConsumerWidget {
                   ),
                 ),
                 TextField(
-                  controller:
-                      TextEditingController(text: entity.reserveDate ?? ''),
+                  controller: TextEditingController(
+                      text: reserveDate.value.isNotEmpty
+                          ? reserveDate.value
+                          : entity.reserveDate ?? ''),
                   decoration: const InputDecoration(
                     hintText: '次回予約日時メモを入力してください',
                     labelText: '次回予約日時メモ',
                   ),
                   readOnly: true,
-                  onTap: () async {
-                    final date = await showDatePicker(
-                        context: context,
-                        locale: const Locale('ja'),
-                        firstDate: DateTime.now(),
-                        initialDate: DateTime.now(),
-                        lastDate: DateTime(DateTime.now().year + 10));
-                    if (date != null) {
-                      print(date);
-                    }
+                  onTap: () {
+                    DatePicker.showDateTimePicker(
+                      context,
+                      showTitleActions: true,
+                      minTime: DateTime.now(),
+                      currentTime: DateTime.now(),
+                      maxTime: DateTime(DateTime.now().year + 10),
+                      onChanged: (date) {
+                        print('change $date');
+                      },
+                      onConfirm: (date) {
+                        final formatDate =
+                            DateFormat('yyyy/MM/dd(E) HH:mm', 'ja_JP')
+                                .format(date);
+                        print('finish $formatDate');
+                        reserveDate.value = formatDate;
+                      },
+                      locale: LocaleType.jp,
+                    );
                   },
                 ),
                 const SizedBox(height: 8),

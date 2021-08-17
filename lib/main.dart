@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/mocks/mock_providers.dart';
 import 'package:nomoca_flutter/presentation/components/settings_view.dart';
@@ -21,6 +22,8 @@ Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter<User>(UserAdapter());
   await Hive.openBox<User>(DBTableNames.users);
+  // DateFormat日本語化の為のメソッドを追加
+  // await initializeDateFormatting('ja');
   runApp(
     ProviderScope(
       overrides: MockProviders.overrides(),
