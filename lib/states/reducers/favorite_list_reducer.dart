@@ -6,6 +6,7 @@ import 'package:nomoca_flutter/data/entity/remote/favorite_patient_card_entity.d
 import 'package:nomoca_flutter/data/repository/fetch_favorite_list_repository.dart';
 import 'package:nomoca_flutter/data/repository/get_favorite_patient_card_repository.dart';
 import 'package:nomoca_flutter/states/actions/favorite_list_action.dart';
+import 'package:nomoca_flutter/states/arguments/favorite_patient_card_arguments.dart';
 import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
 
@@ -38,11 +39,18 @@ final getFavoritePatientCardRepositoryProvider =
 );
 
 final getFavoritePatientCardProvider = FutureProvider.autoDispose
-    .family<FavoritePatientCardEntity, Map<String, int>>((ref, ids) async {
+    .family<FavoritePatientCardEntity, FavoritePatientCardArguments>(
+        (ref, args) async {
   final repository = ref.read(getFavoritePatientCardRepositoryProvider);
-  return repository.get(
-      userId: ids['userId']!, institutionId: ids['institutionId']!);
+  return repository.get(userId: args.userId, institutionId: args.institutionId);
 });
+
+// final getFavoritePatientCardProvider = FutureProvider.autoDispose
+//     .family<FavoritePatientCardEntity, Map<String, int>>((ref, ids) async {
+//   final repository = ref.read(getFavoritePatientCardRepositoryProvider);
+//   return repository.get(
+//       userId: ids['userId']!, institutionId: ids['institutionId']!);
+// });
 
 // 一覧State。reducer内で一覧の状態更新が実行される。画面をまたいで利用されるのでautoDisposeしない
 final _favoriteListListState = StateProvider<List<FavoriteEntity>>((ref) => []);

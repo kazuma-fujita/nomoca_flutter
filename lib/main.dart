@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/mocks/mock_providers.dart';
 import 'package:nomoca_flutter/presentation/components/settings_view.dart';
+import 'package:nomoca_flutter/presentation/favorite_list_view.dart';
 import 'package:nomoca_flutter/presentation/root_view.dart';
 import 'package:nomoca_flutter/routes/route_generator.dart';
 import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
       // darkTheme: darkThemeData,
       onGenerateRoute: RouteGenerator.generateRoute,
       // home: RootView(),
-      home: SettingsView(),
+      home: FavoriteListView(),
       builder: EasyLoading.init(),
     );
   }

@@ -8,6 +8,7 @@ import 'package:nomoca_flutter/presentation/components/atoms/parallax_card.dart'
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/images_slider.dart';
 import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
+import 'package:nomoca_flutter/states/arguments/favorite_patient_card_arguments.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 import 'package:nomoca_flutter/states/reducers/favorite_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
@@ -137,10 +138,12 @@ class FavoriteListView extends HookConsumerWidget with AssetImagePath {
       child: PageView.builder(
         controller: PageController(viewportFraction: 0.85),
         itemCount: entity.userIds.length,
+        onPageChanged: (int index) {},
         itemBuilder: (context, horizontalIndex) => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Card(
-            key: Key(entity.userIds[horizontalIndex].toString()),
+            // key: Key(
+            //     '$verticalIndex$horizontalIndex${entity.userIds[horizontalIndex]}'),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
               side: const BorderSide(
@@ -150,7 +153,13 @@ class FavoriteListView extends HookConsumerWidget with AssetImagePath {
             ),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(48, 0, 48, 0),
-              child: _HorizontalItemView(entity, horizontalIndex),
+              child: _HorizontalItemView(
+                entity,
+                verticalIndex,
+                horizontalIndex,
+                key: Key(
+                    '$verticalIndex$horizontalIndex${entity.userIds[horizontalIndex]}'),
+              ),
             ),
           ),
         ),
@@ -248,25 +257,34 @@ class FavoriteListView extends HookConsumerWidget with AssetImagePath {
 }
 
 class _HorizontalItemView extends HookConsumerWidget {
-  const _HorizontalItemView(this.entity, this.horizontalIndex);
+  const _HorizontalItemView(
+      this.entity, this.verticalIndex, this.horizontalIndex,
+      {required Key key})
+      : super(key: key);
 
   final FavoriteEntity entity;
+  final int verticalIndex;
   final int horizontalIndex;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final args = FavoritePatientCardArguments(
+      userId: entity.userIds[horizontalIndex],
+      institutionId: entity.institutionId,
+    );
     return ref
-        .read(
-          getFavoritePatientCardProvider(
-            {
-              'userId': entity.userIds[horizontalIndex],
-              'institutionId': entity.institutionId
-            },
-          ),
+        .watch(
+          getFavoritePatientCardProvider(args
+              // {
+              //   'userId': entity.userIds[horizontalIndex],
+              //   'institutionId': entity.institutionId
+              // },
+              ),
         )
         .when(
           data: (patientCard) {
-            print(patientCard);
+            print(
+                'V: $verticalIndex H: $horizontalIndex name: ${patientCard.nickname} localId: ${patientCard.localId} reserveDate: ${patientCard.reserveDate} receptionDate: ${patientCard.lastReceptionDate}');
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,7 +332,7 @@ class _HorizontalItemView extends HookConsumerWidget {
             );
           },
           loading: () {
-            print('now loading');
+            print('V: $verticalIndex H: $horizontalIndex now loading');
             return _patientCardShimmerView();
           },
           error: (error, _) => ErrorSnackBar(
