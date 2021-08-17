@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -42,6 +43,18 @@ class MyApp extends StatelessWidget {
       // home: RootView(),
       home: FavoriteListView(),
       builder: EasyLoading.init(),
+      // locale設定
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      // localeに英語と日本語を登録
+      supportedLocales: const [
+        Locale('en'),
+        Locale('ja'),
+      ],
+      // アプリのlocaleを日本語に変更
+      locale: const Locale('ja', 'JP'),
     );
   }
 }

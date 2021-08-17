@@ -138,12 +138,10 @@ class FavoriteListView extends HookConsumerWidget with AssetImagePath {
       child: PageView.builder(
         controller: PageController(viewportFraction: 0.85),
         itemCount: entity.userIds.length,
-        onPageChanged: (int index) {},
+        // onPageChanged: (int index) {},
         itemBuilder: (context, horizontalIndex) => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Card(
-            // key: Key(
-            //     '$verticalIndex$horizontalIndex${entity.userIds[horizontalIndex]}'),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
               side: const BorderSide(
@@ -272,19 +270,10 @@ class _HorizontalItemView extends HookConsumerWidget {
       userId: entity.userIds[horizontalIndex],
       institutionId: entity.institutionId,
     );
-    return ref
-        .watch(
-          getFavoritePatientCardProvider(args
-              // {
-              //   'userId': entity.userIds[horizontalIndex],
-              //   'institutionId': entity.institutionId
-              // },
-              ),
-        )
-        .when(
-          data: (patientCard) {
+    return ref.watch(getFavoritePatientCardProvider(args)).when(
+          data: (entity) {
             print(
-                'V: $verticalIndex H: $horizontalIndex name: ${patientCard.nickname} localId: ${patientCard.localId} reserveDate: ${patientCard.reserveDate} receptionDate: ${patientCard.lastReceptionDate}');
+                'V: $verticalIndex H: $horizontalIndex name: ${entity.nickname} localId: ${entity.localId} reserveDate: ${entity.reserveDate} receptionDate: ${entity.lastReceptionDate}');
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,18 +288,31 @@ class _HorizontalItemView extends HookConsumerWidget {
                   ),
                 ),
                 TextField(
-                  controller: TextEditingController(text: null),
+                  controller: TextEditingController(text: entity.localId ?? ''),
                   decoration: const InputDecoration(
                     hintText: '診察券番号を入力してください',
                     labelText: '診察券番号',
                   ),
                 ),
                 TextField(
-                  controller: TextEditingController(text: ''),
+                  controller:
+                      TextEditingController(text: entity.reserveDate ?? ''),
                   decoration: const InputDecoration(
                     hintText: '次回予約日時メモを入力してください',
                     labelText: '次回予約日時メモ',
                   ),
+                  readOnly: true,
+                  onTap: () async {
+                    final date = await showDatePicker(
+                        context: context,
+                        locale: const Locale('ja'),
+                        firstDate: DateTime.now(),
+                        initialDate: DateTime.now(),
+                        lastDate: DateTime(DateTime.now().year + 10));
+                    if (date != null) {
+                      print(date);
+                    }
+                  },
                 ),
                 const SizedBox(height: 8),
                 const Text(
@@ -320,10 +322,10 @@ class _HorizontalItemView extends HookConsumerWidget {
                     color: Colors.black45,
                   ),
                 ),
-                const Text(
-                  '----/--/--  --:--',
-                  style: TextStyle(
-                    fontSize: 14,
+                Text(
+                  entity.lastReceptionDate ?? '---- / -- / --  -- : --',
+                  style: const TextStyle(
+                    fontSize: 16,
                     color: Colors.black45,
                   ),
                 ),

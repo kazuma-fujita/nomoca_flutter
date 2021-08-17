@@ -38,19 +38,12 @@ final getFavoritePatientCardRepositoryProvider =
   ),
 );
 
-final getFavoritePatientCardProvider = FutureProvider.autoDispose
-    .family<FavoritePatientCardEntity, FavoritePatientCardArguments>(
-        (ref, args) async {
+// 診察券カードのPageViewをスワイプする度にrequestが走らないようにautoDisposeを外す
+final getFavoritePatientCardProvider = FutureProvider.family<
+    FavoritePatientCardEntity, FavoritePatientCardArguments>((ref, args) async {
   final repository = ref.read(getFavoritePatientCardRepositoryProvider);
   return repository.get(userId: args.userId, institutionId: args.institutionId);
 });
-
-// final getFavoritePatientCardProvider = FutureProvider.autoDispose
-//     .family<FavoritePatientCardEntity, Map<String, int>>((ref, ids) async {
-//   final repository = ref.read(getFavoritePatientCardRepositoryProvider);
-//   return repository.get(
-//       userId: ids['userId']!, institutionId: ids['institutionId']!);
-// });
 
 // 一覧State。reducer内で一覧の状態更新が実行される。画面をまたいで利用されるのでautoDisposeしない
 final _favoriteListListState = StateProvider<List<FavoriteEntity>>((ref) => []);
