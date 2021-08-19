@@ -16,6 +16,8 @@ import 'package:nomoca_flutter/data/repository/user_management_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_create_family_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_create_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_update_family_user_repository.dart';
+import 'package:nomoca_flutter/mocks/fake_update_local_id_repository.dart';
+import 'package:nomoca_flutter/mocks/fake_update_next_reserve_date_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_update_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_user_dao.dart';
 import 'package:nomoca_flutter/mocks/fake_get_version_repository.dart';
@@ -31,6 +33,8 @@ import 'package:nomoca_flutter/states/providers/registration_card_provider.dart'
 import 'package:nomoca_flutter/states/providers/send_short_message_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
+import 'package:nomoca_flutter/states/providers/update_local_id_provider.dart';
+import 'package:nomoca_flutter/states/providers/update_next_reserve_date_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_read_post_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
@@ -88,6 +92,10 @@ class MockProviders {
           .overrideWithValue(FakeFetchFavoriteListRepositoryImpl()),
       getFavoritePatientCardRepositoryProvider
           .overrideWithValue(FakeGetFavoritePatientCardRepositoryImpl()),
+      updateLocalIdRepositoryProvider
+          .overrideWithValue(FakeUpdateLocalIdRepositoryImpl()),
+      updateNextReserveDateRepositoryProvider
+          .overrideWithValue(FakeUpdateNextReserveDateRepositoryImpl()),
       keywordSearchRepositoryProvider
           .overrideWithValue(FakeKeywordSearchRepositoryImpl()),
       updateFavoriteProvider.overrideWithProvider(

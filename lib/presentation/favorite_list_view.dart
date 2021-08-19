@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
@@ -10,9 +11,11 @@ import 'package:nomoca_flutter/presentation/components/atoms/animated_push_motio
 import 'package:nomoca_flutter/presentation/components/atoms/parallax_card.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/images_slider.dart';
+import 'package:nomoca_flutter/presentation/upsert_local_id_dialog.dart';
 import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
 import 'package:nomoca_flutter/states/arguments/favorite_patient_card_arguments.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
+import 'package:nomoca_flutter/states/providers/update_local_id_provider.dart';
 import 'package:nomoca_flutter/states/reducers/favorite_list_reducer.dart';
 import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -22,6 +25,29 @@ import 'asset_image_path.dart';
 class FavoriteListView extends HookConsumerWidget with AssetImagePath {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // 次回予約日時登録処理
+    ref.watch(updateLocalIdProvider).when(
+      data: (isSuccess) async {
+        if (isSuccess) {
+          // ローディング非表示
+          await EasyLoading.dismiss();
+        }
+      },
+      loading: () async {
+        // ローディング表示
+        await EasyLoading.show();
+      },
+      error: (error, _) {
+        // ローディング非表示
+        EasyLoading.dismiss();
+        // SnackBar表示
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(error.toString())));
+        });
+      },
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('かかりつけ'),
@@ -269,16 +295,17 @@ class _HorizontalItemView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final localId = useState<String?>(null);
     final reserveDate = useState('');
+    final userId = entity.userIds[horizontalIndex];
+    final institutionId = entity.institutionId;
     final args = FavoritePatientCardArguments(
-      userId: entity.userIds[horizontalIndex],
-      institutionId: entity.institutionId,
-    );
+        userId: userId, institutionId: institutionId);
     print('V: $verticalIndex H: $horizontalIndex build');
     return ref.watch(getFavoritePatientCardProvider(args)).when(
-          data: (entity) {
+          data: (card) {
             print(
-                'V: $verticalIndex H: $horizontalIndex name: ${entity.nickname} localId: ${entity.localId} reserveDate: ${entity.reserveDate} receptionDate: ${entity.lastReceptionDate}');
+                'V: $verticalIndex H: $horizontalIndex name: ${card.nickname} localId: ${card.localId} reserveDate: ${card.reserveDate} receptionDate: ${card.lastReceptionDate}');
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,17 +320,36 @@ class _HorizontalItemView extends HookConsumerWidget {
                   ),
                 ),
                 TextField(
-                  controller: TextEditingController(text: entity.localId ?? ''),
+                  controller: TextEditingController(
+                      text: localId.value ?? card.localId ?? ''),
                   decoration: const InputDecoration(
                     hintText: '診察券番号を入力してください',
                     labelText: '診察券番号',
                   ),
+                  readOnly: true,
+                  onTap: () async {
+                    // 診察券番号登録ダイアログ表示
+                    final result = await showDialog<String?>(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return UpsertLocalIdDialog(
+                            institutionId: institutionId,
+                            userId: userId,
+                            localId: localId.value ?? card.localId,
+                          );
+                        });
+                    // 登録完了の戻り値であるlocalIdがあれば値を更新
+                    if (result != null) {
+                      localId.value = result;
+                    }
+                  },
                 ),
                 TextField(
                   controller: TextEditingController(
                       text: reserveDate.value.isNotEmpty
                           ? reserveDate.value
-                          : entity.reserveDate ?? ''),
+                          : card.reserveDate ?? ''),
                   decoration: const InputDecoration(
                     hintText: '次回予約日時メモを入力してください',
                     labelText: '次回予約日時メモ',
@@ -339,7 +385,7 @@ class _HorizontalItemView extends HookConsumerWidget {
                   ),
                 ),
                 Text(
-                  entity.lastReceptionDate ?? '---- / -- / --  -- : --',
+                  card.lastReceptionDate ?? '---- / -- / --  -- : --',
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black45,

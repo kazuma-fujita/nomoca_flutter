@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/mocks/mock_providers.dart';
-import 'package:nomoca_flutter/presentation/components/settings_view.dart';
+import 'package:nomoca_flutter/presentation/settings_view.dart';
 import 'package:nomoca_flutter/presentation/favorite_list_view.dart';
 import 'package:nomoca_flutter/presentation/root_view.dart';
 import 'package:nomoca_flutter/routes/route_generator.dart';

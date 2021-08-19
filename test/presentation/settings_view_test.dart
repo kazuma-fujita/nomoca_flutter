@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nomoca_flutter/data/repository/get_version_repository.dart';
-import 'package:nomoca_flutter/presentation/components/settings_view.dart';
+import 'package:nomoca_flutter/presentation/settings_view.dart';
 import 'package:nomoca_flutter/states/providers/get_version_provider.dart';
 
 import 'settings_view_test.mocks.dart';
