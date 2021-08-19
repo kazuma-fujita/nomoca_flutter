@@ -29,6 +29,10 @@ class UpdateNextReserveDateStateNotifier
       state = AsyncError(error);
     }
   }
+
+  void initialState() {
+    state = const AsyncData(false);
+  }
 }
 
 final _updateNextReserveDateApiProvider = Provider.autoDispose(

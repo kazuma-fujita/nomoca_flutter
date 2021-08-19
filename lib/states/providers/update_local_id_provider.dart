@@ -27,6 +27,10 @@ class UpdateLocalIdStateNotifier extends StateNotifier<AsyncValue<bool>> {
       state = AsyncError(error);
     }
   }
+
+  void initialState() {
+    state = const AsyncValue.data(false);
+  }
 }
 
 final _updateLocalIdApiProvider = Provider.autoDispose(

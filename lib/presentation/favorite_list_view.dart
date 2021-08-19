@@ -12,6 +12,7 @@ import 'package:nomoca_flutter/presentation/components/atoms/parallax_card.dart'
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/images_slider.dart';
 import 'package:nomoca_flutter/presentation/upsert_local_id_dialog.dart';
+import 'package:nomoca_flutter/presentation/upsert_next_reserve_date_dialog.dart';
 import 'package:nomoca_flutter/states/actions/keyword_search_list_action.dart';
 import 'package:nomoca_flutter/states/arguments/favorite_patient_card_arguments.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
@@ -296,9 +297,10 @@ class _HorizontalItemView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final localId = useState<String?>(null);
-    final reserveDate = useState('');
+    final reserveDate = useState<String?>(null);
     final userId = entity.userIds[horizontalIndex];
     final institutionId = entity.institutionId;
+    final key = Key('$institutionId$userId');
     final args = FavoritePatientCardArguments(
         userId: userId, institutionId: institutionId);
     print('V: $verticalIndex H: $horizontalIndex build');
@@ -330,15 +332,17 @@ class _HorizontalItemView extends HookConsumerWidget {
                   onTap: () async {
                     // 診察券番号登録ダイアログ表示
                     final result = await showDialog<String?>(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return UpsertLocalIdDialog(
-                            institutionId: institutionId,
-                            userId: userId,
-                            localId: localId.value ?? card.localId,
-                          );
-                        });
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return UpsertLocalIdDialog(
+                          institutionId: institutionId,
+                          userId: userId,
+                          localId: localId.value ?? card.localId,
+                          key: key,
+                        );
+                      },
+                    );
                     // 登録完了の戻り値であるlocalIdがあれば値を更新
                     if (result != null) {
                       localId.value = result;
@@ -347,34 +351,51 @@ class _HorizontalItemView extends HookConsumerWidget {
                 ),
                 TextField(
                   controller: TextEditingController(
-                      text: reserveDate.value.isNotEmpty
-                          ? reserveDate.value
-                          : card.reserveDate ?? ''),
+                      text: reserveDate.value ?? card.reserveDate ?? ''),
                   decoration: const InputDecoration(
                     hintText: '次回予約日時メモを入力してください',
                     labelText: '次回予約日時メモ',
                   ),
                   readOnly: true,
-                  onTap: () {
-                    DatePicker.showDateTimePicker(
-                      context,
-                      showTitleActions: true,
-                      minTime: DateTime.now(),
-                      currentTime: DateTime.now(),
-                      maxTime: DateTime(DateTime.now().year + 10),
-                      onChanged: (date) {
-                        print('change $date');
+                  onTap: () async {
+                    // 次回予約日時登録ダイアログ表示
+                    final result = await showDialog<String?>(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return UpsertNextReserveDateDialog(
+                          institutionId: institutionId,
+                          userId: userId,
+                          reserveDate: reserveDate.value ?? card.reserveDate,
+                          key: key,
+                        );
                       },
-                      onConfirm: (date) {
-                        final formatDate =
-                            DateFormat('yyyy/MM/dd(E) HH:mm', 'ja_JP')
-                                .format(date);
-                        print('finish $formatDate');
-                        reserveDate.value = formatDate;
-                      },
-                      locale: LocaleType.jp,
                     );
+                    // 登録完了の戻り値であるlocalIdがあれば値を更新
+                    if (result != null) {
+                      localId.value = result;
+                    }
                   },
+                  // onTap: () {
+                  //   DatePicker.showDateTimePicker(
+                  //     context,
+                  //     showTitleActions: true,
+                  //     minTime: DateTime.now(),
+                  //     currentTime: DateTime.now(),
+                  //     maxTime: DateTime(DateTime.now().year + 10),
+                  //     onChanged: (date) {
+                  //       print('change $date');
+                  //     },
+                  //     onConfirm: (date) {
+                  //       final formatDate =
+                  //           DateFormat('yyyy/MM/dd(E) HH:mm', 'ja_JP')
+                  //               .format(date);
+                  //       print('finish $formatDate');
+                  //       reserveDate.value = formatDate;
+                  //     },
+                  //     locale: LocaleType.jp,
+                  //   );
+                  // },
                 ),
                 const SizedBox(height: 8),
                 const Text(

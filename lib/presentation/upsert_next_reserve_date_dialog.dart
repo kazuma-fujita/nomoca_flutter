@@ -3,33 +3,33 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nomoca_flutter/states/providers/update_local_id_provider.dart';
+import 'package:nomoca_flutter/states/providers/update_next_reserve_date_provider.dart';
 
-class UpsertLocalIdDialog extends HookConsumerWidget {
-  UpsertLocalIdDialog(
+class UpsertNextReserveDateDialog extends HookConsumerWidget {
+  UpsertNextReserveDateDialog(
       {required this.institutionId,
       required this.userId,
-      this.localId,
+      this.reserveDate,
       required Key key})
       : super(key: key);
 
   final int institutionId;
   final int userId;
-  final String? localId;
+  final String? reserveDate;
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final inputState = useState('');
     // 診察券番号登録処理
-    ref.watch(updateLocalIdProvider).when(
+    ref.watch(updateNextReserveDateProvider).when(
       data: (isSuccess) async {
         if (isSuccess) {
           // ローディング非表示
           await EasyLoading.dismiss();
           Navigator.pop(context, inputState.value);
           // Dialogのinstanceが破棄されずstateが残るので初期化
-          ref.read(updateLocalIdProvider.notifier).initialState();
+          ref.read(updateNextReserveDateProvider.notifier).initialState();
         }
       },
       loading: () async {
@@ -48,15 +48,15 @@ class UpsertLocalIdDialog extends HookConsumerWidget {
     );
 
     return AlertDialog(
-      title: const Text('診察券番号登録'),
+      title: const Text('次回予約日時メモ'),
       content: Form(
         key: _formKey,
         child: TextFormField(
-          initialValue: localId,
+          initialValue: reserveDate,
           maxLength: 20,
           decoration: const InputDecoration(
-            hintText: '診察券番号を入力してください',
-            labelText: '診察券番号',
+            hintText: '次回予約日時メモを入力してください',
+            labelText: '次回予約日時メモ',
           ),
           autofocus: true,
           // キーボードを数値に制限
@@ -64,7 +64,7 @@ class UpsertLocalIdDialog extends HookConsumerWidget {
           // コピペなどでも数値以外入力出来ないよう制限
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           validator: (String? input) {
-            return input == null || input.isEmpty ? '診察券番号を入力してください' : null;
+            return input == null || input.isEmpty ? '次回予約日時を選択してください' : null;
           },
           onSaved: (String? input) {
             inputState.value = input!;
@@ -82,10 +82,12 @@ class UpsertLocalIdDialog extends HookConsumerWidget {
             if (_formKey.currentState!.validate()) {
               _formKey.currentState!.save();
               // 登録・更新処理実行
-              ref.read(updateLocalIdProvider.notifier).updateLocalId(
+              ref
+                  .read(updateNextReserveDateProvider.notifier)
+                  .updateNextReserveDate(
                     userId: userId,
                     institutionId: institutionId,
-                    localId: inputState.value,
+                    reserveDate: inputState.value,
                   );
             }
           },
