@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -373,7 +372,7 @@ class _HorizontalItemView extends HookConsumerWidget {
                     );
                     // 登録完了の戻り値であるlocalIdがあれば値を更新
                     if (result != null) {
-                      localId.value = result;
+                      reserveDate.value = result;
                     }
                   },
                   // onTap: () {

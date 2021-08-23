@@ -1,12 +1,13 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/states/providers/update_next_reserve_date_provider.dart';
 
 class UpsertNextReserveDateDialog extends HookConsumerWidget {
-  UpsertNextReserveDateDialog(
+  const UpsertNextReserveDateDialog(
       {required this.institutionId,
       required this.userId,
       this.reserveDate,
@@ -16,11 +17,15 @@ class UpsertNextReserveDateDialog extends HookConsumerWidget {
   final int institutionId;
   final int userId;
   final String? reserveDate;
-  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final inputState = useState('');
+    final initialValue = reserveDate != null
+        ? DateFormat('yyyy-MM-dd HH:mm').format(
+            DateFormat('yyyy/MM/dd(E) HH:mm', 'ja_JP').parse(reserveDate!))
+        : DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
+    final controller = useTextEditingController(text: initialValue);
+    final inputState = useState(reserveDate);
     // 診察券番号登録処理
     ref.watch(updateNextReserveDateProvider).when(
       data: (isSuccess) async {
@@ -46,30 +51,37 @@ class UpsertNextReserveDateDialog extends HookConsumerWidget {
         });
       },
     );
-
     return AlertDialog(
-      title: const Text('次回予約日時メモ'),
-      content: Form(
-        key: _formKey,
-        child: TextFormField(
-          initialValue: reserveDate,
-          maxLength: 20,
-          decoration: const InputDecoration(
-            hintText: '次回予約日時メモを入力してください',
-            labelText: '次回予約日時メモ',
-          ),
-          autofocus: true,
-          // キーボードを数値に制限
-          keyboardType: TextInputType.number,
-          // コピペなどでも数値以外入力出来ないよう制限
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          validator: (String? input) {
-            return input == null || input.isEmpty ? '次回予約日時を選択してください' : null;
-          },
-          onSaved: (String? input) {
-            inputState.value = input!;
-          },
-        ),
+      title: const Text(
+        '次回予約日時メモとしてご利用ください\n実際のご予約は病院へお問い合わせください',
+        style: TextStyle(fontSize: 12),
+      ),
+      content: DateTimePicker(
+        controller: controller,
+        type: DateTimePickerType.dateTimeSeparate,
+        dateMask: 'yyyy/MM/dd',
+        // initialValue: reserveDate != null
+        //     ? DateFormat('yyyy/MM/dd(E) HH:mm', 'ja_JP')
+        //         .parse(reserveDate!)
+        //         .toString()
+        //     : DateTime.now().toString(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(DateTime.now().year + 10),
+        icon: const Icon(Icons.event),
+        dateLabelText: '予約日',
+        timeLabelText: '時刻',
+        onChanged: (input) {
+          // inputState.value = input;
+          print('onChanged:$input');
+        },
+        validator: (input) {
+          print('validator:$input');
+          return null;
+        },
+        onSaved: (input) {
+          // inputState.value = input;
+          print('onSave:$input');
+        },
       ),
       actions: [
         ElevatedButton(
@@ -78,18 +90,19 @@ class UpsertNextReserveDateDialog extends HookConsumerWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            // TextFormFieldのvalidate実行
-            if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
-              // 登録・更新処理実行
-              ref
-                  .read(updateNextReserveDateProvider.notifier)
-                  .updateNextReserveDate(
-                    userId: userId,
-                    institutionId: institutionId,
-                    reserveDate: inputState.value,
-                  );
-            }
+            final formatDate = DateFormat('yyyy/MM/dd(E) HH:mm', 'ja_JP')
+                .format(DateTime.parse(controller.text));
+            print('controller: ${controller.text}');
+            print('format: $formatDate');
+            inputState.value = formatDate;
+            // 登録・更新処理実行
+            ref
+                .read(updateNextReserveDateProvider.notifier)
+                .updateNextReserveDate(
+                  userId: userId,
+                  institutionId: institutionId,
+                  reserveDate: controller.text,
+                );
           },
           child: const Text('保存'),
         )

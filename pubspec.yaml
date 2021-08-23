@@ -23,9 +23,10 @@ environment:
 dependencies:
   cached_network_image: ^3.0.0
   cupertino_icons: ^1.0.3
+  date_time_picker: ^2.1.0
   flutter:
     sdk: flutter
-  flutter_datetime_picker: ^1.5.1
+#  flutter_datetime_picker: ^1.5.1
   flutter_easyloading: ^3.0.0
   flutter_localizations:
     sdk: flutter

@@ -45,6 +45,7 @@ import 'package:nomoca_flutter/states/reducers/keyword_search_list_reducer.dart'
 import 'package:nomoca_flutter/states/reducers/notification_list_reducer.dart';
 
 import 'fake_fetch_preview_cards_repository.dart';
+import 'fake_get_favorite_patient_card_repository.dart';
 
 class MockProviders {
   static const _contentsBaseUrl = 'https://contents-debug.nomoca.com';
