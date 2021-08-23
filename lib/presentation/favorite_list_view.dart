@@ -25,29 +25,6 @@ import 'asset_image_path.dart';
 class FavoriteListView extends HookConsumerWidget with AssetImagePath {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 次回予約日時登録処理
-    ref.watch(updateLocalIdProvider).when(
-      data: (isSuccess) async {
-        if (isSuccess) {
-          // ローディング非表示
-          await EasyLoading.dismiss();
-        }
-      },
-      loading: () async {
-        // ローディング表示
-        await EasyLoading.show();
-      },
-      error: (error, _) {
-        // ローディング非表示
-        EasyLoading.dismiss();
-        // SnackBar表示
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(error.toString())));
-        });
-      },
-    );
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('かかりつけ'),
@@ -299,7 +276,8 @@ class _HorizontalItemView extends HookConsumerWidget {
     final reserveDate = useState<String?>(null);
     final userId = entity.userIds[horizontalIndex];
     final institutionId = entity.institutionId;
-    final key = Key('$institutionId$userId');
+    final uniqueValue = '$institutionId$userId';
+    final key = Key(uniqueValue);
     final args = FavoritePatientCardArguments(
         userId: userId, institutionId: institutionId);
     print('V: $verticalIndex H: $horizontalIndex build');
@@ -311,16 +289,17 @@ class _HorizontalItemView extends HookConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Center(
+                Center(
                   child: Text(
-                    '診察券',
-                    style: TextStyle(
+                    '${card.nickname}の診察券',
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Colors.black87,
                     ),
                   ),
                 ),
                 TextField(
+                  key: Key('localId-TextField-$uniqueValue'),
                   controller: TextEditingController(
                       text: localId.value ?? card.localId ?? ''),
                   decoration: const InputDecoration(
@@ -349,6 +328,7 @@ class _HorizontalItemView extends HookConsumerWidget {
                   },
                 ),
                 TextField(
+                  key: Key('nextReserveDate-TextField-$uniqueValue'),
                   controller: TextEditingController(
                       text: reserveDate.value ?? card.reserveDate ?? ''),
                   decoration: const InputDecoration(
@@ -375,26 +355,6 @@ class _HorizontalItemView extends HookConsumerWidget {
                       reserveDate.value = result;
                     }
                   },
-                  // onTap: () {
-                  //   DatePicker.showDateTimePicker(
-                  //     context,
-                  //     showTitleActions: true,
-                  //     minTime: DateTime.now(),
-                  //     currentTime: DateTime.now(),
-                  //     maxTime: DateTime(DateTime.now().year + 10),
-                  //     onChanged: (date) {
-                  //       print('change $date');
-                  //     },
-                  //     onConfirm: (date) {
-                  //       final formatDate =
-                  //           DateFormat('yyyy/MM/dd(E) HH:mm', 'ja_JP')
-                  //               .format(date);
-                  //       print('finish $formatDate');
-                  //       reserveDate.value = formatDate;
-                  //     },
-                  //     locale: LocaleType.jp,
-                  //   );
-                  // },
                 ),
                 const SizedBox(height: 8),
                 const Text(

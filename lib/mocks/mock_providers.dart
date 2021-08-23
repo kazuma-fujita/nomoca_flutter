@@ -15,6 +15,7 @@ import 'package:nomoca_flutter/data/repository/update_family_user_repository.dar
 import 'package:nomoca_flutter/data/repository/user_management_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_create_family_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_create_user_repository.dart';
+import 'package:nomoca_flutter/mocks/fake_fetch_favorite_list_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_update_family_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_update_local_id_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_update_next_reserve_date_repository.dart';
