@@ -148,6 +148,7 @@ class FavoriteListView extends HookConsumerWidget with AssetImagePath {
         itemBuilder: (context, horizontalIndex) => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Card(
+            // key: Key('patientCard-${entity.institutionId}'),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
               side: const BorderSide(
@@ -162,7 +163,7 @@ class FavoriteListView extends HookConsumerWidget with AssetImagePath {
                 verticalIndex,
                 horizontalIndex,
                 key: Key(
-                    '$verticalIndex$horizontalIndex${entity.userIds[horizontalIndex]}'),
+                    'patientCard-${entity.institutionId}${entity.userIds[horizontalIndex]}'),
               ),
             ),
           ),
@@ -281,109 +282,108 @@ class _HorizontalItemView extends HookConsumerWidget {
     final args = FavoritePatientCardArguments(
         userId: userId, institutionId: institutionId);
     print('V: $verticalIndex H: $horizontalIndex build');
-    return ref.watch(getFavoritePatientCardProvider(args)).when(
-          data: (card) {
-            print(
-                'V: $verticalIndex H: $horizontalIndex name: ${card.nickname} localId: ${card.localId} reserveDate: ${card.reserveDate} receptionDate: ${card.lastReceptionDate}');
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Text(
-                    '${card.nickname}の診察券',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-                TextField(
-                  key: Key('localId-TextField-$uniqueValue'),
-                  controller: TextEditingController(
-                      text: localId.value ?? card.localId ?? ''),
-                  decoration: const InputDecoration(
-                    hintText: '診察券番号を入力してください',
-                    labelText: '診察券番号',
-                  ),
-                  readOnly: true,
-                  onTap: () async {
-                    // 診察券番号登録ダイアログ表示
-                    final result = await showDialog<String?>(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return UpsertLocalIdDialog(
-                          institutionId: institutionId,
-                          userId: userId,
-                          localId: localId.value ?? card.localId,
-                          key: key,
-                        );
-                      },
-                    );
-                    // 登録完了の戻り値であるlocalIdがあれば値を更新
-                    if (result != null) {
-                      localId.value = result;
-                    }
-                  },
-                ),
-                TextField(
-                  key: Key('nextReserveDate-TextField-$uniqueValue'),
-                  controller: TextEditingController(
-                      text: reserveDate.value ?? card.reserveDate ?? ''),
-                  decoration: const InputDecoration(
-                    hintText: '次回予約日時メモを入力してください',
-                    labelText: '次回予約日時メモ',
-                  ),
-                  readOnly: true,
-                  onTap: () async {
-                    // 次回予約日時登録ダイアログ表示
-                    final result = await showDialog<String?>(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return UpsertNextReserveDateDialog(
-                          institutionId: institutionId,
-                          userId: userId,
-                          reserveDate: reserveDate.value ?? card.reserveDate,
-                          key: key,
-                        );
-                      },
-                    );
-                    // 登録完了の戻り値であるlocalIdがあれば値を更新
-                    if (result != null) {
-                      reserveDate.value = result;
-                    }
-                  },
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  '前回受付',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.black45,
-                  ),
-                ),
-                Text(
-                  card.lastReceptionDate ?? '---- / -- / --  -- : --',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black45,
-                  ),
-                ),
-                const SizedBox(height: 8),
-              ],
-            );
-          },
-          loading: () {
-            print('V: $verticalIndex H: $horizontalIndex now loading');
-            return _patientCardShimmerView();
-          },
-          error: (error, _) => ErrorSnackBar(
-            errorMessage: error.toString(),
-            callback: () => ref.refresh(favoriteListReducer),
+    return ref.watch(getFavoritePatientCardProvider(args)).when(data: (card) {
+      print(
+          'V: $verticalIndex H: $horizontalIndex name: ${card.nickname} localId: ${card.localId} reserveDate: ${card.reserveDate} receptionDate: ${card.lastReceptionDate}');
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Text(
+              '${card.nickname}の診察券',
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.black87,
+              ),
+            ),
           ),
-        );
+          TextField(
+            key: Key('localId-TextField-$uniqueValue'),
+            controller: TextEditingController(
+                text: localId.value ?? card.localId ?? ''),
+            decoration: const InputDecoration(
+              hintText: '診察券番号を入力してください',
+              labelText: '診察券番号',
+            ),
+            readOnly: true,
+            onTap: () async {
+              // 診察券番号登録ダイアログ表示
+              final result = await showDialog<String?>(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return UpsertLocalIdDialog(
+                    institutionId: institutionId,
+                    userId: userId,
+                    localId: localId.value ?? card.localId,
+                    key: key,
+                  );
+                },
+              );
+              // 登録完了の戻り値であるlocalIdがあれば値を更新
+              if (result != null) {
+                localId.value = result;
+              }
+            },
+          ),
+          TextField(
+            key: Key('nextReserveDate-TextField-$uniqueValue'),
+            controller: TextEditingController(
+                text: reserveDate.value ?? card.reserveDate ?? ''),
+            decoration: const InputDecoration(
+              hintText: '次回予約日時メモを入力してください',
+              labelText: '次回予約日時メモ',
+            ),
+            readOnly: true,
+            onTap: () async {
+              // 次回予約日時登録ダイアログ表示
+              final result = await showDialog<String?>(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return UpsertNextReserveDateDialog(
+                    institutionId: institutionId,
+                    userId: userId,
+                    reserveDate: reserveDate.value ?? card.reserveDate,
+                    key: key,
+                  );
+                },
+              );
+              // 登録完了の戻り値であるlocalIdがあれば値を更新
+              if (result != null) {
+                reserveDate.value = result;
+              }
+            },
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            '前回受付',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.black45,
+            ),
+          ),
+          Text(
+            card.lastReceptionDate ?? '---- / -- / --  -- : --',
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.black45,
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+      );
+    }, loading: () {
+      print('V: $verticalIndex H: $horizontalIndex now loading');
+      return _patientCardShimmerView();
+    }, error: (error, _) {
+      print('V: $verticalIndex H: $horizontalIndex error: $error');
+      return ErrorSnackBar(
+        errorMessage: error.toString(),
+        callback: () => ref.refresh(favoriteListReducer),
+      );
+    });
   }
 
   Widget _patientCardShimmerView() {

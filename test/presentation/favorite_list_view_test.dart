@@ -163,25 +163,174 @@ void main() {
           userIds: [199, 200, 201],
         ),
       ];
+      final patientCards = [
+        const FavoritePatientCardEntity(
+          institutionId: 92506,
+          userId: 199,
+          nickname: '太郎',
+          localId: null,
+          reserveDate: null,
+          lastReceptionDate: null,
+          isPatient: false,
+        ),
+        const FavoritePatientCardEntity(
+          institutionId: 92506,
+          userId: 200,
+          nickname: '二郎',
+          localId: null,
+          reserveDate: null,
+          lastReceptionDate: null,
+          isPatient: false,
+        ),
+        const FavoritePatientCardEntity(
+          institutionId: 90093,
+          userId: 199,
+          nickname: '太郎',
+          localId: null,
+          reserveDate: null,
+          lastReceptionDate: null,
+          isPatient: false,
+        ),
+        const FavoritePatientCardEntity(
+          institutionId: 90093,
+          userId: 200,
+          nickname: '二郎',
+          localId: null,
+          reserveDate: null,
+          lastReceptionDate: null,
+          isPatient: false,
+        ),
+        const FavoritePatientCardEntity(
+          institutionId: 92506,
+          userId: 201,
+          nickname: '三郎',
+          localId: null,
+          reserveDate: null,
+          lastReceptionDate: null,
+          isPatient: false,
+        ),
+        const FavoritePatientCardEntity(
+          institutionId: 90093,
+          userId: 201,
+          nickname: '三郎',
+          localId: null,
+          reserveDate: null,
+          lastReceptionDate: null,
+          isPatient: false,
+        ),
+      ];
+
       // 一覧APIレスポンスデータを設定
       when(_listRepository.fetchList()).thenAnswer((_) async => entities);
+      // 診察券カードAPIレスポンスデータを設定
+      when(_patientCardRepository.get(
+        userId: anyNamed('userId'),
+        institutionId: anyNamed('institutionId'),
+      )).thenAnswer((_) async => patientCards.removeAt(0));
       // 一覧画面Widgetをレンダリング
       await tester.pumpWidget(_setUpProviderScope());
       // 画面要素、ローディング表示を確認
       await _verifyTheStatusBeforeAfterLoading(tester);
+      /*
+      1件目の医院要素確認
+       */
+      // レンダリング後の画面要素を確認
+      expect(find.byType(Image), findsNWidgets(1));
+      expect(find.text('渋谷リーフクリニック'), findsOneWidget);
+      // likeButtonが点灯していることを確認
+      final likeButton1Finder = find.byKey(const Key('like-92506'));
+      final likeButton1 = tester.firstWidget(likeButton1Finder) as LikeButton;
+      expect(likeButton1Finder, findsOneWidget);
+      expect(likeButton1.isLiked, isTrue);
+      // 診察券カード要素確認
+      expect(find.text('太郎の診察券'), findsOneWidget);
+      expect(find.text('二郎の診察券'), findsOneWidget);
+      expect(find.text('診察券番号'), findsNWidgets(2));
+      expect(find.text('次回予約日時メモ'), findsNWidgets(2));
+      expect(find.text('前回受付'), findsNWidgets(2));
+      expect(find.text('---- / -- / --  -- : --'), findsNWidgets(2));
+      // TextField要素確認
+      final localId1TextFieldFinder =
+          find.byKey(const Key('localId-TextField-92506199'));
+      final localId1TextField =
+          tester.firstWidget(localId1TextFieldFinder) as TextField;
+      expect(localId1TextFieldFinder, findsOneWidget);
+      expect(localId1TextField.controller!.text, isEmpty);
+      final nextReserveDate1TextFieldFinder =
+          find.byKey(const Key('nextReserveDate-TextField-92506199'));
+      final nextReserveDate1TextField =
+          tester.firstWidget(nextReserveDate1TextFieldFinder) as TextField;
+      expect(nextReserveDate1TextFieldFinder, findsOneWidget);
+      expect(nextReserveDate1TextField.controller!.text, isEmpty);
+      final localId2TextFieldFinder =
+          find.byKey(const Key('localId-TextField-92506199'));
+      final localId2TextField =
+          tester.firstWidget(localId2TextFieldFinder) as TextField;
+      expect(localId2TextFieldFinder, findsOneWidget);
+      expect(localId2TextField.controller!.text, isEmpty);
+      final nextReserveDate2TextFieldFinder =
+          find.byKey(const Key('nextReserveDate-TextField-92506199'));
+      final nextReserveDate2TextField =
+          tester.firstWidget(nextReserveDate2TextFieldFinder) as TextField;
+      expect(nextReserveDate2TextFieldFinder, findsOneWidget);
+      expect(nextReserveDate2TextField.controller!.text, isEmpty);
+      /*
+      1件目医院の診察券カードをスワイプして3件目の診察券を表示
+       */
+      // await tester.drag(find.byType(PageView), const Offset(400, 0));
+      // Widgetがレンダリング完了するまで処理を待機
+      // await tester.pump();
+      /*
+      2件目の医院要素確認
+       */
+      await tester.drag(find.byType(ListView), const Offset(0, -800));
       await tester.pump();
       // レンダリング後の画面要素を確認
-      expect(find.byType(ImagesSlider), findsWidgets);
-      expect(find.byType(Image), findsNWidgets(5));
-      expect(find.text('渋谷リーフクリニック'), findsOneWidget);
+      expect(find.byType(ImagesSlider), findsOneWidget);
       expect(find.text('小笠原歯科'), findsOneWidget);
       // likeButtonが点灯していることを確認
-      final likeButtonFinder = find.byKey(const Key('like-90093'));
-      final likeButton = tester.firstWidget(likeButtonFinder) as LikeButton;
-      expect(likeButtonFinder, findsOneWidget);
-      expect(likeButton.isLiked, isTrue);
+      final likeButton2Finder = find.byKey(const Key('like-90093'));
+      final likeButton2 = tester.firstWidget(likeButton2Finder) as LikeButton;
+      expect(likeButton2Finder, findsOneWidget);
+      expect(likeButton2.isLiked, isTrue);
+      // 診察券カード要素確認
+      expect(find.text('太郎の診察券'), findsOneWidget);
+      expect(find.text('二郎の診察券'), findsOneWidget);
+      expect(find.text('診察券番号'), findsNWidgets(2));
+      expect(find.text('次回予約日時メモ'), findsNWidgets(2));
+      expect(find.text('前回受付'), findsNWidgets(2));
+      expect(find.text('---- / -- / --  -- : --'), findsNWidgets(2));
+      // TextField要素確認
+      final localId3TextFieldFinder =
+          find.byKey(const Key('localId-TextField-90093199'));
+      final localId3TextField =
+          tester.firstWidget(localId3TextFieldFinder) as TextField;
+      expect(localId3TextFieldFinder, findsOneWidget);
+      expect(localId3TextField.controller!.text, isEmpty);
+      final nextReserveDate3TextFieldFinder =
+          find.byKey(const Key('nextReserveDate-TextField-90093199'));
+      final nextReserveDate3TextField =
+          tester.firstWidget(nextReserveDate3TextFieldFinder) as TextField;
+      expect(nextReserveDate3TextFieldFinder, findsOneWidget);
+      expect(nextReserveDate3TextField.controller!.text, isEmpty);
+      final localId4TextFieldFinder =
+          find.byKey(const Key('localId-TextField-90093199'));
+      final localId4TextField =
+          tester.firstWidget(localId4TextFieldFinder) as TextField;
+      expect(localId4TextFieldFinder, findsOneWidget);
+      expect(localId4TextField.controller!.text, isEmpty);
+      final nextReserveDate4TextFieldFinder =
+          find.byKey(const Key('nextReserveDate-TextField-90093199'));
+      final nextReserveDate4TextField =
+          tester.firstWidget(nextReserveDate4TextFieldFinder) as TextField;
+      expect(nextReserveDate4TextFieldFinder, findsOneWidget);
+      expect(nextReserveDate4TextField.controller!.text, isEmpty);
       // Mock呼び出しを検証
       verify(_listRepository.fetchList());
+      verify(_patientCardRepository.get(
+        userId: anyNamed('userId'),
+        institutionId: anyNamed('institutionId'),
+      )).called(4);
     });
 
     testWidgets('Testing update of favorite button.',

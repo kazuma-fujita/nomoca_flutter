@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:nomoca_flutter/constants/route_names.dart';
 import 'package:nomoca_flutter/data/entity/remote/user_nickname_entity.dart';
 import 'package:nomoca_flutter/data/repository/create_family_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/delete_family_user_repository.dart';
@@ -13,8 +12,6 @@ import 'package:nomoca_flutter/data/repository/fetch_patient_cards_repository.da
 import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart';
 import 'package:nomoca_flutter/presentation/components/molecules/error_snack_bar.dart';
 import 'package:nomoca_flutter/presentation/family_user_list_view.dart';
-import 'package:nomoca_flutter/presentation/upsert_user_view.dart';
-import 'package:nomoca_flutter/presentation/upsert_user_view_arguments.dart';
 import 'package:nomoca_flutter/routes/route_generator.dart';
 import 'package:nomoca_flutter/states/providers/create_family_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/delete_family_user_provider.dart';

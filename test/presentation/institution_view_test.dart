@@ -15,6 +15,7 @@ import 'package:nomoca_flutter/presentation/components/molecules/images_slider.d
 import 'package:nomoca_flutter/presentation/institution_view.dart';
 import 'package:nomoca_flutter/states/providers/get_institution_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import 'institution_view_test.mocks.dart';
 
@@ -23,7 +24,7 @@ import 'institution_view_test.mocks.dart';
   UpdateFavoriteRepository,
 ])
 void main() {
-  final _listRepository = MockGetInstitutionRepository();
+  final _institutionRepository = MockGetInstitutionRepository();
   final _updateFavoriteRepository = MockUpdateFavoriteRepository();
 
   // Widget testはHTTP 通信が 400 - Bad Request になる仕様
@@ -31,7 +32,7 @@ void main() {
   setUpAll(() => HttpOverrides.global = null);
 
   tearDown(() {
-    reset(_listRepository);
+    reset(_institutionRepository);
     reset(_updateFavoriteRepository);
   });
 
@@ -39,7 +40,8 @@ void main() {
     return ProviderScope(
       overrides: [
         // 一覧画面の初期状態を設定
-        getInstitutionRepositoryProvider.overrideWithValue(_listRepository),
+        getInstitutionRepositoryProvider
+            .overrideWithValue(_institutionRepository),
         // お気に入りボタンタップ時のAPIレスポンスを設定
         updateFavoriteRepositoryProvider
             .overrideWithValue(_updateFavoriteRepository),
@@ -52,13 +54,13 @@ void main() {
 
   Future<void> _verifyTheStatusBeforeAfterLoading(WidgetTester tester) async {
     // ローディング表示を確認
-    // expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byType(Shimmer), findsOneWidget);
     // Widgetがレンダリング完了するまで処理を待機
     await tester.pump();
     // 画面要素チェック
     // エラー、ローディング非表示を確認
     expect(find.byType(ErrorSnackBar), findsNothing);
-    // expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.byType(Shimmer), findsNothing);
   }
 
   void _givenMinElementData() {
@@ -90,7 +92,7 @@ void main() {
       images: [],
     );
     // 一覧APIレスポンスデータを設定
-    when(_listRepository.getInstitution(
+    when(_institutionRepository.getInstitution(
       institutionId: anyNamed('institutionId'),
     )).thenAnswer((_) async => result);
   }
@@ -136,7 +138,7 @@ void main() {
         ],
       );
       // 一覧APIレスポンスデータを設定
-      when(_listRepository.getInstitution(
+      when(_institutionRepository.getInstitution(
         institutionId: anyNamed('institutionId'),
       )).thenAnswer((_) async => result);
       // 一覧画面Widgetをレンダリング
@@ -208,7 +210,7 @@ void main() {
       expect(likeButtonFinder, findsOneWidget);
       expect(likeButton.isLiked, isTrue);
       // Mock呼び出しを検証
-      verify(_listRepository.getInstitution(
+      verify(_institutionRepository.getInstitution(
         institutionId: anyNamed('institutionId'),
       ));
     });
@@ -255,7 +257,7 @@ void main() {
       expect(likeButtonFinder, findsOneWidget);
       expect(likeButton.isLiked, isFalse);
       // Mock呼び出しを検証
-      verify(_listRepository.getInstitution(
+      verify(_institutionRepository.getInstitution(
         institutionId: anyNamed('institutionId'),
       ));
     });
@@ -289,7 +291,7 @@ void main() {
       // likeButtonが消灯することを確認
       // expect(likeButton.isLiked, isFalse);
       // Mock呼び出しを検証
-      verify(_listRepository.getInstitution(
+      verify(_institutionRepository.getInstitution(
         institutionId: anyNamed('institutionId'),
       ));
       // verify(_updateFavoriteRepository.updateFavorite(
@@ -305,7 +307,7 @@ void main() {
   group('Testing error of institution view.', () {
     testWidgets('Testing display of error.', (WidgetTester tester) async {
       // 一覧APIレスポンスデータを設定
-      when(_listRepository.getInstitution(
+      when(_institutionRepository.getInstitution(
         institutionId: anyNamed('institutionId'),
       )).thenThrow(Exception('Error message.'));
       // 一覧画面Widgetをレンダリング
@@ -317,7 +319,7 @@ void main() {
       // Error widget表示確認
       expect(find.byType(ErrorSnackBar), findsOneWidget);
       // Mock呼び出しを検証
-      verify(_listRepository.getInstitution(
+      verify(_institutionRepository.getInstitution(
         institutionId: anyNamed('institutionId'),
       ));
     });
