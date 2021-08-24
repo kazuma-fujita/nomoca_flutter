@@ -21,6 +21,7 @@ class UpsertLocalIdDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final inputState = useState('');
+    // final controller = useTextEditingController(text: localId);
     // 診察券番号登録処理
     ref.watch(updateLocalIdProvider).when(
       data: (isSuccess) async {
@@ -43,6 +44,8 @@ class UpsertLocalIdDialog extends HookConsumerWidget {
         WidgetsBinding.instance!.addPostFrameCallback((_) {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(error.toString())));
+          // Dialogのinstanceが破棄されずstateが残るので初期化
+          ref.read(updateLocalIdProvider.notifier).initialState();
         });
       },
     );
@@ -52,6 +55,8 @@ class UpsertLocalIdDialog extends HookConsumerWidget {
       content: Form(
         key: _formKey,
         child: TextFormField(
+          key: Key('localId-dialog-TextField-$institutionId$userId'),
+          // controller: controller,
           initialValue: localId,
           maxLength: 20,
           decoration: const InputDecoration(

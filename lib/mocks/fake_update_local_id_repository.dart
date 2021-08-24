@@ -9,4 +9,6 @@ class FakeUpdateLocalIdRepositoryImpl extends UpdateLocalIdRepository {
           required int institutionId,
           required String localId}) async =>
       Future.delayed(const Duration(seconds: 2), () => Future.value());
+  // Future.delayed(const Duration(seconds: 2),
+  //     () => Future.error(Exception('Error Message.')));
 }

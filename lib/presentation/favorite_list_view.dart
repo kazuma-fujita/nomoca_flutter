@@ -144,11 +144,12 @@ class FavoriteListView extends HookConsumerWidget with AssetImagePath {
       child: PageView.builder(
         controller: PageController(viewportFraction: 0.85, keepPage: true),
         itemCount: entity.userIds.length,
-        // onPageChanged: (int index) {},
         itemBuilder: (context, horizontalIndex) => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Card(
-            // key: Key('patientCard-${entity.institutionId}'),
+            key: Key(
+              'patientCard-${entity.institutionId}${entity.userIds[horizontalIndex]}',
+            ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
               side: const BorderSide(
@@ -162,8 +163,6 @@ class FavoriteListView extends HookConsumerWidget with AssetImagePath {
                 entity,
                 verticalIndex,
                 horizontalIndex,
-                key: Key(
-                    'patientCard-${entity.institutionId}${entity.userIds[horizontalIndex]}'),
               ),
             ),
           ),
@@ -262,10 +261,15 @@ class FavoriteListView extends HookConsumerWidget with AssetImagePath {
 }
 
 class _HorizontalItemView extends HookConsumerWidget {
+  // const _HorizontalItemView(
+  //     this.entity, this.verticalIndex, this.horizontalIndex,
+  //     {required Key key})
+  //     : super(key: key);
   const _HorizontalItemView(
-      this.entity, this.verticalIndex, this.horizontalIndex,
-      {required Key key})
-      : super(key: key);
+    this.entity,
+    this.verticalIndex,
+    this.horizontalIndex,
+  );
 
   final FavoriteEntity entity;
   final int verticalIndex;
@@ -275,6 +279,8 @@ class _HorizontalItemView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final localId = useState<String?>(null);
     final reserveDate = useState<String?>(null);
+    final localIdTextFieldController = useTextEditingController();
+    final reserveDateTextFieldController = useTextEditingController();
     final userId = entity.userIds[horizontalIndex];
     final institutionId = entity.institutionId;
     final uniqueValue = '$institutionId$userId';
@@ -283,6 +289,9 @@ class _HorizontalItemView extends HookConsumerWidget {
         userId: userId, institutionId: institutionId);
     print('V: $verticalIndex H: $horizontalIndex build');
     return ref.watch(getFavoritePatientCardProvider(args)).when(data: (card) {
+      localIdTextFieldController.text = localId.value ?? card.localId ?? '';
+      reserveDateTextFieldController.text =
+          reserveDate.value ?? card.reserveDate ?? '';
       print(
           'V: $verticalIndex H: $horizontalIndex name: ${card.nickname} localId: ${card.localId} reserveDate: ${card.reserveDate} receptionDate: ${card.lastReceptionDate}');
       return Column(
@@ -300,8 +309,9 @@ class _HorizontalItemView extends HookConsumerWidget {
           ),
           TextField(
             key: Key('localId-TextField-$uniqueValue'),
-            controller: TextEditingController(
-                text: localId.value ?? card.localId ?? ''),
+            controller: localIdTextFieldController,
+            // controller: TextEditingController(
+            //     text: localId.value ?? card.localId ?? ''),
             decoration: const InputDecoration(
               hintText: '診察券番号を入力してください',
               labelText: '診察券番号',
@@ -323,14 +333,16 @@ class _HorizontalItemView extends HookConsumerWidget {
               );
               // 登録完了の戻り値であるlocalIdがあれば値を更新
               if (result != null) {
+                print('localId result: $result');
                 localId.value = result;
               }
             },
           ),
           TextField(
             key: Key('nextReserveDate-TextField-$uniqueValue'),
-            controller: TextEditingController(
-                text: reserveDate.value ?? card.reserveDate ?? ''),
+            controller: reserveDateTextFieldController,
+            // controller: TextEditingController(
+            //     text: reserveDate.value ?? card.reserveDate ?? ''),
             decoration: const InputDecoration(
               hintText: '次回予約日時メモを入力してください',
               labelText: '次回予約日時メモ',

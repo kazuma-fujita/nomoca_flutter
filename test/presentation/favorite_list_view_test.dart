@@ -204,18 +204,18 @@ void main() {
           institutionId: 92506,
           userId: 201,
           nickname: '三郎',
-          localId: null,
-          reserveDate: null,
-          lastReceptionDate: null,
+          localId: '9876543210',
+          reserveDate: '2021/12/13(水) 15:15',
+          lastReceptionDate: '2021/11/30(日) 09:30',
           isPatient: false,
         ),
         const FavoritePatientCardEntity(
           institutionId: 90093,
           userId: 201,
           nickname: '三郎',
-          localId: null,
-          reserveDate: null,
-          lastReceptionDate: null,
+          localId: '12345678900987654321',
+          reserveDate: '2022/02/29(月) 14:30',
+          lastReceptionDate: '2021/03/30(火) 10:10',
           isPatient: false,
         ),
       ];
@@ -276,13 +276,24 @@ void main() {
       expect(nextReserveDate2TextFieldFinder, findsOneWidget);
       expect(nextReserveDate2TextField.controller!.text, '2021/08/24(木) 11:30');
       /*
+      ListViewをスクロールして1件目医院の診察券カードを表示
+       */
+      await tester.drag(find.byType(ListView), const Offset(0, -400));
+      await tester.pump();
+      /*
       1件目医院の診察券カードをスワイプして3件目の診察券を表示
        */
-      // await tester.drag(find.byType(PageView), const Offset(400, 0));
-      // Widgetがレンダリング完了するまで処理を待機
-      // await tester.pump();
+      await tester.drag(
+          find.byKey(const Key('patientCard-92506199')), const Offset(-800, 0));
+      await tester.pump();
+      await tester.pump();
+      // 診察券カード要素確認
+      expect(find.text('三郎の診察券'), findsOneWidget);
+      expect(find.text('9876543210'), findsOneWidget);
+      expect(find.text('2021/12/13(水) 15:15'), findsOneWidget);
+      expect(find.text('2021/11/30(日) 09:30'), findsOneWidget);
       /*
-      2件目の医院要素確認
+      ListViewをスクロールして2件目の医院要素表示
        */
       await tester.drag(find.byType(ListView), const Offset(0, -800));
       await tester.pump();
@@ -327,12 +338,24 @@ void main() {
           tester.firstWidget(nextReserveDate4TextFieldFinder) as TextField;
       expect(nextReserveDate4TextFieldFinder, findsOneWidget);
       expect(nextReserveDate4TextField.controller!.text, isEmpty);
+      /*
+      2件目医院の診察券カードをスワイプして3件目の診察券を表示
+       */
+      await tester.drag(
+          find.byKey(const Key('patientCard-90093199')), const Offset(-800, 0));
+      await tester.pump();
+      await tester.pump();
+      // 診察券カード要素確認
+      expect(find.text('三郎の診察券'), findsOneWidget);
+      expect(find.text('12345678900987654321'), findsOneWidget);
+      expect(find.text('2022/02/29(月) 14:30'), findsOneWidget);
+      expect(find.text('2021/03/30(火) 10:10'), findsOneWidget);
       // Mock呼び出しを検証
       verify(_listRepository.fetchList());
       verify(_patientCardRepository.get(
         userId: anyNamed('userId'),
         institutionId: anyNamed('institutionId'),
-      )).called(4);
+      )).called(6);
     });
 
     testWidgets('Testing update of favorite button.',
