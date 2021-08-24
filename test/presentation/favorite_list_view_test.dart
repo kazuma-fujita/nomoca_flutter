@@ -177,18 +177,18 @@ void main() {
           institutionId: 92506,
           userId: 200,
           nickname: '二郎',
-          localId: null,
-          reserveDate: null,
-          lastReceptionDate: null,
+          localId: '1234567890',
+          reserveDate: '2021/08/24(木) 11:30',
+          lastReceptionDate: '2021/08/14(土) 20:45',
           isPatient: false,
         ),
         const FavoritePatientCardEntity(
           institutionId: 90093,
           userId: 199,
           nickname: '太郎',
-          localId: null,
-          reserveDate: null,
-          lastReceptionDate: null,
+          localId: '1100',
+          reserveDate: '2021/07/06(火) 16:00',
+          lastReceptionDate: '2021/06/25(金) 09:00',
           isPatient: false,
         ),
         const FavoritePatientCardEntity(
@@ -248,7 +248,8 @@ void main() {
       expect(find.text('診察券番号'), findsNWidgets(2));
       expect(find.text('次回予約日時メモ'), findsNWidgets(2));
       expect(find.text('前回受付'), findsNWidgets(2));
-      expect(find.text('---- / -- / --  -- : --'), findsNWidgets(2));
+      expect(find.text('---- / -- / --  -- : --'), findsNWidgets(1));
+      expect(find.text('2021/08/14(土) 20:45'), findsNWidgets(1));
       // TextField要素確認
       final localId1TextFieldFinder =
           find.byKey(const Key('localId-TextField-92506199'));
@@ -263,17 +264,17 @@ void main() {
       expect(nextReserveDate1TextFieldFinder, findsOneWidget);
       expect(nextReserveDate1TextField.controller!.text, isEmpty);
       final localId2TextFieldFinder =
-          find.byKey(const Key('localId-TextField-92506199'));
+          find.byKey(const Key('localId-TextField-92506200'));
       final localId2TextField =
           tester.firstWidget(localId2TextFieldFinder) as TextField;
       expect(localId2TextFieldFinder, findsOneWidget);
-      expect(localId2TextField.controller!.text, isEmpty);
+      expect(localId2TextField.controller!.text, '1234567890');
       final nextReserveDate2TextFieldFinder =
-          find.byKey(const Key('nextReserveDate-TextField-92506199'));
+          find.byKey(const Key('nextReserveDate-TextField-92506200'));
       final nextReserveDate2TextField =
           tester.firstWidget(nextReserveDate2TextFieldFinder) as TextField;
       expect(nextReserveDate2TextFieldFinder, findsOneWidget);
-      expect(nextReserveDate2TextField.controller!.text, isEmpty);
+      expect(nextReserveDate2TextField.controller!.text, '2021/08/24(木) 11:30');
       /*
       1件目医院の診察券カードをスワイプして3件目の診察券を表示
        */
@@ -299,28 +300,29 @@ void main() {
       expect(find.text('診察券番号'), findsNWidgets(2));
       expect(find.text('次回予約日時メモ'), findsNWidgets(2));
       expect(find.text('前回受付'), findsNWidgets(2));
-      expect(find.text('---- / -- / --  -- : --'), findsNWidgets(2));
+      expect(find.text('2021/06/25(金) 09:00'), findsNWidgets(1));
+      expect(find.text('---- / -- / --  -- : --'), findsNWidgets(1));
       // TextField要素確認
       final localId3TextFieldFinder =
           find.byKey(const Key('localId-TextField-90093199'));
       final localId3TextField =
           tester.firstWidget(localId3TextFieldFinder) as TextField;
       expect(localId3TextFieldFinder, findsOneWidget);
-      expect(localId3TextField.controller!.text, isEmpty);
+      expect(localId3TextField.controller!.text, '1100');
       final nextReserveDate3TextFieldFinder =
           find.byKey(const Key('nextReserveDate-TextField-90093199'));
       final nextReserveDate3TextField =
           tester.firstWidget(nextReserveDate3TextFieldFinder) as TextField;
       expect(nextReserveDate3TextFieldFinder, findsOneWidget);
-      expect(nextReserveDate3TextField.controller!.text, isEmpty);
+      expect(nextReserveDate3TextField.controller!.text, '2021/07/06(火) 16:00');
       final localId4TextFieldFinder =
-          find.byKey(const Key('localId-TextField-90093199'));
+          find.byKey(const Key('localId-TextField-90093200'));
       final localId4TextField =
           tester.firstWidget(localId4TextFieldFinder) as TextField;
       expect(localId4TextFieldFinder, findsOneWidget);
       expect(localId4TextField.controller!.text, isEmpty);
       final nextReserveDate4TextFieldFinder =
-          find.byKey(const Key('nextReserveDate-TextField-90093199'));
+          find.byKey(const Key('nextReserveDate-TextField-90093200'));
       final nextReserveDate4TextField =
           tester.firstWidget(nextReserveDate4TextFieldFinder) as TextField;
       expect(nextReserveDate4TextFieldFinder, findsOneWidget);

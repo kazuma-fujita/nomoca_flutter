@@ -10,8 +10,8 @@ class FakeGetFavoritePatientCardRepositoryImpl
     userId: 199,
     nickname: '太郎',
     localId: '1100',
-    // reserveDate: '2021/07/06(火) 16:00',
-    reserveDate: null,
+    reserveDate: '2021/07/06(火) 16:00',
+    // reserveDate: null,
     lastReceptionDate: '2021/06/25(金) 09:00',
     isPatient: false,
   );
