@@ -6,21 +6,27 @@ import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/authentication_entity.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
+import 'package:nomoca_flutter/data/repository/get_device_info_repository.dart';
 import 'package:nomoca_flutter/errors/authentication_error.dart';
 
 import '../../fixture.dart';
 import 'authentication_repository_test.mocks.dart';
 
-@GenerateMocks([AuthenticationApi, UserDao])
+@GenerateMocks([AuthenticationApi, UserDao, GetDeviceInfoRepository])
 void main() {
   final _api = MockAuthenticationApi();
   final _userDao = MockUserDao();
-  final _repository =
-      AuthenticationRepositoryImpl(authenticationApi: _api, userDao: _userDao);
+  final _deviceInfo = MockGetDeviceInfoRepository();
+  final _repository = AuthenticationRepositoryImpl(
+    authenticationApi: _api,
+    userDao: _userDao,
+    deviceInfo: _deviceInfo,
+  );
 
   tearDown(() {
     reset(_api);
     reset(_userDao);
+    reset(_deviceInfo);
   });
 
   group('Testing the authentication repository.', () {
@@ -35,10 +41,14 @@ void main() {
         ),
       ).thenAnswer((_) async => fixture('authentication.json'));
       when(_userDao.get()).thenReturn(User()..fcmToken = 'dummyFcmToken');
+      when(_deviceInfo.getOSVersion())
+          .thenAnswer((_) async => Future.value('iOS 13.1'));
+      when(_deviceInfo.getDeviceName())
+          .thenAnswer((_) async => Future.value('iPhone 11 Pro Max iPhone'));
       // Run the test method.
       final entity = await _repository.authentication(
         mobilePhoneNumber: '09012345678',
-        authCode: 'dummy',
+        authCode: 'dummyAuthCode',
       );
       expect(
           entity,
@@ -48,13 +58,15 @@ void main() {
               .having((entity) => entity.nickname, 'nickname', '太郎')
               .having((entity) => entity.userId, 'userId', 199));
       // Validate the method call.
-      verify(_api(
-        mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
-        authCode: anyNamed('authCode'),
-        deviceName: anyNamed('deviceName'),
-        osVersion: anyNamed('osVersion'),
-      ));
       verify(_userDao.get());
+      verify(_deviceInfo.getOSVersion());
+      verify(_deviceInfo.getDeviceName());
+      verify(_api(
+        mobilePhoneNumber: '09012345678',
+        authCode: 'dummyAuthCode',
+        osVersion: 'iOS 13.1',
+        deviceName: 'iPhone 11 Pro Max iPhone',
+      ));
       verify(_userDao.save(any));
     });
   });
@@ -69,6 +81,10 @@ void main() {
         osVersion: anyNamed('osVersion'),
       )).thenThrow(Exception('Exception message.'));
       when(_userDao.get()).thenReturn(User()..fcmToken = 'dummyFcmToken');
+      when(_deviceInfo.getOSVersion())
+          .thenAnswer((_) async => Future.value('iOS 13.1'));
+      when(_deviceInfo.getDeviceName())
+          .thenAnswer((_) async => Future.value('iPhone 11 Pro Max iPhone'));
       // Run the test method.
       expect(
         () => _repository.authentication(
@@ -78,13 +94,15 @@ void main() {
         throwsException,
       );
       // Validate the method call.
-      verify(_api(
+      verify(_userDao.get());
+      // verify(_deviceInfo.getOSVersion());
+      // verify(_deviceInfo.getDeviceName());
+      verifyNever(_api(
         mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
         authCode: anyNamed('authCode'),
         deviceName: anyNamed('deviceName'),
         osVersion: anyNamed('osVersion'),
       ));
-      verify(_userDao.get());
       verifyNever(_userDao.save(any));
     });
 
@@ -99,6 +117,10 @@ void main() {
         ),
       ).thenAnswer((_) async => fixture('authentication.json'));
       when(_userDao.get()).thenReturn(null);
+      when(_deviceInfo.getOSVersion())
+          .thenAnswer((_) async => Future.value('iOS 13.1'));
+      when(_deviceInfo.getDeviceName())
+          .thenAnswer((_) async => Future.value('iPhone 11 Pro Max iPhone'));
       // Run the test method.
       expect(
         () => _repository.authentication(
@@ -108,13 +130,15 @@ void main() {
         throwsA(const TypeMatcher<AuthenticationError>()),
       );
       // Validate the method call.
+      verify(_userDao.get());
+      verifyNever(_deviceInfo.getOSVersion());
+      verifyNever(_deviceInfo.getDeviceName());
       verifyNever(_api(
         mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
         authCode: anyNamed('authCode'),
         deviceName: anyNamed('deviceName'),
         osVersion: anyNamed('osVersion'),
       ));
-      verify(_userDao.get());
       verifyNever(_userDao.save(any));
     });
   });

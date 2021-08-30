@@ -2,6 +2,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/api/create_user_api.dart';
 import 'package:nomoca_flutter/data/repository/create_user_repository.dart';
 import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
+import 'package:nomoca_flutter/states/providers/get_device_info_provider.dart';
 
 class CreateUserStateNotifier extends StateNotifier<AsyncValue<bool>> {
   CreateUserStateNotifier({required this.createUserRepository})
@@ -35,6 +36,7 @@ final _createUserApiProvider = Provider.autoDispose(
 final createUserRepositoryProvider = Provider.autoDispose<CreateUserRepository>(
   (ref) => CreateUserRepositoryImpl(
     createUserApi: ref.read(_createUserApiProvider),
+    deviceInfo: ref.read(getDeviceInfoProvider),
   ),
 );
 

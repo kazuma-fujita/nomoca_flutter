@@ -6,6 +6,8 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:nomoca_flutter/data/api/create_user_api.dart' as _i2;
+import 'package:nomoca_flutter/data/repository/get_device_info_repository.dart'
+    as _i4;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: comment_references
@@ -36,4 +38,23 @@ class MockCreateUserApi extends _i1.Mock implements _i2.CreateUserApi {
           }),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future.value()) as _i3.Future<void>);
+}
+
+/// A class which mocks [GetDeviceInfoRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockGetDeviceInfoRepository extends _i1.Mock
+    implements _i4.GetDeviceInfoRepository {
+  MockGetDeviceInfoRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<String?> getOSVersion() =>
+      (super.noSuchMethod(Invocation.method(#getOSVersion, []),
+          returnValue: Future<String?>.value()) as _i3.Future<String?>);
+  @override
+  _i3.Future<String?> getDeviceName() =>
+      (super.noSuchMethod(Invocation.method(#getDeviceName, []),
+          returnValue: Future<String?>.value()) as _i3.Future<String?>);
 }

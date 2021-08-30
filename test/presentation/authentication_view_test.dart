@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nomoca_flutter/constants/route_names.dart';
+import 'package:nomoca_flutter/data/entity/remote/authentication_entity.dart';
 import 'package:nomoca_flutter/data/entity/remote/patient_card_entity.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
 import 'package:nomoca_flutter/data/repository/fetch_patient_cards_repository.dart';
@@ -72,7 +73,15 @@ void main() {
       when(_authenticationRepository.authentication(
         mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
         authCode: anyNamed('authCode'),
-      )).thenAnswer((_) => Future.value());
+      )).thenAnswer(
+        (_) => Future.value(
+          const AuthenticationEntity(
+            authenticationToken: 'dummy',
+            userId: 199,
+            nickname: '太郎',
+          ),
+        ),
+      );
       when(_patientCardRepository.fetchList()).thenAnswer(
         (_) async => [
           const PatientCardEntity(

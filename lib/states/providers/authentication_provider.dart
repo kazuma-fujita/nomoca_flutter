@@ -1,7 +1,9 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/api/authentication_api.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
+import 'package:nomoca_flutter/data/repository/get_device_info_repository.dart';
 import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
+import 'package:nomoca_flutter/states/providers/get_device_info_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
 
 class AuthenticationStateNotifier extends StateNotifier<AsyncValue<bool>> {
@@ -38,6 +40,7 @@ final authenticationRepositoryProvider =
   (ref) => AuthenticationRepositoryImpl(
     authenticationApi: ref.read(_authenticationApiProvider),
     userDao: ref.read(userDaoProvider),
+    deviceInfo: ref.read(getDeviceInfoProvider),
   ),
 );
 

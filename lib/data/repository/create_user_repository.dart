@@ -1,4 +1,5 @@
 import 'package:nomoca_flutter/data/api/create_user_api.dart';
+import 'package:nomoca_flutter/data/repository/get_device_info_repository.dart';
 
 // ignore: one_member_abstracts
 abstract class CreateUserRepository {
@@ -9,18 +10,19 @@ abstract class CreateUserRepository {
 }
 
 class CreateUserRepositoryImpl extends CreateUserRepository {
-  CreateUserRepositoryImpl({required this.createUserApi});
+  CreateUserRepositoryImpl(
+      {required this.createUserApi, required this.deviceInfo});
 
   final CreateUserApi createUserApi;
+  final GetDeviceInfoRepository deviceInfo;
 
   @override
   Future<void> createUser({
     required String mobilePhoneNumber,
     required String nickname,
   }) async {
-    // TODO: UNFIXED
-    const osVersion = '';
-    const deviceName = '';
+    final osVersion = await deviceInfo.getOSVersion();
+    final deviceName = await deviceInfo.getDeviceName();
     await createUserApi(
       mobilePhoneNumber: mobilePhoneNumber,
       nickname: nickname,
