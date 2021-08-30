@@ -2,11 +2,15 @@
 // in nomoca_flutter/test/presentation/sign_in_view_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart'
+import 'package:nomoca_flutter/data/entity/remote/authentication_entity.dart'
     as _i2;
+import 'package:nomoca_flutter/data/repository/authentication_repository.dart'
+    as _i5;
+import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart'
+    as _i3;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: comment_references
@@ -14,20 +18,43 @@ import 'package:nomoca_flutter/data/repository/send_short_message_repository.dar
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: unnecessary_parenthesis
 
+class _FakeAuthenticationEntity extends _i1.Fake
+    implements _i2.AuthenticationEntity {}
+
 /// A class which mocks [SendShortMessageRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockSendShortMessageRepository extends _i1.Mock
-    implements _i2.SendShortMessageRepository {
+    implements _i3.SendShortMessageRepository {
   MockSendShortMessageRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<void> sendShortMessage({String? mobilePhoneNumber}) =>
+  _i4.Future<void> sendShortMessage({String? mobilePhoneNumber}) =>
       (super.noSuchMethod(
           Invocation.method(
               #sendShortMessage, [], {#mobilePhoneNumber: mobilePhoneNumber}),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future.value()) as _i3.Future<void>);
+          returnValueForMissingStub: Future.value()) as _i4.Future<void>);
+}
+
+/// A class which mocks [AuthenticationRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAuthenticationRepository extends _i1.Mock
+    implements _i5.AuthenticationRepository {
+  MockAuthenticationRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<_i2.AuthenticationEntity> authentication(
+          {String? mobilePhoneNumber, String? authCode}) =>
+      (super.noSuchMethod(
+              Invocation.method(#authentication, [],
+                  {#mobilePhoneNumber: mobilePhoneNumber, #authCode: authCode}),
+              returnValue: Future<_i2.AuthenticationEntity>.value(
+                  _FakeAuthenticationEntity()))
+          as _i4.Future<_i2.AuthenticationEntity>);
 }

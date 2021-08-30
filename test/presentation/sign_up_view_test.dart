@@ -4,21 +4,23 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:nomoca_flutter/constants/route_names.dart';
+import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
 import 'package:nomoca_flutter/data/repository/create_user_repository.dart';
-import 'package:nomoca_flutter/presentation/authentication_view.dart';
 import 'package:nomoca_flutter/presentation/sign_up_view.dart';
 import 'package:nomoca_flutter/routes/route_generator.dart';
+import 'package:nomoca_flutter/states/providers/authentication_provider.dart';
 import 'package:nomoca_flutter/states/providers/create_user_provider.dart';
 
 import 'sign_up_view_test.mocks.dart';
 
-@GenerateMocks([CreateUserRepository])
+@GenerateMocks([CreateUserRepository, AuthenticationRepository])
 void main() {
   final _repository = MockCreateUserRepository();
+  final _authRepository = MockAuthenticationRepository();
 
   tearDown(() {
     reset(_repository);
+    reset(_authRepository);
   });
 
   ProviderScope setUpProviderScope() {
@@ -26,6 +28,8 @@ void main() {
       overrides: [
         // SMS送信APIを実行
         createUserRepositoryProvider.overrideWithValue(_repository),
+        // authRepositoryで利用しているuserDaoProvider生成で落ちる為Mocking
+        authenticationRepositoryProvider.overrideWithValue(_authRepository),
       ],
       child: MaterialApp(
         // 初期表示画面設定

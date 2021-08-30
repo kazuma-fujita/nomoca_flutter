@@ -4,19 +4,23 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
 import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart';
 import 'package:nomoca_flutter/presentation/sign_in_view.dart';
 import 'package:nomoca_flutter/routes/route_generator.dart';
+import 'package:nomoca_flutter/states/providers/authentication_provider.dart';
 import 'package:nomoca_flutter/states/providers/send_short_message_provider.dart';
 
 import 'sign_in_view_test.mocks.dart';
 
-@GenerateMocks([SendShortMessageRepository])
+@GenerateMocks([SendShortMessageRepository, AuthenticationRepository])
 void main() {
   final _repository = MockSendShortMessageRepository();
+  final _authRepository = MockAuthenticationRepository();
 
   tearDown(() {
     reset(_repository);
+    reset(_authRepository);
   });
 
   ProviderScope setUpProviderScope() {
@@ -24,6 +28,8 @@ void main() {
       overrides: [
         // SMS送信APIを実行
         sendShortMessageRepositoryProvider.overrideWithValue(_repository),
+        // authRepositoryで利用しているuserDaoProvider生成で落ちる為Mocking
+        authenticationRepositoryProvider.overrideWithValue(_authRepository),
       ],
       child: MaterialApp(
         // 初期表示画面設定
