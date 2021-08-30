@@ -2,6 +2,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomoca_flutter/data/api/authentication_api.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
 import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
+import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
 
 class AuthenticationStateNotifier extends StateNotifier<AsyncValue<bool>> {
   AuthenticationStateNotifier({required this.authenticationRepository})
@@ -36,6 +37,7 @@ final authenticationRepositoryProvider =
     Provider.autoDispose<AuthenticationRepository>(
   (ref) => AuthenticationRepositoryImpl(
     authenticationApi: ref.read(_authenticationApiProvider),
+    userDao: ref.read(userDaoProvider),
   ),
 );
 

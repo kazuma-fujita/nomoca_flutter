@@ -13,6 +13,7 @@ import 'package:nomoca_flutter/data/repository/registration_card_repository.dart
 import 'package:nomoca_flutter/data/repository/send_short_message_repository.dart';
 import 'package:nomoca_flutter/data/repository/update_family_user_repository.dart';
 import 'package:nomoca_flutter/data/repository/user_management_repository.dart';
+import 'package:nomoca_flutter/mocks/fake_authentication_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_create_family_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_create_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_fetch_favorite_list_repository.dart';

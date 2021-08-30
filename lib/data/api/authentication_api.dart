@@ -6,7 +6,7 @@ import 'package:nomoca_flutter/data/api/api_client.dart';
 
 // ignore: one_member_abstracts
 abstract class AuthenticationApi {
-  Future<void> call({
+  Future<String> call({
     required String mobilePhoneNumber,
     required String authCode,
     String? osVersion,
@@ -20,7 +20,7 @@ class AuthenticationApiImpl implements AuthenticationApi {
   final ApiClient apiClient;
 
   @override
-  Future<void> call({
+  Future<String> call({
     required String mobilePhoneNumber,
     required String authCode,
     String? osVersion,
@@ -32,10 +32,11 @@ class AuthenticationApiImpl implements AuthenticationApi {
       if (osVersion != null) 'os_version': osVersion,
       if (deviceName != null) 'device_name': deviceName,
     };
-    await apiClient.post(
+    final response = await apiClient.post(
       '${NomocaApiEndpoints.users}/authentication/',
       headers: NomocaApiProperties.baseHeaders,
       body: json.encode(body),
     );
+    return response;
   }
 }
