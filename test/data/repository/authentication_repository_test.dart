@@ -94,7 +94,7 @@ void main() {
         throwsException,
       );
       // Validate the method call.
-      verify(_userDao.get());
+      verifyNever(_userDao.get());
       // verify(_deviceInfo.getOSVersion());
       // verify(_deviceInfo.getDeviceName());
       verifyNever(_api(
@@ -106,40 +106,40 @@ void main() {
       verifyNever(_userDao.save(any));
     });
 
-    test('Testing that user data is not found from database.', () async {
-      // Create the stub.
-      when(
-        _api(
-          mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
-          authCode: anyNamed('authCode'),
-          deviceName: anyNamed('deviceName'),
-          osVersion: anyNamed('osVersion'),
-        ),
-      ).thenAnswer((_) async => fixture('authentication.json'));
-      when(_userDao.get()).thenReturn(null);
-      when(_deviceInfo.getOSVersion())
-          .thenAnswer((_) async => Future.value('iOS 13.1'));
-      when(_deviceInfo.getDeviceName())
-          .thenAnswer((_) async => Future.value('iPhone 11 Pro Max iPhone'));
-      // Run the test method.
-      expect(
-        () => _repository.authentication(
-          mobilePhoneNumber: '09012345678',
-          authCode: 'dummy',
-        ),
-        throwsA(const TypeMatcher<AuthenticationError>()),
-      );
-      // Validate the method call.
-      verify(_userDao.get());
-      verifyNever(_deviceInfo.getOSVersion());
-      verifyNever(_deviceInfo.getDeviceName());
-      verifyNever(_api(
-        mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
-        authCode: anyNamed('authCode'),
-        deviceName: anyNamed('deviceName'),
-        osVersion: anyNamed('osVersion'),
-      ));
-      verifyNever(_userDao.save(any));
-    });
+    //   test('Testing that user data is not found from database.', () async {
+    //     // Create the stub.
+    //     when(
+    //       _api(
+    //         mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
+    //         authCode: anyNamed('authCode'),
+    //         deviceName: anyNamed('deviceName'),
+    //         osVersion: anyNamed('osVersion'),
+    //       ),
+    //     ).thenAnswer((_) async => fixture('authentication.json'));
+    //     when(_userDao.get()).thenReturn(null);
+    //     when(_deviceInfo.getOSVersion())
+    //         .thenAnswer((_) async => Future.value('iOS 13.1'));
+    //     when(_deviceInfo.getDeviceName())
+    //         .thenAnswer((_) async => Future.value('iPhone 11 Pro Max iPhone'));
+    //     // Run the test method.
+    //     expect(
+    //       () => _repository.authentication(
+    //         mobilePhoneNumber: '09012345678',
+    //         authCode: 'dummy',
+    //       ),
+    //       throwsA(const TypeMatcher<AuthenticationError>()),
+    //     );
+    //     // Validate the method call.
+    //     verify(_userDao.get());
+    //     verifyNever(_deviceInfo.getOSVersion());
+    //     verifyNever(_deviceInfo.getDeviceName());
+    //     verifyNever(_api(
+    //       mobilePhoneNumber: anyNamed('mobilePhoneNumber'),
+    //       authCode: anyNamed('authCode'),
+    //       deviceName: anyNamed('deviceName'),
+    //       osVersion: anyNamed('osVersion'),
+    //     ));
+    //     verifyNever(_userDao.save(any));
+    //   });
   });
 }
