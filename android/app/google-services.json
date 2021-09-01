@@ -1,0 +1,127 @@
+{
+  "project_info": {
+    "project_number": "597138468538",
+    "firebase_url": "https://nomoca-project.firebaseio.com",
+    "project_id": "nomoca-project",
+    "storage_bucket": "nomoca-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597138468538:android:80ea1f9c687a4fca",
+        "android_client_info": {
+          "package_name": "jp.co.genova.nomoca"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "597138468538-ecbdm9fiun86kph41e12dobr8tfuo57m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfWVMy_eoCsrIgT9U0znXA_6cRcYo4uUI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "597138468538-47d7sfdtioa68g7eot7mk9iiofdg7l8u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "597138468538-4lar8ikcuu2knrr2juejkrkkncagsocg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "jp.co.genova.nomoca.dev"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597138468538:android:4167304f31526e9752dc83",
+        "android_client_info": {
+          "package_name": "jp.co.genova.nomoca.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "597138468538-rp4c9sfraoi8ng1rkgc105sc2n1nq3a6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "jp.co.genova.nomoca.dev",
+            "certificate_hash": "21033a620be65207810ab0cef9cfa2017b0c7052"
+          }
+        },
+        {
+          "client_id": "597138468538-ecbdm9fiun86kph41e12dobr8tfuo57m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfWVMy_eoCsrIgT9U0znXA_6cRcYo4uUI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "597138468538-47d7sfdtioa68g7eot7mk9iiofdg7l8u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "597138468538-4lar8ikcuu2knrr2juejkrkkncagsocg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "jp.co.genova.nomoca.dev"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597138468538:android:0a10bd81471dc53752dc83",
+        "android_client_info": {
+          "package_name": "jp.co.genova.nomoca.stg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "597138468538-ecbdm9fiun86kph41e12dobr8tfuo57m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfWVMy_eoCsrIgT9U0znXA_6cRcYo4uUI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "597138468538-47d7sfdtioa68g7eot7mk9iiofdg7l8u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "597138468538-4lar8ikcuu2knrr2juejkrkkncagsocg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "jp.co.genova.nomoca.dev"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -27,6 +27,15 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>QRコードを読み取り診察券登録をします</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>現在地付近の病院を探す為に位置情報を取得します</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -46,9 +55,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>現在地付近の病院を探す為に位置情報を取得します</string>
-	<key>NSCameraUsageDescription</key>
-	<string>QRコードを読み取り診察券登録をします</string>
 </dict>
 </plist>

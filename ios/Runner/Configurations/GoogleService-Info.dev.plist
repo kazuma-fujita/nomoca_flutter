@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>597138468538-4lar8ikcuu2knrr2juejkrkkncagsocg.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.597138468538-4lar8ikcuu2knrr2juejkrkkncagsocg</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>597138468538-rp4c9sfraoi8ng1rkgc105sc2n1nq3a6.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBY6szz3KngbX3qIbcIy9xjJSmjBodHX9w</string>
+	<key>GCM_SENDER_ID</key>
+	<string>597138468538</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>jp.co.genova.nomoca.dev</string>
+	<key>PROJECT_ID</key>
+	<string>nomoca-project</string>
+	<key>STORAGE_BUCKET</key>
+	<string>nomoca-project.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:597138468538:ios:92013d4d0ce589d0</string>
+	<key>DATABASE_URL</key>
+	<string>https://nomoca-project.firebaseio.com</string>
+</dict>
+</plist>
