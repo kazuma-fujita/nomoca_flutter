@@ -33,3 +33,5 @@ Runner/GeneratedPluginRegistrant.*
 
 # Added
 Flutter/EnvironmentVariables.xcconfig
+Runner/GoogleService-Info.plist
+Runner/Configurations

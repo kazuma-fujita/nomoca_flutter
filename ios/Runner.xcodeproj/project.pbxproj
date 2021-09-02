@@ -285,7 +285,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
 		};
 		A4B2585A26DE59540063F88E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -302,7 +302,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"run start\"\nif [ \"${$BUILD_ENV}\" = \"dev\" ]; then\ncp \"${PROJECT_DIR}/${PROJECT_NAME}/Configurations/GoogleService-Info.dev.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\necho \"Debug GoogleService-Info copied.\"\nelif [ \"${BUILD_ENV}\" = \"stg\" ]; then\ncp \"${PROJECT_DIR}/${PROJECT_NAME}/Configurations/GoogleService-Info.stg.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\necho \"Staging GoogleService-Info copied.\"\nelif [ \"${BUILD_ENV}\" = \"prod\" ]; then\ncp \"${PROJECT_DIR}/${PROJECT_NAME}/Configurations/GoogleService-Info.prod.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\necho \"Production GoogleService-Info copied.\"\nfi\necho \"run end\"\n";
+			shellScript = "echo \"run start\"\necho \"BUILD_ENV:${BUILD_ENV}\"\necho \"from path:${PROJECT_DIR}/${PROJECT_NAME}\"\necho \"to path: ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\nif [ \"${BUILD_ENV}\" = \"dev\" ]; then\ncp \"${PROJECT_DIR}/${PROJECT_NAME}/Configurations/GoogleService-Info.dev.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\necho \"Debug GoogleService-Info copied.\"\nelif [ \"${BUILD_ENV}\" = \"stg\" ]; then\ncp \"${PROJECT_DIR}/${PROJECT_NAME}/Configurations/GoogleService-Info.stg.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\necho \"Staging GoogleService-Info copied.\"\nelif [ \"${BUILD_ENV}\" = \"prod\" ]; then\ncp \"${PROJECT_DIR}/${PROJECT_NAME}/Configurations/GoogleService-Info.prod.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\necho \"Production GoogleService-Info copied.\"\nfi\necho \"run end\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
