@@ -48,7 +48,7 @@ class AuthenticationRepositoryImpl extends AuthenticationRepository {
       final decodedJson = json.decode(responseBody) as dynamic;
       final entity =
           AuthenticationEntity.fromJson(decodedJson as Map<String, dynamic>);
-      // アプリインストール時のfcmToken取得時にUserレコード作成済み
+      // アプリインストール時のfcmToken取得時にUserレコード作成済みを想定
       var user = userDao.get();
       // アプリインストール時にfcmTokenが取得出来なかった場合、Userレコードが存在しない可能性が有る
       // Userレコードが無い場合Userデータを新規作成するが、fcmTokenが存在しないのでPush通知は受信できない

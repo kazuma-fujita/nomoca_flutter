@@ -15,6 +15,7 @@ import 'package:nomoca_flutter/presentation/settings_view.dart';
 import 'package:nomoca_flutter/presentation/favorite_list_view.dart';
 import 'package:nomoca_flutter/presentation/root_view.dart';
 import 'package:nomoca_flutter/routes/route_generator.dart';
+import 'package:nomoca_flutter/states/providers/update_notification_token_provider.dart';
 import 'package:nomoca_flutter/themes/easy_loading_theme.dart';
 import 'package:nomoca_flutter/themes/theme_data.dart';
 
@@ -33,14 +34,16 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: MockProviders.overrides(),
-      child: MyApp(),
+      child: _Application(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
+class _Application extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // fcmToken取得
+    _fetchFCMToken(ref);
     return MaterialApp(
       title: 'Nomoca application',
       // Default theme
@@ -65,5 +68,25 @@ class MyApp extends StatelessWidget {
       // アプリのlocaleを日本語に変更
       locale: const Locale('ja', 'JP'),
     );
+  }
+
+  Future<void> _fetchFCMToken(WidgetRef ref) async {
+    // fcmToken生成を subscribe する listener。アプリインストール時に必ずcallされる
+    await FirebaseMessaging.instance.getToken().then((fcmToken) {
+      print('Called getToken and FCM Token: $fcmToken');
+      if (fcmToken != null) {
+        print('Update fcm token');
+        // fcmTokenが存在すればfcmToken情報DB登録
+        ref.read(updateNotificationTokenProvider(fcmToken));
+      }
+    });
+
+    // fcmTokenの再生成を subscribe する listener
+    FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
+      print('Called onTokenRefresh and FCM Token: $fcmToken');
+      // refreshでのfcmToken生成タイミングでは既にDBにtokenがあるのでrepository内で
+      // DB更新とtoken更新APIを実行
+      ref.read(updateNotificationTokenProvider(fcmToken));
+    });
   }
 }

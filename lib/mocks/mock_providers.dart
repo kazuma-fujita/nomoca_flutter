@@ -20,6 +20,7 @@ import 'package:nomoca_flutter/mocks/fake_fetch_favorite_list_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_update_family_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_update_local_id_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_update_next_reserve_date_repository.dart';
+import 'package:nomoca_flutter/mocks/fake_update_notification_token_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_update_user_repository.dart';
 import 'package:nomoca_flutter/mocks/fake_user_dao.dart';
 import 'package:nomoca_flutter/mocks/fake_get_version_repository.dart';
@@ -37,6 +38,7 @@ import 'package:nomoca_flutter/states/providers/update_family_user_provider.dart
 import 'package:nomoca_flutter/states/providers/update_favorite_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_local_id_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_next_reserve_date_provider.dart';
+import 'package:nomoca_flutter/states/providers/update_notification_token_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_read_post_provider.dart';
 import 'package:nomoca_flutter/states/providers/update_user_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
@@ -118,6 +120,8 @@ class MockProviders {
           (ref) => const AsyncValue.data(null),
         ),
       ),
+      updateNotificationTokenRepositoryProvider
+          .overrideWithValue(FakeUpdateNotificationTokenRepositoryImpl()),
       fetchFamilyUserListRepositoryProvider
           .overrideWithValue(FakeFetchFamilyUserListRepositoryImpl()),
       updateUserRepositoryProvider
