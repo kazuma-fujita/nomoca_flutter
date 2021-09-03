@@ -2,29 +2,37 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:nomoca_flutter/data/api/authentication_api.dart';
+import 'package:nomoca_flutter/data/api/update_notification_token_api.dart';
 import 'package:nomoca_flutter/data/dao/user_dao.dart';
 import 'package:nomoca_flutter/data/entity/database/user.dart';
 import 'package:nomoca_flutter/data/entity/remote/authentication_entity.dart';
 import 'package:nomoca_flutter/data/repository/authentication_repository.dart';
 import 'package:nomoca_flutter/data/repository/get_device_info_repository.dart';
-import 'package:nomoca_flutter/errors/authentication_error.dart';
 
 import '../../fixture.dart';
 import 'authentication_repository_test.mocks.dart';
 
-@GenerateMocks([AuthenticationApi, UserDao, GetDeviceInfoRepository])
+@GenerateMocks([
+  AuthenticationApi,
+  UpdateNotificationTokenApi,
+  UserDao,
+  GetDeviceInfoRepository,
+])
 void main() {
   final _api = MockAuthenticationApi();
+  final _updateTokenApi = MockUpdateNotificationTokenApi();
   final _userDao = MockUserDao();
   final _deviceInfo = MockGetDeviceInfoRepository();
   final _repository = AuthenticationRepositoryImpl(
     authenticationApi: _api,
+    updateNotificationTokenApi: _updateTokenApi,
     userDao: _userDao,
     deviceInfo: _deviceInfo,
   );
 
   tearDown(() {
     reset(_api);
+    reset(_updateTokenApi);
     reset(_userDao);
     reset(_deviceInfo);
   });
@@ -40,6 +48,12 @@ void main() {
           osVersion: anyNamed('osVersion'),
         ),
       ).thenAnswer((_) async => fixture('authentication.json'));
+      when(
+        _updateTokenApi(
+          authenticationToken: anyNamed('authenticationToken'),
+          notificationToken: anyNamed('notificationToken'),
+        ),
+      ).thenAnswer((_) async => Future.value());
       when(_userDao.get()).thenReturn(User()..fcmToken = 'dummyFcmToken');
       when(_deviceInfo.getOSVersion())
           .thenAnswer((_) async => Future.value('iOS 13.1'));
@@ -66,6 +80,11 @@ void main() {
         authCode: 'dummyAuthCode',
         osVersion: 'iOS 13.1',
         deviceName: 'iPhone 11 Pro Max iPhone',
+      ));
+      verify(_updateTokenApi(
+        authenticationToken:
+            'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo0LCJ1c2VybmFtZSI6ImN1c3RvbWVyMkBub21vY2EuY29tIiwiZXhwIjoxNTE4NzY1NDY3LCJlbWFpbCI6ImN1c3RvbWVyMkBub21vY2EuY29tIn0.VvR',
+        notificationToken: 'dummyFcmToken',
       ));
       verify(_userDao.save(any));
     });
@@ -104,6 +123,12 @@ void main() {
         osVersion: anyNamed('osVersion'),
       ));
       verifyNever(_userDao.save(any));
+      verifyNever(
+        _updateTokenApi(
+          authenticationToken: anyNamed('authenticationToken'),
+          notificationToken: anyNamed('notificationToken'),
+        ),
+      );
     });
 
     //   test('Testing that user data is not found from database.', () async {

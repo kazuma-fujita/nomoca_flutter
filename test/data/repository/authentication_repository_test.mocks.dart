@@ -6,10 +6,12 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:nomoca_flutter/data/api/authentication_api.dart' as _i2;
-import 'package:nomoca_flutter/data/dao/user_dao.dart' as _i4;
-import 'package:nomoca_flutter/data/entity/database/user.dart' as _i5;
+import 'package:nomoca_flutter/data/api/update_notification_token_api.dart'
+    as _i4;
+import 'package:nomoca_flutter/data/dao/user_dao.dart' as _i5;
+import 'package:nomoca_flutter/data/entity/database/user.dart' as _i6;
 import 'package:nomoca_flutter/data/repository/get_device_info_repository.dart'
-    as _i6;
+    as _i7;
 
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: avoid_setters_without_getters
@@ -45,16 +47,39 @@ class MockAuthenticationApi extends _i1.Mock implements _i2.AuthenticationApi {
   String toString() => super.toString();
 }
 
+/// A class which mocks [UpdateNotificationTokenApi].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUpdateNotificationTokenApi extends _i1.Mock
+    implements _i4.UpdateNotificationTokenApi {
+  MockUpdateNotificationTokenApi() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<void> call(
+          {String? authenticationToken, String? notificationToken}) =>
+      (super.noSuchMethod(
+          Invocation.method(#call, [], {
+            #authenticationToken: authenticationToken,
+            #notificationToken: notificationToken
+          }),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i3.Future<void>);
+  @override
+  String toString() => super.toString();
+}
+
 /// A class which mocks [UserDao].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserDao extends _i1.Mock implements _i4.UserDao {
+class MockUserDao extends _i1.Mock implements _i5.UserDao {
   MockUserDao() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<void> save(_i5.User? user) =>
+  _i3.Future<void> save(_i6.User? user) =>
       (super.noSuchMethod(Invocation.method(#save, [user]),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i3.Future<void>);
@@ -66,7 +91,7 @@ class MockUserDao extends _i1.Mock implements _i4.UserDao {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockGetDeviceInfoRepository extends _i1.Mock
-    implements _i6.GetDeviceInfoRepository {
+    implements _i7.GetDeviceInfoRepository {
   MockGetDeviceInfoRepository() {
     _i1.throwOnMissingStub(this);
   }

@@ -6,7 +6,8 @@ import 'package:nomoca_flutter/data/repository/update_read_post_repository.dart'
 import 'package:nomoca_flutter/states/providers/api_client_provider.dart';
 import 'package:nomoca_flutter/states/providers/user_dao_provider.dart';
 
-final _updateNotificationTokenApiProvider = Provider.autoDispose(
+// AuthenticationRepositoryからもcallされるのでpublic宣言
+final updateNotificationTokenApiProvider = Provider.autoDispose(
   (ref) => UpdateNotificationTokenApiImpl(
     apiClient: ref.read(apiClientProvider),
   ),
@@ -15,7 +16,7 @@ final _updateNotificationTokenApiProvider = Provider.autoDispose(
 final updateNotificationTokenRepositoryProvider =
     Provider.autoDispose<UpdateNotificationTokenRepository>(
   (ref) => UpdateNotificationTokenRepositoryImpl(
-    updateNotificationTokenApi: ref.read(_updateNotificationTokenApiProvider),
+    updateNotificationTokenApi: ref.read(updateNotificationTokenApiProvider),
     userDao: ref.read(userDaoProvider),
   ),
 );
