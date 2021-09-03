@@ -22,9 +22,9 @@ import 'constants/db_table_names.dart';
 // Android Notification Channel 設定
 // この設定内容は Android設定アプリの 'アプリと通知' 画面に表示される
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  'high_importance_channel', // id
-  'High Importance Notifications', // title
-  'This channel is used for important notifications.', // description
+  'NOTIFICATION_CHANNEL_ID', // id 命名はv4アプリから引き継ぎ。本来はclinic_news_channel等が良い
+  '病院からのお知らせ', // title
+  '病院からのお知らせを配信します。', // description
   importance: Importance.high,
 );
 

@@ -1,4 +1,4 @@
-package jp.co.genova.nomoca_flutter
+package jp.co.genova.nomoca
 
 import io.flutter.app.FlutterApplication
 import io.flutter.plugin.common.PluginRegistry
